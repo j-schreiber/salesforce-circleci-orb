@@ -28,7 +28,7 @@ parameters:
     default: business@lietzau-consulting.de.uat
 
 jobs:
-  packaging:
+  packaging_commands:
     docker:
       - image: cimg/base:stable
     steps:
@@ -60,12 +60,15 @@ workflows:
   integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
+      - packaging_commands
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: jsc/salesforce
           context: orb-publishing
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: false
+          requires:
+            - packaging_commands
           filters:
             branches:
               only:
