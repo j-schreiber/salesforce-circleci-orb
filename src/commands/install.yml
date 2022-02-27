@@ -1,0 +1,11 @@
+description: >
+  Downloads and installs the latest SFDX CLI version from the official Salesforce channels.
+
+steps:
+  - run:
+      name: Install Latest CLI
+      command: <<include(scripts/install-cli.sh)>>
+  - run:
+      name: Verify CLI Installation
+      command: |
+        sfdx version
