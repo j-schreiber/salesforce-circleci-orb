@@ -1,1 +1,1 @@
-This is the source for the salesforce CircleCI orb. It is used to deploy our salesforce packages (tmh-salesforce-*).
+Welcome to the official repository of the [jsc/salesforce](https://circleci.com/developer/orbs/orb/jsc/salesforce) orb.
