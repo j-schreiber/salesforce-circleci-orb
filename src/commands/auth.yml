@@ -1,0 +1,35 @@
+description: >
+  Authenticates with a persistent org (such as a production instance or a sandbox) using a pre-authorized username and JWT.
+
+parameters:
+  username:
+    description: The username to authenticate. Typically an admin user that must be pre-authorized with the connected app. Also used as alias to access these orgs.
+    default: ""
+    type: string
+  jwtKey:
+    description: Name of the environment variable containing the base64 encoded private JWT (server.key file)
+    default: SFDX_JWT_KEY
+    type: env_var_name
+  consumerKey:
+    description: Name of the environment variable containing the consumner key of the connected app. The CLI refers to this as "client id"
+    default: SFDX_CONSUMER_KEY
+    type: env_var_name
+  instanceUrl:
+    description: The URL of the salesforce instance to authenticate against. Use https://test.salesforce.com for sandboxes and your custom domain for production.
+    default: ""
+    type: string
+  setDefault:
+    description: Sets the authenticated org as default devhub org. Useful if you authenticate a production instance and want to omit the devhubusername in other commands.
+    default: false
+    type: boolean
+
+steps:
+  - run:
+      environment:
+        PARAM_JWT_KEY_FILE: << parameters.jwtKey >>
+        PARAM_CLIENT_ID: << parameters.consumerKey >>
+        PARAM_USERNAME: << parameters.username >>
+        PARAM_INSTANCE_URL: << parameters.instanceUrl >>
+        PARAM_SET_DEFAULT: << parameters.setDefault >>
+      name: "Authenticate Org: << parameters.username >>"
+      command: << include(scripts/auth.sh) >>
