@@ -1,0 +1,3 @@
+[submodule "salesforce/demo-package"]
+	path = salesforce/demo-package
+	url = https://github.com/j-schreiber/circleci-orb-demo-package.git
