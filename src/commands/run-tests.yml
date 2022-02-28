@@ -1,0 +1,19 @@
+description: >
+  Executes all apex tests on a target org and stores the results as JUnit.
+
+parameters:
+  targetOrg:
+    description: Username or alias of the target org where tests are executed.
+    type: string
+  outputDir:
+    description: Directory to store test results.
+    default: test-results/apex
+    type: string
+
+steps:
+  - run:
+      environment:
+        PARAM_TARGET_ORG: << parameters.targetOrg >>
+        PARAM_OUTPUT_DIRECTORY: << parameters.outputDir >>
+      name: "Execute all tests on: << parameters.targetOrg >>"
+      command: << include(scripts/run-tests.sh) >>
