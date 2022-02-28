@@ -17,14 +17,14 @@ usage:
       default: info@lietzau-consulting.de.dev
 
   jobs:
-    auth_production:
+    testing_job:
       docker:
         - image: cimg/base:stable
       steps:
         - checkout
         - jsc-sfdx/install
         - jsc-sfdx/auth:
-          username: << pipeline.parameters.username-dev >>
-          instanceUrl: https://test.salesforce.com
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
+            username: << pipeline.parameters.username-dev >>
+            instanceUrl: https://test.salesforce.com
+            jwtKey: TEST_JWT_KEY
+            consumerKey: TEST_CONSUMER_KEY

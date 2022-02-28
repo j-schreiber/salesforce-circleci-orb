@@ -17,10 +17,10 @@ usage:
       default: info@lietzau-consulting.de
 
   jobs:
-    run-all-test-suites:
+    run_all_test_suites:
       docker:
         - image: cimg/base:stable
       steps:
         - jsc-sfdx/run-test-suites:
-          targetOrg: << pipeline.parameters.username-prod >>
-          outputDir: test-results/my-results
+            targetOrg: << pipeline.parameters.username-prod >>
+            outputDir: test-results/my-results

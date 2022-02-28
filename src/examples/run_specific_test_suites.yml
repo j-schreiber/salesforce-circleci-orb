@@ -16,11 +16,11 @@ usage:
       default: info@lietzau-consulting.de
 
   jobs:
-    run-specific-test-suites:
+    run_specific_test_suites:
       docker:
         - image: cimg/base:stable
       steps:
         - jsc-sfdx/run-test-suites:
-          testSuites: TestSuite1,TestSuite2 TestSuite3 TestSuite4,TestSuite5
-          targetOrg: << pipeline.parameters.username-prod >>
-          outputDir: test-results/my-results
+            testSuites: TestSuite1,TestSuite2 TestSuite3 TestSuite4,TestSuite5
+            targetOrg: << pipeline.parameters.username-prod >>
+            outputDir: test-results/my-results
