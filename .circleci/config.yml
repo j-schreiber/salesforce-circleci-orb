@@ -45,6 +45,9 @@ jobs:
           username: << pipeline.parameters.username-uat >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY_UAT
+      - jsc-sfdx/package-get-installed:
+          targetOrg: << pipeline.parameters.username-uat >>
+          devhubUsername: << pipeline.parameters.username-prod >>
 
   testing_commands:
     docker:
