@@ -105,6 +105,7 @@ workflows:
           publish-version-tag: false
           requires:
             - packaging_commands
+            - testing_commands
           filters:
             branches:
               only:
