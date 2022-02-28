@@ -1,0 +1,31 @@
+description: >
+  A sample use of the `auth` command to authenticate a persistent environment.
+  This command can authenticate production instances and sandboxes. The command uses
+  environment variables to pass in the JWT key and the consumer key of the connected app.
+  Use the defaults $SFDX_JWT_KEY and $SFDX_CONSUMER_KEY or override with your own.
+  This is an example how to authenticate a production environment and set it as default.
+
+usage:
+  version: 2.1
+  orbs:
+    jsc-sfdx: jsc/salesforce@x.y
+
+  parameters:
+    username-prod:
+      description: Username for the production DevHub org
+      type: string
+      default: info@lietzau-consulting.de
+
+  jobs:
+    testing_job:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - checkout
+        - jsc-sfdx/install
+        - jsc-sfdx/auth:
+            username: << pipeline.parameters.username-prod >>
+            instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+            jwtKey: TEST_JWT_KEY
+            consumerKey: TEST_CONSUMER_KEY
+            setDefault: true

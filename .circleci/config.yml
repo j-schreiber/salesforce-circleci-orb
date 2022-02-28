@@ -46,6 +46,30 @@ jobs:
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY_UAT
 
+  testing_commands:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - jsc-sfdx/install
+      - jsc-sfdx/auth:
+          username: << pipeline.parameters.username-prod >>
+          instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+          jwtKey: TEST_JWT_KEY
+          consumerKey: TEST_CONSUMER_KEY
+          setDefault: true
+      - jsc-sfdx/run-tests:
+          targetOrg: << pipeline.parameters.username-prod >>
+      - jsc-sfdx/run-test-suites:
+          targetOrg: << pipeline.parameters.username-prod >>
+          outputDir: test-results/apex-2
+      - jsc-sfdx/run-test-suites:
+          targetOrg: << pipeline.parameters.username-prod >>
+          outputDir: test-results/apex-3
+          testSuites: TestSuite1,TestSuite2 TestSuite3
+      - store_test_results:
+          path: test-results/apex
+
 workflows:
   test-pack:
     unless: << pipeline.parameters.run-integration-tests >>
@@ -72,6 +96,7 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - packaging_commands
+      - testing_commands
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: jsc/salesforce
           context: orb-publishing
@@ -80,6 +105,7 @@ workflows:
           publish-version-tag: false
           requires:
             - packaging_commands
+            - testing_commands
           filters:
             branches:
               only:
