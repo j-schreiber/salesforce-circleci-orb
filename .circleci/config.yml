@@ -62,11 +62,6 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - run:
-          name: Checkout salesforce/demo-package
-          command: |
-            git submodule update --init --recursive
-            git submodule foreach --recursive git checkout master
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
@@ -91,6 +86,11 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - run:
+          name: Checkout salesforce/demo-package
+          command: |
+            git submodule update --init --recursive
+            git submodule foreach --recursive git checkout master
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
