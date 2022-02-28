@@ -1,0 +1,29 @@
+description: >
+  Retrieve the currently installed package version of a package and export it to an environment variable.
+  The exported version can be used to initiate a rollback when a deployment step failed (install command)
+
+parameters:
+  packageId:
+    description: Environment variable that holds the package id (0Ho)
+    default: PACKAGE_ID
+    type: env_var_name
+  packageVersionExport:
+    description: Name of the environment variable where the id of the currently installed package version (04t) shall be exported to.
+    default: INSTALLED_PACKAGE_VERSION_ID
+    type: env_var_name
+  targetOrg:
+    description: Username or alias of the target org that will be queried for the installed package version.
+    type: string
+  devhubUsername:
+    description: Username or alias of the DevHub that owns the package. Can be identical with the target org.
+    type: string
+
+steps:
+  - run:
+      environment:
+        PARAM_PACKAGE_ID: << parameters.packageId >>
+        PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
+        PARAM_TARGET_ORG: << parameters.targetOrg >>
+        PARAM_DEVHUB_USERNAME: << parameters.devhubUsername >>
+      name: "Get installed package version on << parameters.targetOrg >>"
+      command: <<include(scripts/package-get-installed.sh) >>
