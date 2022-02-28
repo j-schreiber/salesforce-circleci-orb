@@ -96,6 +96,7 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - packaging_commands
+      - testing_commands
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: jsc/salesforce
           context: orb-publishing
