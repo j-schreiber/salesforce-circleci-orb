@@ -1,0 +1,27 @@
+description: >
+  Executes a list of test suites or queries all test suites on the target org and executes them in sequence.
+  The command executes each test suite as a single run and stores all results in JUnit format.
+
+parameters:
+  targetOrg:
+    description: Username or alias of the target org where tests are executed.
+    type: string
+  testSuites:
+    description:
+      A space-separated list of test suites to execute. If no test suite is provided,
+      the command queries all test suites on the target org and executes them in alphabetical order.
+    default: ""
+    type: string
+  outputDir:
+    description: Directory to store test results.
+    default: test-results/apex
+    type: string
+
+steps:
+  - run:
+      environment:
+        PARAM_TARGET_ORG: << parameters.targetOrg >>
+        PARAM_TEST_SUITES: << parameters.testSuites >>
+        PARAM_OUTPUT_DIRECTORY: << parameters.outputDir >>
+      name: "Execute test suites on: << parameters.targetOrg >>"
+      command: << include(scripts/run-test-suites.sh) >>
