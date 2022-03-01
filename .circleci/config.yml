@@ -103,6 +103,18 @@ jobs:
           package: PACKAGE_ID
           isReleaseCandidate: true
           packageVersionExport: MY_RC_PACKAGE_VERSION
+      - run:
+          name: Echo package version
+          command: |
+            echo "New package version was: $MY_RC_PACKAGE_VERSION"
+      - jsc-sfdx/package-promote:
+          projectPath: salesforce/demo-package
+          devhubUsername: << pipeline.parameters.username-prod >>
+          packageVersionId: MY_RC_PACKAGE_VERSION
+      - run:
+          name: Cleanup promoted version
+          command: |
+            sfdx force:package:version:delete -v << pipeline.parameters.username-prod >> -p $MY_RC_PACKAGE_VERSION --noprompt
 
 workflows:
   test-pack:
