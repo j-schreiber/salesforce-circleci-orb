@@ -36,7 +36,6 @@ query_latest_package_build() {
 get_package_version_id() {
     if [ "${PARAM_QUERY_LATEST_BUILD}" -eq 0 ]; then
         echo "Package version set. Using ${!PARAM_PACKAGE_VERSION} ..."
-        # store the env var in csv file without header
         packageVersionId="${!PARAM_PACKAGE_VERSION}"
     else
         if [ "$PARAM_INSTALL_RELEASE_CANDIDATE" -eq 1 ]; then

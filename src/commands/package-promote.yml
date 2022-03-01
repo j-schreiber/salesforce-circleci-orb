@@ -1,0 +1,36 @@
+description: >
+  Promote a specific release candidate package version or the latest release candidate package version.
+
+parameters:
+  packageVersionId:
+    description: Environment variable with the package version id to promote. Required if promoteLatestBuild is false. Has no effect, if it's true.
+    default: SUBSCRIBER_PACKAGE_VERSION_ID
+    type: env_var_name
+  packageId:
+    description: Environment variable with the package id (starts with 0Ho). Required, if promoteLatestBuild is true. Has no effect if it's false.
+    default: PACKAGE_ID
+    type: env_var_name
+  promoteLatestBuild:
+    description: Promotes the latest release candidate build of the package version. This queries the latest build from the DevHub.
+    default: true
+    type: boolean
+  devhubUsername:
+    description: The username or alias of the devhub org that owns the package.
+    type: string
+  projectPath:
+    description:
+      The relative path of the sfdx project. The default is empty and assumes you execute this command from the root of an sfdx project.
+      Use this for multi-package repositories or if you cannot execute the pipeline from the root of an sfdx project.
+    default: ""
+    type: string
+
+steps:
+  - run:
+      environment:
+        ENV_VAR_PACKAGE_VERSION_ID: << parameters.packageVersionId >>
+        ENV_VAR_PACKAGE_ID: << parameters.packageId >>
+        PARAM_PROMOTE_LATEST_BUILD: << parameters.promoteLatestBuild >>
+        PARAM_DEVHUB_USERNAME: << parameters.devhubUsername >>
+        PARAM_PATH: << parameters.projectPath >>
+      name: "Promote <<# parameters.promoteLatestBuild >> --> latest <-- <</ parameters.promoteLatestBuild >> package build"
+      command: << include(scripts/package-promote.sh) >>
