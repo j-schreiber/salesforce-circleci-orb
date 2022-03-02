@@ -60,6 +60,9 @@ jobs:
       - jsc-sfdx/package-build:
           projectPath: salesforce/demo-package
           package: PACKAGE_ID
+      - jsc-sfdx/package-install:
+          installLatestBuild: false
+          targetOrg: << pipeline.parameters.username-prod >>
 
   testing_commands:
     docker:
@@ -147,7 +150,9 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - packaging_commands
-      - testing_commands
+      - testing_commands:
+          requires:
+            - packaging_commands
       - create_release_candidate
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: jsc/salesforce
@@ -156,7 +161,6 @@ workflows:
           fail-if-semver-not-indicated: true
           publish-version-tag: false
           requires:
-            - packaging_commands
             - testing_commands
             - create_release_candidate
           filters:
