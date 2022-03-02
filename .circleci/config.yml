@@ -21,7 +21,11 @@ parameters:
   username-prod:
     description: Production username for the devhub org
     type: string
-    default: info@lietzau-consulting.de
+    default: info@curious-impala-bhgtyu.com
+  instanceurl-prod:
+    description: Production instance URL
+    type: string
+    default: https://curious-impala-bhgtyu-dev-ed.my.salesforce.com
   username-uat:
     description: Username for the UAT sandbox
     type: string
@@ -41,7 +45,7 @@ jobs:
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
-          instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+          instanceUrl: << pipeline.parameters.instanceurl-prod >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
@@ -65,7 +69,7 @@ jobs:
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
-          instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+          instanceUrl: << pipeline.parameters.instanceurl-prod >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
@@ -94,7 +98,7 @@ jobs:
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
-          instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+          instanceUrl: << pipeline.parameters.instanceurl-prod >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
@@ -114,6 +118,7 @@ jobs:
       - run:
           name: Cleanup promoted version
           command: |
+            cd salesforce/demo-package
             sfdx force:package:version:delete -v << pipeline.parameters.username-prod >> -p $MY_RC_PACKAGE_VERSION --noprompt
 
 workflows:
