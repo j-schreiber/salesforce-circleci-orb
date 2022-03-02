@@ -21,7 +21,11 @@ parameters:
   username-prod:
     description: Production username for the devhub org
     type: string
-    default: info@lietzau-consulting.de
+    default: info@curious-impala-bhgtyu.com
+  instanceurl-prod:
+    description: Production instance URL
+    type: string
+    default: https://curious-impala-bhgtyu-dev-ed.my.salesforce.com
   username-uat:
     description: Username for the UAT sandbox
     type: string
@@ -33,10 +37,15 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - run:
+          name: Checkout salesforce/demo-package
+          command: |
+            git submodule update --init --recursive
+            git submodule foreach --recursive git checkout master
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
-          instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+          instanceUrl: << pipeline.parameters.instanceurl-prod >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
@@ -45,6 +54,15 @@ jobs:
           username: << pipeline.parameters.username-uat >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY_UAT
+      - jsc-sfdx/package-get-installed:
+          targetOrg: << pipeline.parameters.username-uat >>
+          devhubUsername: << pipeline.parameters.username-prod >>
+      - jsc-sfdx/package-build:
+          projectPath: salesforce/demo-package
+          package: PACKAGE_ID
+      - jsc-sfdx/package-install:
+          installLatestBuild: false
+          targetOrg: << pipeline.parameters.username-prod >>
 
   testing_commands:
     docker:
@@ -54,7 +72,7 @@ jobs:
       - jsc-sfdx/install
       - jsc-sfdx/auth:
           username: << pipeline.parameters.username-prod >>
-          instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+          instanceUrl: << pipeline.parameters.instanceurl-prod >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
@@ -69,6 +87,33 @@ jobs:
           testSuites: TestSuite1,TestSuite2 TestSuite3
       - store_test_results:
           path: test-results/apex
+
+  create_release_candidate:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Checkout salesforce/demo-package
+          command: |
+            git submodule update --init --recursive
+            git submodule foreach --recursive git checkout master
+      - jsc-sfdx/install
+      - jsc-sfdx/auth:
+          username: << pipeline.parameters.username-prod >>
+          instanceUrl: << pipeline.parameters.instanceurl-prod >>
+          jwtKey: TEST_JWT_KEY
+          consumerKey: TEST_CONSUMER_KEY
+          setDefault: true
+      - jsc-sfdx/package-build:
+          projectPath: salesforce/demo-package
+          package: PACKAGE_ID
+          isReleaseCandidate: true
+          packageVersionExport: MY_RC_PACKAGE_VERSION
+      - run:
+          name: Echo package version
+          command: |
+            echo "New package version was: $MY_RC_PACKAGE_VERSION"
 
 workflows:
   test-pack:
@@ -96,7 +141,10 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - packaging_commands
-      - testing_commands
+      - testing_commands:
+          requires:
+            - packaging_commands
+      - create_release_candidate
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: jsc/salesforce
           context: orb-publishing
@@ -104,8 +152,8 @@ workflows:
           fail-if-semver-not-indicated: true
           publish-version-tag: false
           requires:
-            - packaging_commands
             - testing_commands
+            - create_release_candidate
           filters:
             branches:
               only:

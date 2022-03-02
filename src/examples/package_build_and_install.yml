@@ -1,0 +1,50 @@
+description: >
+  A sample job that builds an unvalidated package version and deploys it to a sandbox.
+  This configuration must be executed from an sfdx project directory. You can optionally
+  use the projectPath parameter to specify an sfdx project. The command expects the following
+  environment variables: PACKAGE with the package Id (or the alias from sfdx-project.json) and
+  an INSTALLATION_KEY with the installation key to protected the package. The package version is
+  exported to the default SUBSCRIBER_PACKAGE_VERSION_ID environment variable which is used
+  by the package-install command.
+
+usage:
+  version: 2.1
+  orbs:
+    jsc-sfdx: jsc/salesforce@x.y
+
+  parameters:
+    username-prod:
+      description: Username of a Production/DevHub environment
+      type: string
+      default: admin@your-domain.de
+    username-uat:
+      description: Username of a Sandbox
+      type: string
+      default: admin@your-domain.de.uat
+
+  jobs:
+    package_build_and_install:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - checkout
+        - jsc-sfdx/install
+        - jsc-sfdx/auth:
+            username: << pipeline.parameters.username-prod >>
+            instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+            jwtKey: TEST_JWT_KEY
+            consumerKey: PROD_CONSUMER_KEY
+            setDefault: true
+        - jsc-sfdx/auth:
+            username: << pipeline.parameters.username-uat >>
+            instanceUrl: https://test.salesforce.com
+            jwtKey: TEST_JWT_KEY
+            consumerKey: UAT_CONSUMER_KEY
+        - jsc-sfdx/package-build
+        - jsc-sfdx/package-install:
+            targetOrg: << pipeline.parameters.username-uat >>
+
+  workflows:
+    package_deploy:
+      jobs:
+        - package_build_and_install

@@ -1,0 +1,45 @@
+description: >
+  Installs a package version on the target org. The command can query the latest build (any build or only release candidates)
+  or receive a specific package version id that was exported from the package-get-installed or package-build command.
+
+parameters:
+  packageVersion:
+    description: The environment variable name that holds the package version to be installed. Required, if installLatestBuild is true.
+    default: SUBSCRIBER_PACKAGE_VERSION_ID
+    type: env_var_name
+  packageId:
+    description: The environment variable name that holds the package id that is used to query for the latest package build. Required, if installLatestBuild is false.
+    default: PACKAGE_ID
+    type: env_var_name
+  installationKey:
+    description: The environment variable name that holds the installation key of the package version to install.
+    default: INSTALLATION_KEY
+    type: env_var_name
+  targetOrg:
+    description: Username or alias of the target org where the package version will be installed.
+    type: string
+  devhubUsername:
+    description: Username or alias of the DevHub. Can be identical to the target org. Required, if installLatestBuild is true.
+    default: ""
+    type: string
+  installLatestBuild:
+    description: Query and install the latest package version build, instead of setting the package version explicitly.
+    default: true
+    type: boolean
+  installReleaseCandidate:
+    description: Use this to only query release candidate package version builds. Has no effect, if installLatestBuild is false.
+    default: false
+    type: boolean
+
+steps:
+  - run:
+      environment:
+        PARAM_PACKAGE_VERSION: << parameters.packageVersion >>
+        PARAM_PACKAGE_ID: << parameters.packageId >>
+        PARAM_INSTALLATION_KEY: << parameters.installationKey >>
+        PARAM_TARGET_ORG: << parameters.targetOrg >>
+        PARAM_DEVHUB_USERNAME: << parameters.devhubUsername >>
+        PARAM_INSTALL_RELEASE_CANDIDATE: << parameters.installReleaseCandidate >>
+        PARAM_QUERY_LATEST_BUILD: << parameters.installLatestBuild >>
+      name: "Install <<# parameters.installLatestBuild >>--> latest <-- <</ parameters.installLatestBuild >>package version <<# parameters.installReleaseCandidate >> [Release Candidate] <</ parameters.installReleaseCandidate >> on << parameters.targetOrg >>"
+      command: <<include(scripts/package-install.sh) >>

@@ -1,0 +1,51 @@
+description: >
+  Builds a new package version for an existing second generation package.
+  The package version can optionally be exported into an environment variable
+  to be used by other commands (install, promote).
+
+parameters:
+  package:
+    description: Environment variable name that holds the Id (0Ho) or alias of the second generation package to build.
+    default: PACKAGE
+    type: env_var_name
+  installationKey:
+    description: Environment variable name that holds the installation key of the package to build.
+    default: INSTALLATION_KEY
+    type: env_var_name
+  devhubusername:
+    description: Username of the DevHub that will own the newly generated package version. If blank, the default devhub is used.
+    default: ""
+    type: string
+  isReleaseCandidate:
+    description:
+      Set this flag to build a production package with code coverage and validation.
+      The default value is false, which creates an untested package and skips validation for fast iteration.
+    default: false
+    type: boolean
+  requireInstallationKey:
+    description: Boolean flag to require an installation key. Default is true and the command aborts if the installation key is empty.
+    default: true
+    type: boolean
+  projectPath:
+    description:
+      The relative project path for the sfdx project. Use for multi-package repositories
+      or when the pipeline is not executed from the root of a SFDX project.
+    default: ""
+    type: string
+  packageVersionExport:
+    description: The environment variable name where the newly created subscriber package version id will be exported to.
+    default: SUBSCRIBER_PACKAGE_VERSION_ID
+    type: string
+
+steps:
+  - run:
+      environment:
+        PARAM_PACKAGE: << parameters.package >>
+        PARAM_INSTALLATION_KEY: << parameters.installationKey >>
+        PARAM_DEV_HUB: << parameters.devhubusername >>
+        PARAM_IS_RELEASE_CANDIDATE: << parameters.isReleaseCandidate >>
+        PARAM_REQUIRE_KEY: << parameters.requireInstallationKey >>
+        PARAM_PATH: << parameters.projectPath >>
+        PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
+      name: "Create new package version <<# parameters.isReleaseCandidate >> [Release Candidate] <</ parameters.isReleaseCandidate >>"
+      command: << include(scripts/package-build.sh) >>
