@@ -63,10 +63,10 @@ steps:
         source << parameters.setupScript >> -a << parameters.scratchOrgAlias >> -d 1
   - run-tests:
       targetOrg: << parameters.scratchOrgAlias >>
-
+      outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
   - run:
       name: Clean Scratch Org
       command: |
         sfdx force:org:delete -u << parameters.scratchOrgAlias >> --noprompt
   - store_test_results:
-      path: test-results
+      path: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results
