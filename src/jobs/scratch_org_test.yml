@@ -1,0 +1,72 @@
+description: |
+  A simple job to verify a sfdx-project: Runs a setup script to prepare a scratch org environment
+  and executes all tests on the scratch org. Test results are stored in a "test-results" folder
+  below the sfdx project root and automatically uploaded. You can use the additionalSteps parameter to
+  to perform LWC testing, checkout submodules or perform other custom actions.
+
+parameters:
+  additionalSteps:
+    default: []
+    description: Provide any optional steps you would like to run prior to the scratch org setup
+    type: steps
+  devhubUsername:
+    description: Username or alias of the DevHub
+    type: string
+  devhubInstanceUrl:
+    description: Instance url of the DevHub, if you have a custom domain enabled.
+    default: https://login.salesforce.com
+    type: string
+  jwtKey:
+    description: Name of the environment variable containing the base64 encoded private JWT key (server.key file) to authenticate to the DevHub.
+    default: DEVHUB_JWT_KEY
+    type: env_var_name
+  consumerKey:
+    description: Name of the environment variable containing the consumner key of the connected app on the DevHub. The CLI refers to this as "client id"
+    default: DEVHUB_CONSUMER_KEY
+    type: env_var_name
+  setupScript:
+    description: >
+      Provide the path relative to the sfdx-project root of the script that handles setup of the scratch org environment.
+      The script should handle scratch org creation, installation of upstream dependencies and source push and must work
+      in a CI environment (e.g. handle secrets through environment variables).
+    type: string
+  scratchOrgAlias:
+    description: Local alias for the created scratch org. The name is purely cosmetic for step names.
+    default: Test_Scratch_Org
+    type: string
+  projectPath:
+    description: >
+      Provide the path to the root of your sfdx-project. Keep empty, if the repository root is the sfdx project root.
+      Use this if your repository has multiple sfdx projects.
+    type: string
+    default: ""
+
+docker:
+  - image: cimg/base:stable
+
+steps:
+  - checkout
+  - steps: << parameters.additionalSteps >>
+  - install
+  - auth:
+      username: << parameters.devhubUsername >>
+      instanceUrl: << parameters.devhubInstanceUrl >>
+      jwtKey: << parameters.jwtKey >>
+      consumerKey: << parameters.consumerKey >>
+      setDefault: true
+  - run:
+      name: Run Org Setup
+      command: |
+        if [ -n "<< parameters.projectPath >>" ]; then
+          cd "<< parameters.projectPath >>" || exit 1
+        fi
+        source << parameters.setupScript >> -a << parameters.scratchOrgAlias >> -d 1
+  - run-tests:
+      targetOrg: << parameters.scratchOrgAlias >>
+
+  - run:
+      name: Clean Scratch Org
+      command: |
+        sfdx force:org:delete -u << parameters.scratchOrgAlias >> --noprompt
+  - store_test_results:
+      path: test-results
