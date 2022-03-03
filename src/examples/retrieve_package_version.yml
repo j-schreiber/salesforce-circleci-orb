@@ -4,7 +4,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    jsc-sfdx: jsc/salesforce@x.y
+    jsc-sfdx: jsc/salesforce@0.4.0
 
   parameters:
     username-prod:

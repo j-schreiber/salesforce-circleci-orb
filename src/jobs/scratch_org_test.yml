@@ -55,7 +55,7 @@ steps:
       consumerKey: << parameters.consumerKey >>
       setDefault: true
   - run:
-      name: Run Org Setup
+      name: "Run scratch org setup: << parameters.scratchOrgAlias >>"
       command: |
         if [ -n "<< parameters.projectPath >>" ]; then
           cd "<< parameters.projectPath >>" || exit 1
