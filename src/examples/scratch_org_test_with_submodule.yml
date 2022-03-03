@@ -11,14 +11,15 @@ usage:
 
   workflows:
     sample_workflow:
-      - jsc-sfdx/scratch_org_test:
-          devhubUsername: admin@your-domain.com
-          devhubInstanceUrl: https://your-domain.my.salesforce.com
-          setupScript: scripts/shell/setup.sh
-          projectPath: packages/your-package-submodule
-          additionalSteps:
-            - run:
-                name: Checkout submodules
-                command: |
-                  git submodule update --init --recursive
-                  git submodule foreach --recursive git checkout master
+      jobs:
+        - jsc-sfdx/scratch_org_test:
+            devhubUsername: admin@your-domain.com
+            devhubInstanceUrl: https://your-domain.my.salesforce.com
+            setupScript: scripts/shell/setup.sh
+            projectPath: packages/your-package-submodule
+            additionalSteps:
+              - run:
+                  name: Checkout submodules
+                  command: |
+                    git submodule update --init --recursive
+                    git submodule foreach --recursive git checkout master
