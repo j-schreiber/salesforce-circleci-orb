@@ -18,15 +18,15 @@ parameters:
       A "dev:alpha" version must exist for the initial pipeline run.
     type: string
     default: "dev:alpha"
-  username-prod:
+  devhubUsername:
     description: Production username for the devhub org
     type: string
     default: info@curious-impala-bhgtyu.com
-  instanceurl-prod:
+  devhubInstanceUrl:
     description: Production instance URL
     type: string
     default: https://curious-impala-bhgtyu-dev-ed.my.salesforce.com
-  username-uat:
+  uatSandboxUsername:
     description: Username for the UAT sandbox
     type: string
     default: business@lietzau-consulting.de.uat
@@ -44,25 +44,25 @@ jobs:
             git submodule foreach --recursive git checkout master
       - jsc-sfdx/install
       - jsc-sfdx/auth:
-          username: << pipeline.parameters.username-prod >>
-          instanceUrl: << pipeline.parameters.instanceurl-prod >>
+          username: << pipeline.parameters.devhubUsername >>
+          instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
       - jsc-sfdx/auth:
           instanceUrl: https://test.salesforce.com
-          username: << pipeline.parameters.username-uat >>
+          username: << pipeline.parameters.uatSandboxUsername >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY_UAT
       - jsc-sfdx/package-get-installed:
-          targetOrg: << pipeline.parameters.username-uat >>
-          devhubUsername: << pipeline.parameters.username-prod >>
+          targetOrg: << pipeline.parameters.uatSandboxUsername >>
+          devhubUsername: << pipeline.parameters.devhubUsername >>
       - jsc-sfdx/package-build:
           projectPath: salesforce/demo-package
           package: PACKAGE_ID
       - jsc-sfdx/package-install:
           installLatestBuild: false
-          targetOrg: << pipeline.parameters.username-prod >>
+          targetOrg: << pipeline.parameters.devhubUsername >>
 
   testing_commands:
     docker:
@@ -71,18 +71,18 @@ jobs:
       - checkout
       - jsc-sfdx/install
       - jsc-sfdx/auth:
-          username: << pipeline.parameters.username-prod >>
-          instanceUrl: << pipeline.parameters.instanceurl-prod >>
+          username: << pipeline.parameters.devhubUsername >>
+          instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
       - jsc-sfdx/run-tests:
-          targetOrg: << pipeline.parameters.username-prod >>
+          targetOrg: << pipeline.parameters.devhubUsername >>
       - jsc-sfdx/run-test-suites:
-          targetOrg: << pipeline.parameters.username-prod >>
+          targetOrg: << pipeline.parameters.devhubUsername >>
           outputDir: test-results/apex-2
       - jsc-sfdx/run-test-suites:
-          targetOrg: << pipeline.parameters.username-prod >>
+          targetOrg: << pipeline.parameters.devhubUsername >>
           outputDir: test-results/apex-3
           testSuites: TestSuite1,TestSuite2 TestSuite3
       - store_test_results:
@@ -100,8 +100,8 @@ jobs:
             git submodule foreach --recursive git checkout master
       - jsc-sfdx/install
       - jsc-sfdx/auth:
-          username: << pipeline.parameters.username-prod >>
-          instanceUrl: << pipeline.parameters.instanceurl-prod >>
+          username: << pipeline.parameters.devhubUsername >>
+          instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           setDefault: true
@@ -140,6 +140,13 @@ workflows:
   integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
+      - jsc-sfdx/scratch_org_test:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          jwtKey: TEST_JWT_KEY
+          consumerKey: TEST_CONSUMER_KEY
+          setupScript: scripts/shell/setup.sh
+          projectPath: salesforce/demo-package
       - packaging_commands
       - testing_commands:
           requires:
@@ -154,6 +161,7 @@ workflows:
           requires:
             - testing_commands
             - create_release_candidate
+            - jsc-sfdx/scratch_org_test
           filters:
             branches:
               only:
