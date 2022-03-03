@@ -147,6 +147,12 @@ workflows:
           consumerKey: TEST_CONSUMER_KEY
           setupScript: scripts/shell/setup.sh
           projectPath: salesforce/demo-package
+          additionalSteps:
+            - run:
+                name: Checkout submodules
+                command: |
+                  git submodule update --init --recursive
+                  git submodule foreach --recursive git checkout master
       - packaging_commands
       - testing_commands:
           requires:
