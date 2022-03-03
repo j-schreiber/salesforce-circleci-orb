@@ -24,3 +24,9 @@ usage:
             testSuites: TestSuite1,TestSuite2 TestSuite3 TestSuite4,TestSuite5
             targetOrg: << pipeline.parameters.username-prod >>
             outputDir: test-results/my-results
+        - store_test_results:
+            path: test-results/my-results
+  workflows:
+    sample_workflow:
+      jobs:
+        - run_specific_test_suites

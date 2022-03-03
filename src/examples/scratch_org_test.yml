@@ -1,0 +1,16 @@
+description: >
+  Sample usage of the "scratch_org_test" job in a repository that follows the 1:1:1 template.
+  The default configuration expects the JWT key in $DEVHUB_JWT_KEY and the connected app
+  consumer key in $DEVHUB_CONSUMER_KEY.
+
+usage:
+  version: 2.1
+  orbs:
+    jsc-sfdx: jsc/salesforce@0.4.0
+  workflows:
+    sample_workflow:
+      jobs:
+        - jsc-sfdx/scratch_org_test:
+            devhubUsername: admin@your-domain.com
+            devhubInstanceUrl: https://your-domain.my.salesforce.com
+            setupScript: scripts/shell/setup.sh

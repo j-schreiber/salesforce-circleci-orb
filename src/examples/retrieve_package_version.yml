@@ -5,26 +5,18 @@ usage:
   version: 2.1
   orbs:
     jsc-sfdx: jsc/salesforce@0.4.0
-
-  parameters:
-    username-prod:
-      description: Production username for the devhub org
-      type: string
-      default: info@lietzau-consulting.de
-
   jobs:
     retrieve_package_version:
       docker:
         - image: cimg/base:stable
       steps:
         - jsc-sfdx/package-get-installed:
-            targetOrg: << pipeline.parameters.username-prod >>
-            devhubUsername: << pipeline.parameters.username-prod >>
+            targetOrg: << pipeline.parameters.devhubUsername >>
+            devhubUsername: << pipeline.parameters.devhubUsername >>
         - run:
             name: Echo installed package version Id
             command: |
               echo "Installed package version was: $INSTALLED_PACKAGE_VERSION_ID"
-
   workflows:
     package_deploy:
       jobs:
