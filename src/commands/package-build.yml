@@ -47,5 +47,5 @@ steps:
         PARAM_REQUIRE_KEY: << parameters.requireInstallationKey >>
         PARAM_PATH: << parameters.projectPath >>
         PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
-      name: "Create new package version <<# parameters.isReleaseCandidate >> [Release Candidate] <</ parameters.isReleaseCandidate >>"
+      name: "Create new <<# parameters.isReleaseCandidate >>--> release candidate <--<</ parameters.isReleaseCandidate >> package version"
       command: << include(scripts/package-build.sh) >>

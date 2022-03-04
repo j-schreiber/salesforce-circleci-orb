@@ -55,8 +55,8 @@ steps:
       consumerKey: << parameters.consumerKey >>
       setDefault: true
   - package-build:
-      package: << pipeline.parameters.package >>
-      installationKey: << pipeline.parameters.installationKey >>
-      requireInstallationKey: << pipeline.parameters.requireInstallationKey >>
-      projectPath: << pipeline.parameters.projectPath >>
+      package: << parameters.package >>
+      installationKey: << parameters.installationKey >>
+      requireInstallationKey: << parameters.requireInstallationKey >>
+      projectPath: << parameters.projectPath >>
       isReleaseCandidate: true

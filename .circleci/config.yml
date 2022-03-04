@@ -153,6 +153,20 @@ workflows:
                 command: |
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
+      # - jsc-sfdx/build_release_candidate_version:
+      #     devhubUsername: << pipeline.parameters.devhubUsername >>
+      #     devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+      #     jwtKey: TEST_JWT_KEY
+      #     consumerKey: TEST_CONSUMER_KEY
+      #     projectPath: salesforce/demo-package
+      #     requireInstallationKey: true
+      #     package: PACKAGE_ID
+      #     additionalSteps:
+      #       - run:
+      #           name: Checkout submodules
+      #           command: |
+      #             git submodule update --init --recursive
+      #             git submodule foreach --recursive git checkout master
       - packaging_commands
       - testing_commands:
           requires:
@@ -168,6 +182,7 @@ workflows:
             - testing_commands
             - create_release_candidate
             - jsc-sfdx/scratch_org_test
+            # - jsc-sfdx/build_release_candidate_version
           filters:
             branches:
               only:
