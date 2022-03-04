@@ -159,7 +159,7 @@ workflows:
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
           projectPath: salesforce/demo-package
-          requireInstallationKey: true
+          requireInstallationKey: false
           package: PACKAGE_ID
           additionalSteps:
             - run:
