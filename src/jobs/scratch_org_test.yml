@@ -1,8 +1,6 @@
 description: |
-  A simple job to verify a sfdx-project: Runs a setup script to prepare a scratch org environment
-  and executes all tests on the scratch org. Test results are stored in a "test-results" folder
-  below the sfdx project root and automatically uploaded. You can use the additionalSteps parameter to
-  to perform LWC testing, checkout submodules or perform other custom actions.
+  A simple job to verify a sfdx-project: Runs a setup script to prepare a scratch org environment and executes all tests on the scratch org. Test results are stored in a "test-results" folder
+  below the sfdx project root and automatically uploaded. You can use the additionalSteps parameter to perform LWC testing, checkout submodules or perform other custom actions.
 
 parameters:
   additionalSteps:

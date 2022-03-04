@@ -49,7 +49,7 @@ function build_package_timeout() {
     # ACT
     # mock force:package:version:create with a successful package create request
     function build_package_with_parameters() {
-        build_package_success_mock
+        build_package_success_mock $@
     }
     export -f build_package_with_parameters
     run main
@@ -61,6 +61,7 @@ function build_package_timeout() {
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
     # prints sfdx command output
+    [[ "$output" == *"--installationkey $INSTALLATION_KEY"* ]]
     [[ "$output" == *"Successfully created the package version [08c08000000CajLAAS]"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
@@ -74,7 +75,7 @@ function build_package_timeout() {
     # ACT
     # mock force:package:version:create with a successful package create request
     function build_package_with_parameters() {
-        build_package_success_mock
+        build_package_success_mock $@
     }
     export -f build_package_with_parameters
     run main
@@ -98,7 +99,7 @@ function build_package_timeout() {
     # ACT
     # mock force:package:version:create with a successful package create request
     function build_package_with_parameters() {
-        build_package_timeout
+        build_package_timeout $@
     }
     export -f build_package_with_parameters
     run main
@@ -122,7 +123,7 @@ function build_package_timeout() {
     # ACT
     # mock force:package:version:create with a successful package create request
     function build_package_with_parameters() {
-        build_package_timeout
+        build_package_timeout $@
     }
     export -f build_package_with_parameters
     run main
@@ -137,4 +138,32 @@ function build_package_timeout() {
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ -z $exportedBashEnv ]]
+}
+
+@test "Create package version with installation key bypass > Does not use installation key" {
+    # ARRANGE
+    export PARAM_PACKAGE_VERSION_EXPORT=MY_SUBSCRIBER_PACKAGE_VERSION_ID
+    export PARAM_REQUIRE_KEY=0
+
+    # ACT
+    # mock force:package:version:create with a successful package create request
+    function build_package_with_parameters() {
+        build_package_success_mock $@
+    }
+    export -f build_package_with_parameters
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [ -f $BASH_ENV ]
+    # prints sfdx command output
+    [[ "$output" != *"--installationkey $INSTALLATION_KEY"* ]]
+    [[ "$output" = *"--installationkeybypass"* ]]
+    [[ "$output" == *"Successfully created the package version [08c08000000CajLAAS]"* ]]
+    exportedBashEnv=$(< $BASH_ENV)
+    echo "BASH_ENV: $exportedBashEnv"
+    [[ $exportedBashEnv == 'export MY_SUBSCRIBER_PACKAGE_VERSION_ID=04t08000000gZPYAA2' ]]
 }

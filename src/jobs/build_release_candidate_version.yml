@@ -1,0 +1,62 @@
+description: |
+  Build a new release candidate version of a package. This job is intended to be executed asynchronously. Use the *latestBuild parameter on package install and
+  promote commands to access the package version in other jobs.
+
+parameters:
+  additionalSteps:
+    default: []
+    description: Provide any optional steps you would like to run prior to the scratch org setup
+    type: steps
+  devhubUsername:
+    description: Username or alias of the DevHub
+    type: string
+  devhubInstanceUrl:
+    description: Instance url of the DevHub, if you have a custom domain enabled.
+    default: https://login.salesforce.com
+    type: string
+  jwtKey:
+    description: Name of the environment variable containing the base64 encoded private JWT key (server.key file) to authenticate to the DevHub.
+    default: DEVHUB_JWT_KEY
+    type: env_var_name
+  consumerKey:
+    description: Name of the environment variable containing the consumner key of the connected app on the DevHub. The CLI refers to this as "client id"
+    default: DEVHUB_CONSUMER_KEY
+    type: env_var_name
+  projectPath:
+    description: >
+      Provide the path to the root of your sfdx-project. Keep empty, if the repository root is the sfdx project root.
+      Use this if your repository has multiple sfdx projects.
+    type: string
+    default: ""
+  package:
+    description: Environment variable with the Id or alias of the package to build
+    default: PACKAGE
+    type: env_var_name
+  installationKey:
+    description: Environment variable name that holds the installation key of the package to build.
+    default: INSTALLATION_KEY
+    type: env_var_name
+  requireInstallationKey:
+    description: Boolean flag to require an installation key. Default is true and the command aborts if the installation key is empty.
+    default: true
+    type: boolean
+
+docker:
+  - image: cimg/base:stable
+
+steps:
+  - checkout
+  - steps: << parameters.additionalSteps >>
+  - install
+  - auth:
+      username: << parameters.devhubUsername >>
+      instanceUrl: << parameters.devhubInstanceUrl >>
+      jwtKey: << parameters.jwtKey >>
+      consumerKey: << parameters.consumerKey >>
+      setDefault: true
+  - package-build:
+      package: << pipeline.parameters.package >>
+      installationKey: << pipeline.parameters.installationKey >>
+      requireInstallationKey: << pipeline.parameters.requireInstallationKey >>
+      projectPath: << pipeline.parameters.projectPath >>
+      isReleaseCandidate: true
