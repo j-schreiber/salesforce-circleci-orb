@@ -78,7 +78,7 @@ steps:
   - run-test-suites:
       targetOrg: << parameters.targetOrgUsername >>
       outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
-  - package-install:
+  - package-rollback:
       packageVersion: INSTALLED_PACKAGE_VERSION_ID
       targetOrg: << parameters.targetOrgUsername >>
       when: on_fail
