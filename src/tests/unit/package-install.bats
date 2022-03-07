@@ -14,12 +14,10 @@ setup() {
     function install_package_with_params() {
         echo "sfdx force:package:install $@"
     }
-    export -f install_package_with_params
     # mock force:data:soql:query
     function query_latest_package_build() {
         echo "04t08000000gZOGAA2"
     }
-    export -f query_latest_package_build
 }
 
 @test "Default command initialisation > Queries and installs latest package" {
@@ -130,7 +128,50 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
+    [[ $output == *"sfdx force:package:install"* ]]
     [[ $output != *"--installationkey"* ]]
+}
+
+@test "Query latest build does not find package > exits with error" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='business@lietzau-consulting.de'
+    export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
+    export PACKAGE_ID='0Ho08000000CaRqXXX'
+    export PARAM_INSTALL_RELEASE_CANDIDATE=1
+
+    # ACT
+    function query_latest_package_build() {
+        echo ""
+    }
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 20 ]
+    [[ $output == *"No valid package version retrieved. Exiting ..."* ]]
+    [[ $output != *"Installing"* ]]
+    [[ $output != *"sfdx force:package:install"* ]]
+}
+
+@test "Empty package version with rollback > exits without error" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='info@lietzau-consulting.de'
+    export PACKAGE_VERSION=
+    export PARAM_QUERY_LATEST_BUILD=0
+    export PARAM_IS_ROLLBACK=1
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"Running in rollback mode but found no package version. Skipping ..."* ]]
+    [[ $output != *"sfdx force:package:install"* ]]
 }
 
 @test "Verify Params > No devhub org set for latest package > exits with error" {
