@@ -27,9 +27,9 @@ parameters:
     type: string
     default: https://curious-impala-bhgtyu-dev-ed.my.salesforce.com
   uatSandboxUsername:
-    description: Username for the UAT sandbox
+    description: Username for the Orb Dev sandbox
     type: string
-    default: business@lietzau-consulting.de.uat
+    default: business@lietzau-consulting.de.orbdev
 
 jobs:
   packaging_commands:
