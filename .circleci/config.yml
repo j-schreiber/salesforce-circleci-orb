@@ -147,6 +147,7 @@ workflows:
           consumerKey: TEST_CONSUMER_KEY
           setupScript: scripts/shell/setup.sh
           projectPath: salesforce/demo-package
+          runPrettier: true
           additionalSteps:
             - run:
                 name: Checkout submodules
