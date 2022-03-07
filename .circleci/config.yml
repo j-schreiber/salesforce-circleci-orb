@@ -169,6 +169,7 @@ workflows:
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
       - jsc-sfdx/beta_package_deploy:
+          name: "deploy_with_new_package_version"
           devhubUsername: << pipeline.parameters.devhubUsername >>
           targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
@@ -185,6 +186,7 @@ workflows:
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
       - jsc-sfdx/beta_package_deploy:
+          name: "deploy_with_latest_package_version"
           devhubUsername: << pipeline.parameters.devhubUsername >>
           targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
