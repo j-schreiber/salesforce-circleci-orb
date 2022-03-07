@@ -44,13 +44,9 @@ parameters:
     default: PACKAGE
     type: env_var_name
   installationKey:
-    description: Environment variable name that holds the installation key of the package to build.
+    description: Environment variable name that holds the installation key of the package to build. If it is empty, no key is used.
     default: INSTALLATION_KEY
     type: env_var_name
-  requireInstallationKey:
-    description: Boolean flag to require an installation key. Default is true and the command aborts if the installation key is empty.
-    default: true
-    type: boolean
 
 docker:
   - image: cimg/base:stable
@@ -74,7 +70,7 @@ steps:
       targetOrg: << parameters.targetOrgUsername >>
       devhubUsername: << parameters.devhubUsername >>
   - package-build:
-      package: PACKAGE_ID
+      package: << parameters.package >>
       projectPath: << parameters.projectPath >>
   - package-install:
       installLatestBuild: false

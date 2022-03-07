@@ -36,6 +36,7 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
+    [[ $output == *"--installationkey"* ]]
     [[ $output == *"Installing 04t08000000gZOGAA2 on info@lietzau-consulting.de"* ]]
 }
 
@@ -110,6 +111,26 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"Finding latest release candidate for 0Ho08000000CaRqXXX"* ]]
     [[ $output == *"Installing 04t08000000gZOGAA2 on business@lietzau-consulting.de"* ]]
+}
+
+@test "Install with empty installation key > install request without installation key" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='business@lietzau-consulting.de'
+    export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
+    export PACKAGE_VERSION=04t08000000gZOGAA3
+    export INSTALLATION_KEY=
+    export PARAM_QUERY_LATEST_BUILD=0
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
+    [[ $output != *"--installationkey"* ]]
 }
 
 @test "Verify Params > No devhub org set for latest package > exits with error" {
