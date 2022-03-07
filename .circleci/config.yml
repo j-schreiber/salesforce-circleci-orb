@@ -193,7 +193,6 @@ workflows:
           devhubConsumerKey: TEST_CONSUMER_KEY
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
-          buildNewPackage: false
           requires:
             - jsc-sfdx/beta_package_deploy
       - packaging_commands
