@@ -40,13 +40,17 @@ parameters:
     type: string
     default: ""
   package:
-    description: Environment variable with the Id or alias of the package to build
-    default: PACKAGE
+    description: Environment variable with the Id of the package to build. Cannot contain an alias.
+    default: PACKAGE_ID
     type: env_var_name
   installationKey:
     description: Environment variable name that holds the installation key of the package to build. If it is empty, no key is used.
     default: INSTALLATION_KEY
     type: env_var_name
+  buildNewPackage:
+    description: Disable this flag to skip the package build process and install the latest build instead.
+    default: true
+    type: boolean
 
 docker:
   - image: cimg/base:stable
@@ -69,12 +73,24 @@ steps:
   - package-get-installed:
       targetOrg: << parameters.targetOrgUsername >>
       devhubUsername: << parameters.devhubUsername >>
-  - package-build:
-      package: << parameters.package >>
-      projectPath: << parameters.projectPath >>
-  - package-install:
-      installLatestBuild: false
-      targetOrg: << parameters.targetOrgUsername >>
+  - when:
+      condition: << parameters.buildNewPackage >>
+      steps:
+        - package-build:
+            package: << parameters.package >>
+            projectPath: << parameters.projectPath >>
+        - package-install:
+            installLatestBuild: false
+            targetOrg: << parameters.targetOrgUsername >>
+  - when:
+      condition:
+        not: << parameters.buildNewPackage >>
+      steps:
+        - package-install:
+            installLatestBuild: true
+            packageId: << parameters.package >>
+            targetOrg: << parameters.targetOrgUsername >>
+            devhubUsername: << parameters.devhubUsername >>
   - run-test-suites:
       targetOrg: << parameters.targetOrgUsername >>
       outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex

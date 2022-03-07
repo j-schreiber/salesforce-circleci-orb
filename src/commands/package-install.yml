@@ -4,11 +4,11 @@ description: >
 
 parameters:
   packageVersion:
-    description: The environment variable name that holds the package version to be installed. Required, if installLatestBuild is true.
+    description: The environment variable name that holds the package version to be installed. Required, if installLatestBuild is false.
     default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: env_var_name
   packageId:
-    description: The environment variable name that holds the package id that is used to query for the latest package build. Required, if installLatestBuild is false.
+    description: The environment variable name that holds the package id that is used to query for the latest package build. Required, if installLatestBuild is true.
     default: PACKAGE_ID
     type: env_var_name
   installationKey:

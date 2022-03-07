@@ -184,6 +184,18 @@ workflows:
                 command: |
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
+      - jsc-sfdx/beta_package_deploy:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          devhubJwtKey: TEST_JWT_KEY
+          targetOrgJwtKey: TEST_JWT_KEY
+          devhubConsumerKey: TEST_CONSUMER_KEY
+          targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
+          package: PACKAGE_ID
+          buildNewPackage: false
+          requires:
+            - jsc-sfdx/beta_package_deploy
       - packaging_commands
       - testing_commands:
           requires:
