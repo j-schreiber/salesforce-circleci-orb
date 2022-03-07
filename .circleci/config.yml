@@ -214,7 +214,7 @@ workflows:
             - create_release_candidate
             - jsc-sfdx/scratch_org_test
             - jsc-sfdx/build_release_candidate_version
-            - jsc-sfdx/beta_package_deploy
+            - deploy_with_latest_package_version
           filters:
             branches:
               only:
