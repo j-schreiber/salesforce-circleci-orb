@@ -30,6 +30,10 @@ parameters:
     description: Use this to only query release candidate package version builds. Has no effect, if installLatestBuild is false.
     default: false
     type: boolean
+  when:
+    description: Pass-through for the standard "when" parameter.
+    default: always
+    type: string
 
 steps:
   - run:
@@ -43,3 +47,4 @@ steps:
         PARAM_QUERY_LATEST_BUILD: << parameters.installLatestBuild >>
       name: "Install <<# parameters.installLatestBuild >>--> latest <-- <</ parameters.installLatestBuild >>package version <<# parameters.installReleaseCandidate >> [Release Candidate] <</ parameters.installReleaseCandidate >> on << parameters.targetOrg >>"
       command: <<include(scripts/package-install.sh) >>
+      when: << parameters.when >>
