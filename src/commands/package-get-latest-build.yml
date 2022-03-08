@@ -26,5 +26,5 @@ steps:
         PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
         PARAM_RELEASE_CANDIDATE: << parameters.releaseCandidateOnly >>
         PARAM_DEVHUB_USERNAME: << parameters.devhubUsername >>
-      name: "Export latest build to << parameters.packageVersionExport >>"
+      name: "Export latest <<# parameters.installReleaseCandidate >>--> release candidate <--<</ parameters.installReleaseCandidate >> build to << parameters.packageVersionExport >>"
       command: <<include(scripts/package-get-latest-build.sh) >>
