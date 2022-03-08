@@ -42,6 +42,10 @@ parameters:
     description: Runs prettier on the project path before all other commands and exits with error, if unformatted files are present.
     default: false
     type: boolean
+  runLwcTests:
+    description: Optionally runs LWC tests. This runs the test script "test:lwc:unit:ci" specified in the package.json.
+    default: false
+    type: boolean
 
 docker:
   - image: cimg/openjdk:17.0-node
@@ -49,6 +53,17 @@ docker:
 steps:
   - checkout
   - steps: << parameters.additionalSteps >>
+  - when:
+      condition:
+        or: [<< parameters.runPrettier >>, << parameters.runLwcTests >>]
+      steps:
+        - run:
+            name: "Install NPM packages"
+            command: |
+              if [ -n "<< parameters.projectPath >>" ]; then
+                cd "<< parameters.projectPath >>" || exit 1
+              fi
+              npm ci
   - when:
       condition: << parameters.runPrettier >>
       steps:
@@ -58,8 +73,22 @@ steps:
               if [ -n "<< parameters.projectPath >>" ]; then
                 cd "<< parameters.projectPath >>" || exit 1
               fi
-              npm ci
               npm run prettier:check:ci
+  - when:
+      condition: << parameters.runLwcTests >>
+      steps:
+        - run:
+            name: "Run LWC tests locally"
+            command: |
+              if [ -n "<< parameters.projectPath >>" ]; then
+                cd "<< parameters.projectPath >>" || exit 1
+              fi
+              set +e
+              npm run test:lwc:unit:ci
+              exitCode=$?
+              mkdir -p test-results/lwc
+              cp junit.xml test-results/lwc
+              exit $exitCode
   - install
   - auth:
       username: << parameters.devhubUsername >>
