@@ -62,10 +62,10 @@ jobs:
           package: PACKAGE_ID
       - jsc-sfdx/package-get-latest-build:
           devhubUsername: << pipeline.parameters.devhubUsername >>
-          package: PACKAGE_ID
+          packageId: PACKAGE_ID
       - jsc-sfdx/package-get-latest-build:
           devhubUsername: << pipeline.parameters.devhubUsername >>
-          package: PACKAGE_ID
+          packageId: PACKAGE_ID
           releaseCandidateOnly: true
           packageVersionExport: MY_LATEST_RELEASE_CANDIDATE_BUILD
       - run:
