@@ -169,7 +169,7 @@ workflows:
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
       - jsc-sfdx/beta_package_deploy:
-          name: "deploy_with_new_package_version"
+          name: "sandbox_deploy_new_build"
           devhubUsername: << pipeline.parameters.devhubUsername >>
           targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
@@ -186,7 +186,7 @@ workflows:
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
       - jsc-sfdx/beta_package_deploy:
-          name: "deploy_with_latest_package_version"
+          name: "sandbox_deploy_latest_build"
           devhubUsername: << pipeline.parameters.devhubUsername >>
           targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
@@ -197,12 +197,11 @@ workflows:
           package: PACKAGE_ID
           buildNewPackage: false
           requires:
-            - deploy_with_new_package_version
+            - sandbox_deploy_new_build
       - packaging_commands
       - testing_commands:
           requires:
             - packaging_commands
-      - create_release_candidate
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: jsc/salesforce
           context: orb-publishing
@@ -214,7 +213,7 @@ workflows:
             - create_release_candidate
             - jsc-sfdx/scratch_org_test
             - jsc-sfdx/build_release_candidate_version
-            - deploy_with_latest_package_version
+            - sandbox_deploy_latest_build
           filters:
             branches:
               only:
