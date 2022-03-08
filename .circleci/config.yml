@@ -60,6 +60,20 @@ jobs:
       - jsc-sfdx/package-build:
           projectPath: salesforce/demo-package
           package: PACKAGE_ID
+      - jsc-sfdx/package-get-latest-build:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          package: PACKAGE_ID
+      - jsc-sfdx/package-get-latest-build:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          package: PACKAGE_ID
+          releaseCandidateOnly: true
+          packageVersionExport: MY_LATEST_RELEASE_CANDIDATE_BUILD
+      - run:
+          name: Echoing package versions
+          command: |
+            echo "New package version is: $SUBSCRIBER_PACKAGE_VERSION_ID"
+            echo "Latest build is: $LATEST_PACKAGE_VERSION_ID"
+            echo "Latest RC build is: $MY_LATEST_RELEASE_CANDIDATE_BUILD"
       - jsc-sfdx/package-install:
           installLatestBuild: false
           targetOrg: << pipeline.parameters.devhubUsername >>
