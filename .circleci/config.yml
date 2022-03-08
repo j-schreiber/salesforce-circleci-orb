@@ -60,6 +60,21 @@ jobs:
       - jsc-sfdx/package-build:
           projectPath: salesforce/demo-package
           package: PACKAGE_ID
+      - jsc-sfdx/package-get-latest-build:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          packageId: PACKAGE_ID
+      - jsc-sfdx/package-get-latest-build:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          packageId: PACKAGE_ID
+          releaseCandidateOnly: true
+          packageVersionExport: MY_LATEST_RELEASE_CANDIDATE_BUILD
+      - run:
+          name: Echoing package versions
+          command: |
+            echo "New package version is: $SUBSCRIBER_PACKAGE_VERSION_ID"
+            echo "Latest build is: $LATEST_PACKAGE_VERSION_ID"
+            echo "Latest RC build is: $MY_LATEST_RELEASE_CANDIDATE_BUILD"
+            echo "Currently installed version is: $INSTALLED_PACKAGE_VERSION_ID"
       - jsc-sfdx/package-install:
           installLatestBuild: false
           targetOrg: << pipeline.parameters.devhubUsername >>
@@ -113,7 +128,7 @@ jobs:
       - run:
           name: Echo package version
           command: |
-            echo "New package version was: $MY_RC_PACKAGE_VERSION"
+            echo "New package version is: $MY_RC_PACKAGE_VERSION"
 
 workflows:
   test-pack:
@@ -141,6 +156,21 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       - jsc-sfdx/scratch_org_test:
+          name: scratch_org_test
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          jwtKey: TEST_JWT_KEY
+          consumerKey: TEST_CONSUMER_KEY
+          setupScript: scripts/shell/setup.sh
+          projectPath: salesforce/demo-package
+          additionalSteps:
+            - run:
+                name: Checkout submodules
+                command: |
+                  git submodule update --init --recursive
+                  git submodule foreach --recursive git checkout master
+      - jsc-sfdx/scratch_org_test:
+          name: scratch_org_test_with_lwc
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           jwtKey: TEST_JWT_KEY
@@ -148,6 +178,7 @@ workflows:
           setupScript: scripts/shell/setup.sh
           projectPath: salesforce/demo-package
           runPrettier: true
+          runLwcTests: true
           additionalSteps:
             - run:
                 name: Checkout submodules
@@ -210,7 +241,8 @@ workflows:
           publish-version-tag: false
           requires:
             - testing_commands
-            - jsc-sfdx/scratch_org_test
+            - scratch_org_test
+            - scratch_org_test_with_lwc
             - jsc-sfdx/build_release_candidate_version
             - sandbox_deploy_latest_build
           filters:

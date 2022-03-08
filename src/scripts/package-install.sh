@@ -28,10 +28,10 @@ verify_params() {
 
 query_latest_package_build() {
     queryParamValSkipped=
-    queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
     if [ "$1" == "true" ]; then
         queryParamValSkipped="AND ValidationSkipped = false"
     fi
+    queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
     # query the latest package version or the latest release candidate and output as csv
     sfdx force:data:soql:query -t -q "$queryString" -u "${PARAM_DEVHUB_USERNAME}" -r csv | sed "1 d"
 }

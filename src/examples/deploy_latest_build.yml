@@ -1,0 +1,35 @@
+description: >
+  Retrieve the latest build of a package, promote it and install it on a production environment.
+
+usage:
+  version: 2.1
+  orbs:
+    jsc-sfdx: jsc/salesforce@0.6.0
+  jobs:
+    package_deploy:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - checkout
+        - jsc-sfdx/install
+        - jsc-sfdx/auth:
+            username: << pipeline.parameters.devhubUsername >>
+            instanceUrl: https://jl-consulting-dev-ed.my.salesforce.com
+            jwtKey: TEST_JWT_KEY
+            consumerKey: PROD_CONSUMER_KEY
+            setDefault: true
+        - jsc-sfdx/package-get-latest-build:
+            releaseCandidateOnly: true
+            packageVersionExport: MY_LATEST_BUILD
+            devhubUsername: << pipeline.parameters.devhubUsername >>
+        - jsc-sfdx/package-promote:
+            packageVersionId: MY_LATEST_BUILD
+            promoteLatestBuild: false
+            devhubUsername: << pipeline.parameters.devhubUsername >>
+        - jsc-sfdx/package-install:
+            packageVersion: MY_LATEST_BUILD
+            targetOrg: << pipeline.parameters.devhubUsername >>
+  workflows:
+    package_deploy:
+      jobs:
+        - package_deploy

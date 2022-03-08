@@ -1,0 +1,30 @@
+description: >
+  Retrieve the latest build of a specific package and export it to an environment variable. The exported package version can be passed into
+  the package-install or package-promote commands.
+
+parameters:
+  packageId:
+    description: Environment variable that holds the package id (0Ho)
+    default: PACKAGE_ID
+    type: env_var_name
+  packageVersionExport:
+    description: Name of the environment variable where the package version will be exported to.
+    default: LATEST_PACKAGE_VERSION_ID
+    type: env_var_name
+  devhubUsername:
+    description: Username or alias of the DevHub that owns the package.
+    type: string
+  releaseCandidateOnly:
+    description: Return the latest release candidate package version, not any package version. The default (false) queries for all package versions.
+    default: false
+    type: boolean
+
+steps:
+  - run:
+      environment:
+        PARAM_PACKAGE_ID: << parameters.packageId >>
+        PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
+        PARAM_RELEASE_CANDIDATE: << parameters.releaseCandidateOnly >>
+        PARAM_DEVHUB_USERNAME: << parameters.devhubUsername >>
+      name: "Export latest <<# parameters.releaseCandidateOnly >>--> release candidate <--<</ parameters.releaseCandidateOnly >> build to << parameters.packageVersionExport >>"
+      command: <<include(scripts/package-get-latest-build.sh) >>
