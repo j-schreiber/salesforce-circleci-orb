@@ -210,7 +210,6 @@ workflows:
           publish-version-tag: false
           requires:
             - testing_commands
-            - create_release_candidate
             - jsc-sfdx/scratch_org_test
             - jsc-sfdx/build_release_candidate_version
             - sandbox_deploy_latest_build
