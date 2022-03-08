@@ -1,11 +1,14 @@
 #! /bin/bash
 
 verify_params() {
+    if [ -z "$PARAM_IS_ROLLBACK" ]; then
+        export PARAM_IS_ROLLBACK=0
+    fi
     if [ -z "${PARAM_TARGET_ORG}" ]; then
         echo "No target org specified. Please set the target org where the package will be installed."
         exit 10
     fi
-    if [ -z "${!PARAM_PACKAGE_VERSION}" ] && [ -z "${!PARAM_PACKAGE_ID}" ]; then
+    if [ "$PARAM_IS_ROLLBACK" -eq 0 ] && [ -z "${!PARAM_PACKAGE_VERSION}" ] && [ -z "${!PARAM_PACKAGE_ID}" ]; then
         echo "Both package version and package id are empty. Provide an environment variable for either package version or package." >&2
         exit 11
     fi
@@ -17,7 +20,7 @@ verify_params() {
         echo "Command is set to query latest build, but no devhub username is specified. Provide the devhub username (not the target org) and the package id." >&2
         exit 13
     fi
-    if [ "$PARAM_QUERY_LATEST_BUILD" -eq 0 ] && [ -z "${!PARAM_PACKAGE_VERSION}" ]; then
+    if [ "$PARAM_IS_ROLLBACK" -eq 0 ] && [ "$PARAM_QUERY_LATEST_BUILD" -eq 0 ] && [ -z "${!PARAM_PACKAGE_VERSION}" ]; then
         echo "Command is set use a package version, but no package version was provided. Set packageVersion parameter with an environment variable name." >&2
         exit 14
     fi
@@ -55,8 +58,14 @@ install_package_with_params() {
 
 install_package() {
     if [ -z "$packageVersionId" ]; then
-        echo "No valid package version retrieved. Exiting ..." >&2
-        exit 20
+        if [ "$PARAM_IS_ROLLBACK" -eq 0 ]; then
+            echo "No valid package version retrieved. Exiting ..." >&2
+            exit 20
+        fi
+        if [ "$PARAM_IS_ROLLBACK" -eq 1 ]; then
+            echo "Running in rollback mode but found no package version. Skipping ..."
+            exit 0
+        fi
     fi
     echo "Installing $packageVersionId on $PARAM_TARGET_ORG ..."
     params=()

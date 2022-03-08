@@ -38,13 +38,28 @@ parameters:
       Use this if your repository has multiple sfdx projects.
     type: string
     default: ""
+  runPrettier:
+    description: Runs prettier on the project path before all other commands and exits with error, if unformatted files are present.
+    default: false
+    type: boolean
 
 docker:
-  - image: cimg/base:stable
+  - image: cimg/openjdk:17.0-node
 
 steps:
   - checkout
   - steps: << parameters.additionalSteps >>
+  - when:
+      condition: << parameters.runPrettier >>
+      steps:
+        - run:
+            name: "Run Prettier with project configuration"
+            command: |
+              if [ -n "<< parameters.projectPath >>" ]; then
+                cd "<< parameters.projectPath >>" || exit 1
+              fi
+              npm ci
+              npm run prettier:check:ci
   - install
   - auth:
       username: << parameters.devhubUsername >>
