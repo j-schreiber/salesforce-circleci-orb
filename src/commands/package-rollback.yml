@@ -1,10 +1,10 @@
 description: >
-  Installs a specific package version in rollback mode. The rollback mode only accepts a specific package version as input (no query latest build)
-  and simply skips, if no package version was found.
+  Installs a specific package version in rollback mode. The rollback mode only accepts a specific package version as input (does not query the latest build).
+  It simply skips, if no package version was found and does not exit with error, unlike package-install. The command only executes on_fail by default.
 
 parameters:
   packageVersion:
-    description: The environment variable name that holds the package version to be installed. Required, if installLatestBuild is true.
+    description: The environment variable name that holds the package version to be installed.
     default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: env_var_name
   installationKey:
@@ -15,8 +15,8 @@ parameters:
     description: Username or alias of the target org where the package version will be installed.
     type: string
   when:
-    description: Pass-through for the standard "when" parameter to allow the command to only execute on_fail.
-    default: always
+    description: Pass-through for the standard "when" parameter. Use this, if you want to perform rollbacks not only on_fail.
+    default: on_fail
     type: string
 
 steps:
@@ -30,6 +30,6 @@ steps:
         PARAM_INSTALL_RELEASE_CANDIDATE: false
         PARAM_QUERY_LATEST_BUILD: false
         PARAM_IS_ROLLBACK: true
-      name: "Rolling back to package version: << parameters.packageVersion >>"
+      name: "Rolling back to exported version in: << parameters.packageVersion >>"
       command: <<include(scripts/package-install.sh) >>
       when: << parameters.when >>
