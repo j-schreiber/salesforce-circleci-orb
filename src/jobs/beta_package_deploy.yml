@@ -79,18 +79,11 @@ steps:
         - package-build:
             package: << parameters.package >>
             projectPath: << parameters.projectPath >>
-        - package-install:
-            installLatestBuild: false
-            targetOrg: << parameters.targetOrgUsername >>
-  - when:
-      condition:
-        not: << parameters.buildNewPackage >>
-      steps:
-        - package-install:
-            installLatestBuild: true
-            packageId: << parameters.package >>
-            targetOrg: << parameters.targetOrgUsername >>
-            devhubUsername: << parameters.devhubUsername >>
+  - package-install:
+      installLatestBuild: true
+      packageId: << parameters.package >>
+      targetOrg: << parameters.targetOrgUsername >>
+      devhubUsername: << parameters.devhubUsername >>
   - run-test-suites:
       targetOrg: << parameters.targetOrgUsername >>
       outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
