@@ -231,6 +231,7 @@ workflows:
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
           buildNewPackage: false
+          projectPath: salesforce/demo-package
           deployDirectories: src/deploy/main src/deploy/special
           requires:
             - sandbox_deploy_new_build
