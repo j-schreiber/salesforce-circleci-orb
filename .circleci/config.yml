@@ -231,7 +231,7 @@ workflows:
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
           buildNewPackage: false
-          # deployDirectories: src/deploy/main src/deploy/special
+          deployDirectories: src/deploy/main src/deploy/special
           requires:
             - sandbox_deploy_new_build
       - packaging_commands
