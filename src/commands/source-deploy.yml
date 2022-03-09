@@ -1,0 +1,28 @@
+description: >
+  Deploys source directories to the target org. The command can process multiple directories, separated by space.
+
+parameters:
+  targetOrg:
+    description: Username or alias of the target org where source is deployed.
+    type: string
+  directories:
+    description: A space-separated list of directories that are deployed to the target org. Each directory is deployed separately.
+    type: string
+  projectPath:
+    description: The root of the sfdx project. If left empty, the repository root is expected to be the project root.
+    default: ""
+    type: string
+  parameterOverrides:
+    description: Parameter overrides for the force:source:deploy command. If overrides are specified, target org and directories are ignored.
+    type: string
+    default: ""
+
+steps:
+  - run:
+      environment:
+        PARAM_TARGET_ORG: << parameters.targetOrg >>
+        PARAM_OVERRIDES: << parameters.parameterOverrides >>
+        PARAM_DIRECTORIES: << parameters.directories >>
+        PARAM_PROJECT_PATH: << parameters.projectPath >>
+      name: "Deploy source to: << parameters.targetOrg >>"
+      command: << include(scripts/source-deploy.sh) >>
