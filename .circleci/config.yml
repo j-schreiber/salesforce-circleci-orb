@@ -78,6 +78,10 @@ jobs:
       - jsc-sfdx/package-install:
           installLatestBuild: false
           targetOrg: << pipeline.parameters.devhubUsername >>
+      - jsc-sfdx/source-deploy:
+          targetOrg: << pipeline.parameters.devhubUsername >>
+          projectPath: salesforce/demo-package
+          directories: src/deploy/main src/deploy/special
 
   testing_commands:
     docker:
