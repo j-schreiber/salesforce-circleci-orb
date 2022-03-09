@@ -246,8 +246,8 @@ workflows:
           publish-version-tag: false
           requires:
             - testing_commands
-            - scratch_org_test
-            - scratch_org_test_with_lwc
+            # - scratch_org_test
+            # - scratch_org_test_with_lwc
             - jsc-sfdx/build_release_candidate_version
             - sandbox_deploy_latest_build
           filters:
