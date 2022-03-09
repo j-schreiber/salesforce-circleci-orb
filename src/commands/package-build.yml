@@ -1,6 +1,5 @@
 description: >
-  Builds a new package version for an existing second generation package.
-  The package version can optionally be exported into an environment variable
+  Builds a new package version for an existing second generation package. The package version can optionally be exported into an environment variable
   to be used by other commands (install, promote).
 
 parameters:
