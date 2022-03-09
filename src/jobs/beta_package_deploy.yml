@@ -51,6 +51,10 @@ parameters:
     description: Disable this flag to skip the package build process and install the latest build instead.
     default: true
     type: boolean
+  deployDirectories:
+    description: Provide a space-separated list of directories (relative to the project root) to deploy after the package was installed.
+    default: ""
+    type: string
 
 docker:
   - image: cimg/base:stable
@@ -84,6 +88,13 @@ steps:
       packageId: << parameters.package >>
       targetOrg: << parameters.targetOrgUsername >>
       devhubUsername: << parameters.devhubUsername >>
+  - when:
+      condition: << parameters.deployDirectories >>
+      steps:
+        - source-deploy:
+            targetOrg: << parameters.targetOrgUsername >>
+            projectPath: << parameters.projectPath >>
+            directories: << parameters.deployDirectories >>
   - run-test-suites:
       targetOrg: << parameters.targetOrgUsername >>
       outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
