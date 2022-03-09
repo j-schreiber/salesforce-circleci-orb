@@ -78,6 +78,10 @@ jobs:
       - jsc-sfdx/package-install:
           installLatestBuild: false
           targetOrg: << pipeline.parameters.devhubUsername >>
+      - jsc-sfdx/source-deploy:
+          targetOrg: << pipeline.parameters.devhubUsername >>
+          projectPath: salesforce/demo-package
+          directories: src/deploy/main src/deploy/special
 
   testing_commands:
     docker:
@@ -155,36 +159,36 @@ workflows:
   integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
-      - jsc-sfdx/scratch_org_test:
-          name: scratch_org_test
-          devhubUsername: << pipeline.parameters.devhubUsername >>
-          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
-          setupScript: scripts/shell/setup.sh
-          projectPath: salesforce/demo-package
-          additionalSteps:
-            - run:
-                name: Checkout submodules
-                command: |
-                  git submodule update --init --recursive
-                  git submodule foreach --recursive git checkout master
-      - jsc-sfdx/scratch_org_test:
-          name: scratch_org_test_with_lwc
-          devhubUsername: << pipeline.parameters.devhubUsername >>
-          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
-          setupScript: scripts/shell/setup.sh
-          projectPath: salesforce/demo-package
-          runPrettier: true
-          runLwcTests: true
-          additionalSteps:
-            - run:
-                name: Checkout submodules
-                command: |
-                  git submodule update --init --recursive
-                  git submodule foreach --recursive git checkout master
+      # - jsc-sfdx/scratch_org_test:
+      #     name: scratch_org_test
+      #     devhubUsername: << pipeline.parameters.devhubUsername >>
+      #     devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+      #     jwtKey: TEST_JWT_KEY
+      #     consumerKey: TEST_CONSUMER_KEY
+      #     setupScript: scripts/shell/setup.sh
+      #     projectPath: salesforce/demo-package
+      #     additionalSteps:
+      #       - run:
+      #           name: Checkout submodules
+      #           command: |
+      #             git submodule update --init --recursive
+      #             git submodule foreach --recursive git checkout master
+      # - jsc-sfdx/scratch_org_test:
+      #     name: scratch_org_test_with_lwc
+      #     devhubUsername: << pipeline.parameters.devhubUsername >>
+      #     devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+      #     jwtKey: TEST_JWT_KEY
+      #     consumerKey: TEST_CONSUMER_KEY
+      #     setupScript: scripts/shell/setup.sh
+      #     projectPath: salesforce/demo-package
+      #     runPrettier: true
+      #     runLwcTests: true
+      #     additionalSteps:
+      #       - run:
+      #           name: Checkout submodules
+      #           command: |
+      #             git submodule update --init --recursive
+      #             git submodule foreach --recursive git checkout master
       - jsc-sfdx/build_release_candidate_version:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
@@ -210,6 +214,7 @@ workflows:
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
           projectPath: salesforce/demo-package
+          deployDirectories: src/deploy/main src/deploy/special
           additionalSteps:
             - run:
                 name: Checkout submodules
@@ -241,8 +246,8 @@ workflows:
           publish-version-tag: false
           requires:
             - testing_commands
-            - scratch_org_test
-            - scratch_org_test_with_lwc
+            # - scratch_org_test
+            # - scratch_org_test_with_lwc
             - jsc-sfdx/build_release_candidate_version
             - sandbox_deploy_latest_build
           filters:

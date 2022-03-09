@@ -32,7 +32,7 @@ parameters:
     type: boolean
   when:
     description: Pass-through for the standard "when" parameter.
-    default: always
+    default: on_success
     type: string
 
 steps:

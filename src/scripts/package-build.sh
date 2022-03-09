@@ -1,5 +1,7 @@
 #! /bin/bash
 
+PACKAGE_BUILD_LOG=/tmp/package-build-log.txt
+
 verify_params() {
     if [ -z "${PARAM_PACKAGE}" ]; then
         echo "No environment variable for package set. Set the name of the environment variable when calling the command." >&2
@@ -29,10 +31,6 @@ build_package_with_parameters() {
 }
 
 export_package_version_id() {
-    if [ -z "$1" ]; then
-        echo "sfdx force:package:version:create did not return with a subscriber package version. Aborting ..." >&2
-        exit 20
-    fi
     echo "Exporting new package version $1 to $PARAM_PACKAGE_VERSION_EXPORT"
     echo "export $PARAM_PACKAGE_VERSION_EXPORT=$1" >> "$BASH_ENV"
 }
@@ -59,11 +57,14 @@ build_package() {
 
 main() {
     verify_params
-    while read -r line
-    do
-        echo "$line"
-        [[ $line =~ (04t[a-zA-Z0-9]{15}) ]] && createdPackageVersion=${BASH_REMATCH[1]}
-    done < <( build_package )
+    build_package | tee $PACKAGE_BUILD_LOG
+    packageVersionLine=$( grep -w "Subscriber Package Version Id:" $PACKAGE_BUILD_LOG )
+    [[ $packageVersionLine =~ (04t[a-zA-Z0-9]{15}) ]] && createdPackageVersion="${BASH_REMATCH[1]}"
+    rm -f $PACKAGE_BUILD_LOG
+    if [ -z "$createdPackageVersion" ]; then
+        echo "sfdx force:package:version:create did not create a package version. Aborting ..." >&2
+        exit 100
+    fi
     if [ -n "$PARAM_PACKAGE_VERSION_EXPORT" ]; then
         export_package_version_id "$createdPackageVersion"
     fi
