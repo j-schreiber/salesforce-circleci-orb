@@ -159,44 +159,36 @@ workflows:
   integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
-      # - jsc-sfdx/scratch_org_test:
-      #     name: scratch_org_test
-      #     devhubUsername: << pipeline.parameters.devhubUsername >>
-      #     devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-      #     jwtKey: TEST_JWT_KEY
-      #     consumerKey: TEST_CONSUMER_KEY
-      #     setupScript: scripts/shell/setup.sh
-      #     projectPath: salesforce/demo-package
-      #     additionalSteps:
-      #       - run:
-      #           name: Checkout submodules
-      #           command: |
-      #             git submodule update --init --recursive
-      #             git submodule foreach --recursive git checkout master
-      # - jsc-sfdx/scratch_org_test:
-      #     name: scratch_org_test_with_lwc
-      #     devhubUsername: << pipeline.parameters.devhubUsername >>
-      #     devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-      #     jwtKey: TEST_JWT_KEY
-      #     consumerKey: TEST_CONSUMER_KEY
-      #     setupScript: scripts/shell/setup.sh
-      #     projectPath: salesforce/demo-package
-      #     runPrettier: true
-      #     runLwcTests: true
-      #     additionalSteps:
-      #       - run:
-      #           name: Checkout submodules
-      #           command: |
-      #             git submodule update --init --recursive
-      #             git submodule foreach --recursive git checkout master
-      - jsc-sfdx/build_release_candidate_version:
+      - jsc-sfdx/scratch_org_test:
+          name: scratch_org_test
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           jwtKey: TEST_JWT_KEY
           consumerKey: TEST_CONSUMER_KEY
+          setupScript: scripts/shell/setup.sh
           projectPath: salesforce/demo-package
-          requireInstallationKey: false
-          package: PACKAGE_ID
+          additionalSteps:
+            - run:
+                name: Checkout submodules
+                command: |
+                  git submodule update --init --recursive
+                  git submodule foreach --recursive git checkout master
+          postTestSteps:
+            - run:
+                name: Execute arbitrary bash script
+                command: |
+                  echo "This could have been a complex API E2E test"
+      - jsc-sfdx/scratch_org_test:
+          name: scratch_org_test_with_lwc
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          jwtKey: TEST_JWT_KEY
+          consumerKey: TEST_CONSUMER_KEY
+          setupScript: scripts/shell/setup.sh
+          projectPath: salesforce/demo-package
+          runPrettier: true
+          runLwcTests: true
+          cleanScratchOrg: false
           additionalSteps:
             - run:
                 name: Checkout submodules
@@ -234,6 +226,22 @@ workflows:
           buildNewPackage: false
           requires:
             - sandbox_deploy_new_build
+      - jsc-sfdx/build_release_candidate_version:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          jwtKey: TEST_JWT_KEY
+          consumerKey: TEST_CONSUMER_KEY
+          projectPath: salesforce/demo-package
+          requireInstallationKey: false
+          package: PACKAGE_ID
+          requires:
+            - sandbox_deploy_new_build
+          additionalSteps:
+            - run:
+                name: Checkout submodules
+                command: |
+                  git submodule update --init --recursive
+                  git submodule foreach --recursive git checkout master
       - packaging_commands
       - testing_commands:
           requires:

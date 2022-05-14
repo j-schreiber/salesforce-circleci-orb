@@ -5,7 +5,7 @@ description: |
 parameters:
   additionalSteps:
     default: []
-    description: Provide any optional steps you would like to run prior to the scratch org setup
+    description: Provide optional steps you would like to run prior to the CLI install.
     type: steps
   devhubUsername:
     description: Username or alias of the DevHub

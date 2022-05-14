@@ -7,6 +7,10 @@ parameters:
     default: []
     description: Provide any optional steps you would like to run prior to the scratch org setup
     type: steps
+  postTestSteps:
+    default: []
+    description: Provide additional steps that you would like to run after regular apex tests executed. The steps are executed before the scratch org is deleted.
+    type: steps
   devhubUsername:
     description: Username or alias of the DevHub
     type: string
@@ -45,6 +49,10 @@ parameters:
   runLwcTests:
     description: Optionally runs LWC tests. This runs the test script "test:lwc:unit:ci" specified in the package.json.
     default: false
+    type: boolean
+  cleanScratchOrg:
+    description: Cleanup (delete) the scratch org after the job finished.
+    default: true
     type: boolean
 
 docker:
@@ -106,9 +114,13 @@ steps:
   - run-tests:
       targetOrg: << parameters.scratchOrgAlias >>
       outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
-  - run:
-      name: Clean Scratch Org
-      command: |
-        sfdx force:org:delete -u << parameters.scratchOrgAlias >> --noprompt
+  - steps: << parameters.postTestSteps >>
+  - when:
+      condition: << parameters.cleanScratchOrg >>
+      steps:
+        - run:
+            name: Clean Scratch Org
+            command: |
+              sfdx force:org:delete -u << parameters.scratchOrgAlias >> --noprompt
   - store_test_results:
       path: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results
