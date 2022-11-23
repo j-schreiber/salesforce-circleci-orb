@@ -39,3 +39,4 @@ test-results/
 **/keys.env
 .config/*
 untracked/*
+*.key
