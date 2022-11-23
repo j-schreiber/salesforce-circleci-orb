@@ -47,3 +47,7 @@ bats src/tests/unit
 ```
 
 Be careful with E2E tests, because they consume API limits (test execution, package builds, scratch org setups).
+
+```bash
+bats src/tests/e2e
+```

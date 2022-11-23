@@ -17,8 +17,8 @@ query_latest_package_build() {
 }
 
 sfdx_package_version_promote() {
-    echo "sfdx force:package:version:promote $*"
-    sfdx force:package:version:promote "$@"
+    echo "sfdx force:package:beta:version:promote $*"
+    sfdx force:package:beta:version:promote "$@"
 }
 
 get_package_version_id() {
