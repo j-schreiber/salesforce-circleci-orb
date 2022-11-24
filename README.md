@@ -2,7 +2,7 @@ Welcome to the official repository of the [jsc/salesforce](https://circleci.com/
 
 # Setup Dev Environment
 
-First, checkout the `demo-package` submodule, that contains an SFDX project. The project is used for testing all scratch org and packaging commands.
+First, checkout the `demo-package` submodule that contains an SFDX project. The project is used for testing all scratch org and packaging commands.
 
 ```bash
 git submodule update --init --recursive
