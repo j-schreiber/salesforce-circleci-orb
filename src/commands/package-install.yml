@@ -4,11 +4,15 @@ description: >
 
 parameters:
   packageVersion:
-    description: The environment variable name that holds the package version to be installed. Required, if installLatestBuild is false.
+    description:
+      The environment variable name that holds the package version to be installed.
+      Required, if installLatestBuild is false.
     default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: env_var_name
   packageId:
-    description: The environment variable name that holds the package id that is used to query for the latest package build. Required, if installLatestBuild is true.
+    description:
+      The environment variable name that holds the package id that is used to
+      query for the latest package build. Required, if installLatestBuild is true.
     default: PACKAGE_ID
     type: env_var_name
   installationKey:
@@ -30,6 +34,16 @@ parameters:
     description: Use this to only query release candidate package version builds. Has no effect, if installLatestBuild is false.
     default: false
     type: boolean
+  postInstallDeploy:
+    description: Specify the path to metadata that should be deployed after the package was installed
+    default: ""
+    type: string
+  projectPath:
+    description:
+      The relative project path for the sfdx project. Only necessary if postInstallDeploy is specified
+      and the pipeline is not executed in an sfdx project.
+    default: ""
+    type: string
   when:
     description: Pass-through for the standard "when" parameter.
     default: on_success
@@ -45,6 +59,8 @@ steps:
         PARAM_DEVHUB_USERNAME: << parameters.devhubUsername >>
         PARAM_INSTALL_RELEASE_CANDIDATE: << parameters.installReleaseCandidate >>
         PARAM_QUERY_LATEST_BUILD: << parameters.installLatestBuild >>
+        PARAM_POST_INSTALL_SOURCE_PATH: << parameters.postInstallDeploy >>
+        PARAM_PROJECT_PATH: << parameters.projectPath >>
       name: "Install <<# parameters.installLatestBuild >>--> latest <-- <</ parameters.installLatestBuild >>package version <<# parameters.installReleaseCandidate >> [Release Candidate] <</ parameters.installReleaseCandidate >> on << parameters.targetOrg >>"
       command: <<include(scripts/package-install.sh) >>
       when: << parameters.when >>

@@ -37,6 +37,7 @@ setup() {
     [[ $output == *"--installationkey"* ]]
     [[ $output == *"Installing 04t08000000gZOGAA2 on info@lietzau-consulting.de"* ]]
     [[ $output == *"sfdx force:package:beta:install --package 04t08000000gZOGAA2 --targetusername info@lietzau-consulting.de --noprompt --wait 10 --publishwait 10 --installationkey abc" ]]
+    [[ $output != *"sfdx force:source:deploy"* ]]
 }
 
 @test "Set package version explicitly > Installs input package version" {
@@ -131,6 +132,31 @@ setup() {
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
     [[ $output == *"sfdx force:package:beta:install --package 04t08000000gZOGAA3 --targetusername business@lietzau-consulting.de --noprompt --wait 10 --publishwait 10" ]]
     [[ $output != *"--installationkey"* ]]
+}
+
+@test "Specify post install source > source deployed after package install" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='business@lietzau-consulting.de'
+    export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
+    export PACKAGE_VERSION=04t08000000gZOGAA3
+    export INSTALLATION_KEY=
+    export PARAM_QUERY_LATEST_BUILD=0
+    export PARAM_POST_INSTALL_SOURCE_PATH=src/deploy
+    
+    function sfdx_force_source_deploy() {
+        echo "sfdx force:source:deploy $@"
+    }
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
+    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy --targetusername business@lietzau-consulting.de --wait 10 --testlevel RunLocalTests" ]]
 }
 
 @test "Query latest build does not find package > exits with error" {
