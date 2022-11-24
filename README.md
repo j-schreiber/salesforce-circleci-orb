@@ -9,7 +9,8 @@ git submodule update --init --recursive
 git submodule foreach --recursive git checkout master
 ```
 
-For local development, build and use a docker image. The image is not pre-authenticated, so some unit tests and most e2es will fail
+For local development, build and use a docker image. The CLI is not pre-authenticated, so some unit tests and most e2es will fail. Follow instructions
+in section Testing to finalize setup of your local dev environment.
 
 ```bash
 docker-compose up -d && docker-compose exec orbdeveloper bash
