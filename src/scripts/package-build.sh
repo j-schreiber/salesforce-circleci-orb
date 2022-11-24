@@ -26,8 +26,8 @@ verify_params() {
 }
 
 build_package_with_parameters() {
-    echo "sfdx force:package:version:create $*"
-    sfdx force:package:version:create "$@"
+    echo "sfdx force:package:beta:version:create $*"
+    sfdx force:package:beta:version:create "$@"
 }
 
 export_package_version_id() {
@@ -56,6 +56,9 @@ build_package() {
 }
 
 main() {
+    if [ -n "$PARAM_PATH" ]; then
+        cd "$PARAM_PATH" || exit 1
+    fi
     verify_params
     build_package | tee $PACKAGE_BUILD_LOG
     packageVersionLine=$( grep -w "Subscriber Package Version Id:" $PACKAGE_BUILD_LOG )
@@ -72,8 +75,5 @@ main() {
 
 ORB_TEST_ENV="bats-core"
 if [ "${0#*"$ORB_TEST_ENV"}" == "$0" ]; then
-    if [ -n "$PARAM_PATH" ]; then
-        cd "$PARAM_PATH" || exit
-    fi
     main
 fi

@@ -10,9 +10,9 @@ setup() {
     export INSTALLATION_KEY="abc"
     export PARAM_DEVHUB_USERNAME=
 
-    # mock force:package:install
+    # mock force:package:beta:install
     function install_package_with_params() {
-        echo "sfdx force:package:install $@"
+        echo "sfdx force:package:beta:install $@"
     }
     # mock force:data:soql:query
     function query_latest_package_build() {
@@ -36,6 +36,7 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"--installationkey"* ]]
     [[ $output == *"Installing 04t08000000gZOGAA2 on info@lietzau-consulting.de"* ]]
+    [[ $output == *"sfdx force:package:beta:install --package 04t08000000gZOGAA2 --targetusername info@lietzau-consulting.de --noprompt --wait 10 --publishwait 10 --installationkey abc" ]]
 }
 
 @test "Set package version explicitly > Installs input package version" {
@@ -128,7 +129,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:package:install"* ]]
+    [[ $output == *"sfdx force:package:beta:install --package 04t08000000gZOGAA3 --targetusername business@lietzau-consulting.de --noprompt --wait 10 --publishwait 10" ]]
     [[ $output != *"--installationkey"* ]]
 }
 
