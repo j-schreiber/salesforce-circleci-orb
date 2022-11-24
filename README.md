@@ -9,7 +9,7 @@ git submodule update --init --recursive
 git submodule foreach --recursive git checkout master
 ```
 
-For local development, build and use a docker image. The CLI is not pre-authenticated, so some unit tests and most e2es will fail. Follow instructions
+For local development, build and use the supplied docker image. The CLI is not pre-authenticated, so some unit tests and most e2es will fail. Follow instructions
 in section Testing to finalize setup of your local dev environment.
 
 ```bash
