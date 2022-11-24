@@ -27,6 +27,7 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA2 on info@lietzau-consulting.de"* ]]
     [[ $output == *"Successfully installed package [04t08000000gZOGAA2]"* ]]
+    [[ $output != *"sfdx force:source:deploy"* ]]
 }
 
 @test "Install Package > Valid package version without installation key > installs package" {
@@ -66,4 +67,23 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"Installing $expectedPackageId on info@lietzau-consulting.de"* ]]
     [[ $output == *"Successfully installed package [$expectedPackageId]"* ]]
+}
+
+@test "Set post install source path > deploys source after install" {
+    # Arrange
+    export PARAM_QUERY_LATEST_BUILD=0
+    export PARAM_TARGET_ORG='info@lietzau-consulting.de'
+    export PARAM_POST_INSTALL_SOURCE_PATH=src/deploy/main
+    export PARAM_PROJECT_PATH=salesforce/demo-package
+    # this package version was created with the default installation key ("abc")
+    export PACKAGE_VERSION='04t08000000gZOGAA2'
+
+    # Act
+    run main
+
+    # Assert
+    echo "Output: $output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"sfdx force:source:deploy"* ]]
 }
