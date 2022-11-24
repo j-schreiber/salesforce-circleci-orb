@@ -78,6 +78,12 @@ jobs:
       - jsc-sfdx/package-install:
           installLatestBuild: false
           targetOrg: << pipeline.parameters.devhubUsername >>
+      - jsc-sfdx/package-install:
+          installLatestBuild: false
+          packageVersion: MY_LATEST_RELEASE_CANDIDATE_BUILD
+          projectPath: salesforce/demo-package
+          postInstallDeploy: src/deploy/main
+          targetOrg: << pipeline.parameters.devhubUsername >>
       - jsc-sfdx/source-deploy:
           targetOrg: << pipeline.parameters.devhubUsername >>
           projectPath: salesforce/demo-package
