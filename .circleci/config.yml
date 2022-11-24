@@ -80,7 +80,7 @@ jobs:
           targetOrg: << pipeline.parameters.devhubUsername >>
       - jsc-sfdx/package-install:
           installLatestBuild: false
-          packageVersion: MY_LATEST_RELEASE_CANDIDATE_BUILD
+          packageVersion: SUBSCRIBER_PACKAGE_VERSION_ID
           projectPath: salesforce/demo-package
           postInstallDeploy: src/deploy/main
           targetOrg: << pipeline.parameters.devhubUsername >>
