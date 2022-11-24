@@ -23,7 +23,7 @@ setup() {
         echo "04t08000000gZPYAA2"
     }
     function sfdx_package_version_promote() {
-        echo "sfdx force:package:version:promote $@"
+        echo "sfdx force:package:beta:version:promote $@"
     }
     run main
 
@@ -34,7 +34,7 @@ setup() {
     [ "$status" -eq 0 ]
     [[ "$output" == *"Promoting latest build 04t08000000gZPYAA2"* ]]
     [[ "$output" != *"Promoting specific build 04t08000000gZPYAA2 from SUBSCRIBER_PACKAGE_VERSION"* ]]
-    [[ "$output" == *"sfdx force:package:version:promote --package 04t08000000gZPYAA2 --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
+    [[ "$output" == *"sfdx force:package:beta:version:promote --package 04t08000000gZPYAA2 --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
 }
 
 @test "Promote specific package version > Package version from input promoted" {
@@ -44,7 +44,7 @@ setup() {
 
     # ACT
     function sfdx_package_version_promote() {
-        echo "sfdx force:package:version:promote $@"
+        echo "sfdx force:package:beta:version:promote $@"
     }
     run main
 
@@ -56,7 +56,7 @@ setup() {
     [[ "$output" != *"Promoting latest build 04t080000000000AAA"* ]]
     [[ "$output" == *"Promoting specific build 04t080000000000AAA"* ]]
     # promotes package version
-    [[ "$output" == *"sfdx force:package:version:promote --package 04t080000000000AAA --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
+    [[ "$output" == *"sfdx force:package:beta:version:promote --package 04t080000000000AAA --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
 }
 
 @test "Promote latest is false and no package version set > Exit with error" {
