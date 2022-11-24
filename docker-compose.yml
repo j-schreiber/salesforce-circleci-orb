@@ -1,0 +1,8 @@
+version: "3"
+services:
+  orbdeveloper:
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ${PWD}:/home/circleci/project
+    command: tail -f /dev/null

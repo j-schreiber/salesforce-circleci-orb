@@ -9,17 +9,10 @@ git submodule update --init --recursive
 git submodule foreach --recursive git checkout master
 ```
 
-The orb may install tools (such as the SFDX CLI). It makes sense to test and develop it in a container. Execute from the orb project root, not the demo-package.
+For local development, build and use a docker image. The image is not pre-authenticated, so some unit tests and most e2es will fail
 
 ```bash
-docker run --name salesforce-orb-dev-env -it --mount type=bind,source="$(pwd)",target=/home/circleci/project cimg/base:stable
-```
-
-Install Bats & SFDX CLI in local dev container
-
-```bash
-mkdir ~/tmp && cd ~/tmp && git clone https://github.com/bats-core/bats-core.git && sudo bats-core/install.sh /usr/local && cd ~/project
-bash src/scripts/install-cli.sh
+docker-compose up -d && docker-compose exec orbdeveloper bash
 ```
 
 # Testing
