@@ -9,14 +9,23 @@ git submodule update --init --recursive
 git submodule foreach --recursive git checkout master
 ```
 
-For local development, build and use the supplied docker image. The CLI is not pre-authenticated, so some unit tests and most e2es will fail. Follow instructions
-in section Testing to finalize setup of your local dev environment.
+For local development, build and use the supplied docker image.
 
 ```bash
 docker-compose up -d && docker-compose exec orbdeveloper bash
 ```
 
+The image does not include the CLI version. So all unit tests and most e2es will fail. Follow instructions
+in section Testing to finalize setup of your local dev environment.
+
 # Testing
+
+The easiest way to install the CLI is using the bash script from the orb command. It automatically installs the latest version.
+
+```bash
+export PARAM_REQUESTED_CLI_VERSION=SFDX_CLI_VERSION
+bash src/scripts/install-cli.sh
+```
 
 This orb uses BATS to test bash scripts. For now, the pipeline does not run bats tests, only full integration tests. Run the tests from the root directory of the orb repository, not the demo project.
 
