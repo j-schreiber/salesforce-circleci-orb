@@ -41,9 +41,9 @@ install() {
 
 download_explicit_version() {
     echo "Explicit version requested. Installing: $CLI_VERSION"
-    wget https://developer.salesforce.com/media/salesforce-cli/sfdx/versions/$CLI_VERSION/$COMMIT_SHA/sfdx-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz
+    wget "https://developer.salesforce.com/media/salesforce-cli/sfdx/versions/$CLI_VERSION/$COMMIT_SHA/sfdx-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz"
     mkdir -p ~/sfdx
-    tar xJf sfdx-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+    tar xJf "sfdx-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz" -C ~/sfdx --strip-components 1
 }
 
 download_latest_version() {
