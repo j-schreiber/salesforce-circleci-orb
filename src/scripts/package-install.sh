@@ -52,8 +52,8 @@ get_package_version_id() {
 }
 
 install_package_with_params() {
-    echo "sfdx force:package:beta:install $*"
-    sfdx force:package:beta:install "$@"
+    echo "sfdx force:package:install $*"
+    sfdx force:package:install "$@"
 }
 
 install_package() {

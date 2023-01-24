@@ -26,8 +26,8 @@ verify_params() {
 }
 
 build_package_with_parameters() {
-    echo "sfdx force:package:beta:version:create $*"
-    sfdx force:package:beta:version:create "$@"
+    echo "sfdx force:package:version:create $*"
+    sfdx force:package:version:create "$@"
 }
 
 export_package_version_id() {
