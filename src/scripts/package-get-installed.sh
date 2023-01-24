@@ -9,13 +9,13 @@ verify_params() {
 
 get_subscriber_package_id() {
     queryString="SELECT SubscriberPackageId FROM Package2 WHERE Id = '${!PARAM_PACKAGE_ID}' LIMIT 1"
-    subscriberPackageId=$( sfdx force:data:soql:query -t -q "$queryString" -u "$PARAM_DEVHUB_USERNAME" -r csv | sed "1 d" )
+    subscriberPackageId=$( sfdx force:data:soql:query --use-tooling-api --query "$queryString" --target-org "$PARAM_DEVHUB_USERNAME" --result-format csv | sed "1 d" )
     echo "$subscriberPackageId"
 }
 
 get_installed_package_version_id() {
     queryString="SELECT SubscriberPackageVersionId FROM InstalledSubscriberPackage WHERE SubscriberPackageId = '$1' LIMIT 1"
-    installedPackageVersionId=$( sfdx force:data:soql:query -t -q "$queryString" -u "$PARAM_TARGET_ORG" -r csv | sed "1 d" )
+    installedPackageVersionId=$( sfdx force:data:soql:query --use-tooling-api --query "$queryString" --target-org "$PARAM_TARGET_ORG" --result-format csv | sed "1 d" )
     echo "$installedPackageVersionId"
 }
 

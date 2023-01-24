@@ -6,7 +6,7 @@ sfdx_force_source_deploy() {
 }
 
 is_sandbox_org() {
-    sfdx force:data:soql:query -q "SELECT IsSandbox FROM Organization LIMIT 1" -u "$PARAM_TARGET_ORG" -r csv | sed "1 d"
+    sfdx force:data:soql:query --query "SELECT IsSandbox FROM Organization LIMIT 1" --target-org "$PARAM_TARGET_ORG" --result-format csv | sed "1 d"
 }
 
 deploy() {

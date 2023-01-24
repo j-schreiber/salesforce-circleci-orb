@@ -24,7 +24,7 @@ write_test_suites_to_csv() {
 }
 
 query_test_suites_from_target_org() {
-    sfdx force:data:soql:query -q "SELECT TestSuiteName FROM ApexTestSuite" -r csv -u "$PARAM_TARGET_ORG" | sed "1 d" > /tmp/test-suites.csv
+    sfdx force:data:soql:query --query "SELECT TestSuiteName FROM ApexTestSuite" --result-format csv --target-org "$PARAM_TARGET_ORG" | sed "1 d" > /tmp/test-suites.csv
 }
 
 execute_sfdx_apex_test_run() {

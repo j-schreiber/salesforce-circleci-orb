@@ -15,7 +15,7 @@ teardown() {
 
 @test "No test suites set > Query test suites from org > All suites executed" {
     # ARRANGE
-    sfdx force:data:soql:query -q "SELECT TestSuiteName FROM ApexTestSuite" -r csv -u "$PARAM_TARGET_ORG" | sed "1 d" > expected-test-suites.csv
+    sfdx force:data:soql:query --query "SELECT TestSuiteName FROM ApexTestSuite" --result-format csv --target-org "$PARAM_TARGET_ORG" | sed "1 d" > expected-test-suites.csv
     expectedExecutionsCount=$( cat expected-test-suites.csv | wc -l )
     
     # ACT

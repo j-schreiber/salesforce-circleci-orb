@@ -18,10 +18,10 @@ get_latest_package_build() {
     fi
     queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
     queryParams=()
-    queryParams+=(-t)
-    queryParams+=( -q "$queryString")
-    queryParams+=( -u "${PARAM_DEVHUB_USERNAME}")
-    queryParams+=( -r csv)
+    queryParams+=("--use-tooling-api")
+    queryParams+=(" --query $queryString")
+    queryParams+=(" --target-org ${PARAM_DEVHUB_USERNAME}")
+    queryParams+=("  --result-format csv")
     echo "sfdx force:data:soql:query ${queryParams[*]}"
     installedPackageVersionId=$( sfdx_force_data_soql_query "${queryParams[@]}" | sed "1 d" )
 }

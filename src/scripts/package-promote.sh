@@ -13,7 +13,7 @@ verify_params() {
 
 query_latest_package_build() {
     queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!ENV_VAR_PACKAGE_ID}' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1"
-    sfdx force:data:soql:query -t -q "$queryString" -u "${PARAM_DEVHUB_USERNAME}" -r csv | sed "1 d"
+    sfdx force:data:soql:query --use-tooling-api --query "$queryString" --target-org "${PARAM_DEVHUB_USERNAME}" --result-format csv | sed "1 d"
 }
 
 sfdx_package_version_promote() {
