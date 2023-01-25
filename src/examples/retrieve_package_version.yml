@@ -8,7 +8,7 @@ usage:
   jobs:
     retrieve_package_version:
       docker:
-        - image: cimg/base:stable
+        - image: cimg/openjdk:17.0-node
       steps:
         - jsc-sfdx/package-get-installed:
             targetOrg: << pipeline.parameters.devhubUsername >>

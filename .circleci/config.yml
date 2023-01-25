@@ -34,7 +34,7 @@ parameters:
 jobs:
   packaging_commands:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/openjdk:17.0-node
     steps:
       - checkout
       - run:
@@ -91,7 +91,7 @@ jobs:
 
   testing_commands:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/openjdk:17.0-node
     steps:
       - checkout
       - jsc-sfdx/install
@@ -115,7 +115,7 @@ jobs:
 
   create_release_candidate:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/openjdk:17.0-node
     steps:
       - checkout
       - run:

@@ -18,7 +18,7 @@ usage:
   jobs:
     run_specific_test_suites:
       docker:
-        - image: cimg/base:stable
+        - image: cimg/openjdk:17.0-node
       steps:
         - jsc-sfdx/run-test-suites:
             testSuites: TestSuite1,TestSuite2 TestSuite3 TestSuite4,TestSuite5
