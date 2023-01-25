@@ -16,15 +16,14 @@ setup() {
 @test "Promote latest build > Package version from query promoted" {
     # ARRANGE
     export PACKAGE_ID="0Ho08000000CaRqCAK"
-
-    # ACT
-    # mock force:data:soql:query result
     function query_latest_package_build() {
-        echo "04t08000000gZPYAA2"
+        cat src/tests/data/latest-package-build.json
     }
     function sfdx_package_version_promote() {
         echo "sfdx force:package:version:promote $@"
     }
+
+    # ACT
     run main
 
     # ASSERT
@@ -32,9 +31,31 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"Promoting latest build 04t08000000gZPYAA2"* ]]
-    [[ "$output" != *"Promoting specific build 04t08000000gZPYAA2 from SUBSCRIBER_PACKAGE_VERSION"* ]]
-    [[ "$output" == *"sfdx force:package:version:promote --package 04t08000000gZPYAA2 --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
+    [[ "$output" == *"Promoting latest build 04t9Y0000000000AAA"* ]]
+    [[ "$output" != *"Promoting specific build 04t9Y0000000000AAA from SUBSCRIBER_PACKAGE_VERSION"* ]]
+    [[ "$output" == *"sfdx force:package:version:promote --package 04t9Y0000000000AAA --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
+}
+
+@test "Promote latest build > No build found > Exit with error" {
+    # ARRANGE
+    export PACKAGE_ID="0Ho08000000CaRqCAK"
+    function query_latest_package_build() {
+        cat src/tests/data/empty-query-result.json
+    }
+    function sfdx_package_version_promote() {
+        echo "sfdx force:package:version:promote $@"
+    }
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 20 ]
+    [[ "$output" == *"No valid package version retrieved. Exiting ..."* ]]
+    [[ "$output" != *"sfdx force:package:version:promote"* ]]
 }
 
 @test "Promote specific package version > Package version from input promoted" {

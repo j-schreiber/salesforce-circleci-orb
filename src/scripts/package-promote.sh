@@ -12,8 +12,9 @@ verify_params() {
 }
 
 query_latest_package_build() {
-    queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!ENV_VAR_PACKAGE_ID}' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1"
-    sfdx force:data:soql:query --use-tooling-api --query "$queryString" --target-org "${PARAM_DEVHUB_USERNAME}" --result-format csv | sed "1 d"
+    sfdx force:data:soql:query --usetoolingapi --json \
+        --query "SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!ENV_VAR_PACKAGE_ID}' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1" \
+        --targetusername "${PARAM_DEVHUB_USERNAME}" 2> /dev/null
 }
 
 sfdx_package_version_promote() {
@@ -27,13 +28,13 @@ get_package_version_id() {
         packageVersionId="${!ENV_VAR_PACKAGE_VERSION_ID}"
     else
         echo "No specific build set. Promoting latest release candidate for ${!ENV_VAR_PACKAGE_ID} ..."
-        packageVersionId=$( query_latest_package_build )
+        packageVersionId=$( query_latest_package_build | jq -r .result.records[0].SubscriberPackageVersionId )
         echo "Promoting latest build $packageVersionId"
     fi
 }
 
 promote_build() {
-    if [ -z "$packageVersionId" ]; then
+    if [ -z "$packageVersionId" ] || [ "$packageVersionId" = "null" ]; then
         echo "No valid package version retrieved. Exiting ..." >&2
         exit 20
     fi
