@@ -1,7 +1,6 @@
 setup() {
     # source script under test
     source ./src/scripts/install-cli.sh
-    export PARAM_REQUESTED_CLI_VERSION=SFDX_CLI_VERSION
 }
 
 teardown() {
@@ -29,7 +28,7 @@ teardown() {
     [[ $output == *"No explicit version requested. Installing latest version."* ]]
 }
 
-@test "Explicit version requested in default parameter > installs explicit version" {
+@test "Version in default parameter > installs explicit version" {
     # Arrange
     export SFDX_CLI_VERSION="7.176.1-458b658"
 
@@ -45,7 +44,24 @@ teardown() {
     [[ $output == *"Explicit version requested. Installing: 7.176.1"* ]]
 }
 
-@test "Explicit version requested without sha > descriptive error message" {
+@test "Version in custom parameter > installs explicit version" {
+    # Arrange
+    export PARAM_REQUESTED_CLI_VERSION=MY_CLI_VERSION
+    export MY_CLI_VERSION="7.176.1-458b658"
+
+    # Act
+    run install
+
+    # Assert
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"Extracted CLI version from MY_CLI_VERSION: 7.176.1 on 458b658"* ]]
+    [[ $output == *"Explicit version requested. Installing: 7.176.1"* ]]
+}
+
+@test "Incomplete version in parameter without SHA > descriptive error message" {
     # Arrange
     export SFDX_CLI_VERSION=7.185.0
 

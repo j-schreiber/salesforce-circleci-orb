@@ -23,7 +23,8 @@ in section Testing to finalize setup of your local dev environment.
 The easiest way to install the CLI is using the bash script from the orb command. It automatically installs the latest version.
 
 ```bash
-export PARAM_REQUESTED_CLI_VERSION=SFDX_CLI_VERSION
+# export SFDX_CLI_VERSION=7.176.1-458b658
+# export SFDX_CLI_VERSION=7.181.1-05b8719
 bash src/scripts/install-cli.sh
 ```
 
@@ -34,14 +35,10 @@ To run some of the unit tests, you need to be authenticated with your personal d
 The easiest way to do that, is to run the auth command that is supplied by the orb. The command is self-documenting and also documented in its [tests](src/tests/e2e/auth.bats)
 
 ```bash
-# this assumes, that you have stored all sensitive data in text files in .config
-export PARAM_JWT_KEY_FILE="SFDX_JWT_KEY"
-export PARAM_CLIENT_ID="SFDX_CONSUMER_KEY"
-export PARAM_USERNAME="your-username@your-domain.com"
-export PARAM_INSTANCE_URL="https://your-domain.my.salesforce.com"
-export PARAM_SET_DEFAULT=1
-export SFDX_JWT_KEY=$(cat .config/MY_JW_TOKEN.txt)
-export SFDX_CONSUMER_KEY=$(cat .config/MY_CONSUMER_KEY.txt)
+# modify exports.env to your liking to and create jwt.txt and consumer_key.txt
+set -o allexport
+source .config/exports.env
+set +o allexport
 bash src/scripts/auth.sh
 ```
 

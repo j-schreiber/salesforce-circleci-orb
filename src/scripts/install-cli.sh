@@ -2,6 +2,9 @@
 set -e
 
 verify_params() {
+    if [ -z "$PARAM_REQUESTED_CLI_VERSION" ]; then
+        export PARAM_REQUESTED_CLI_VERSION=SFDX_CLI_VERSION
+    fi
     if [ -n "${!PARAM_REQUESTED_CLI_VERSION}" ]; then
         IFS='-' read -ra CLI_VERSION_PARTS <<< "${!PARAM_REQUESTED_CLI_VERSION}"
         CLI_VERSION=${CLI_VERSION_PARTS[0]}
@@ -27,9 +30,6 @@ echo_error_instructions() {
 
 install() {
     verify_params
-    # if command -v sfdx &> /dev/null; then
-    #    exit 0
-    # fi
     mkdir -p ~/tmp && cd ~/tmp
     if [ -n "${!PARAM_REQUESTED_CLI_VERSION}" ]; then
         download_explicit_version
