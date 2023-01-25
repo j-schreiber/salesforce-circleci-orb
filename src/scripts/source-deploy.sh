@@ -5,18 +5,11 @@ sfdx_force_source_deploy() {
     sfdx force:source:deploy "$@"
 }
 
-is_sandbox_org() {
-    sfdx force:data:soql:query --query "SELECT IsSandbox FROM Organization LIMIT 1" --target-org "$PARAM_TARGET_ORG" --result-format csv | sed "1 d"
-}
-
 deploy() {
     params=()
     params+=( --sourcepath "$1")
     params+=( --targetusername "$PARAM_TARGET_ORG")
-    isSandbox=$( is_sandbox_org )
-    if [ "$isSandbox" == 'false' ]; then
-        params+=(--testlevel RunLocalTests)
-    fi
+    params+=( --testlevel RunLocalTests)
     sfdx_force_source_deploy "${params[@]}"
 }
 
