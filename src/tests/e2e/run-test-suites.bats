@@ -15,8 +15,9 @@ teardown() {
 
 @test "No test suites set > Query test suites from org > All suites executed" {
     # ARRANGE
-    sfdx force:data:soql:query -q "SELECT TestSuiteName FROM ApexTestSuite" -r csv -u "$PARAM_TARGET_ORG" | sed "1 d" > expected-test-suites.csv
-    expectedExecutionsCount=$( cat expected-test-suites.csv | wc -l )
+    function query_test_suites_from_target_org() {
+        cat src/tests/data/test-suites.json
+    }
     
     # ACT
     run main
@@ -31,8 +32,8 @@ teardown() {
     while read -r testSuite
     do
         [[ $output == *"--suitenames $testSuite"* ]]
-    done < expected-test-suites.csv
-    [[ $numberOfFiles -eq $expectedExecutionsCount ]]
+    done < src/tests/data/test-suites.csv
+    [[ $numberOfFiles -eq 4 ]]
 }
 
 @test "Test suites set as parameter > Input test suites executed" {

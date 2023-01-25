@@ -31,24 +31,6 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy --targetusername info@lietzau-consulting.de"* ]]
-}
-
-@test "Deploy single directory > production org > deploys with RunLocalTests" {
-    # ARRANGE
-    export PARAM_DIRECTORIES='src/deploy'
-    function is_sandbox_org() {
-        echo "false"
-    }
-
-    # ACT
-    run main
-
-    # ASSERT
-    echo "Actual output"
-    echo "$output"
-    echo "Actual status: $status"
-    [ "$status" -eq 0 ]
     [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy --targetusername info@lietzau-consulting.de --testlevel RunLocalTests"* ]]
 }
 

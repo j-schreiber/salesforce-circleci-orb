@@ -1,0 +1,41 @@
+{
+  "status": 0,
+  "result": {
+    "records": [
+      {
+        "attributes": {
+          "type": "ApexTestSuite",
+          "url": "/services/data/v56.0/sobjects/ApexTestSuite/05F9Y000000000VUAQ"
+        },
+        "TestSuiteName": "Test_Suite_1"
+      },
+      {
+        "attributes": {
+          "type": "ApexTestSuite",
+          "url": "/services/data/v56.0/sobjects/ApexTestSuite/05F67000000GmfxEAC"
+        },
+        "TestSuiteName": "Test_Suite_2"
+      },
+      {
+        "attributes": {
+          "type": "ApexTestSuite",
+          "url": "/services/data/v56.0/sobjects/ApexTestSuite/05F67000000GmfyEAC"
+        },
+        "TestSuiteName": "Test_Suite_3"
+      },
+      {
+        "attributes": {
+          "type": "ApexTestSuite",
+          "url": "/services/data/v56.0/sobjects/ApexTestSuite/05F67000000GmfTEAS"
+        },
+        "TestSuiteName": "Test_Suite_4"
+      }
+    ],
+    "totalSize": 4,
+    "done": true
+  },
+  "warnings": [
+    "The \"force data soql query\" command has been deprecated. Use \"data query\" instead.",
+    "The \"--targetusername\" flag has been deprecated. Use \"--target-org\" instead."
+  ]
+}

@@ -9,7 +9,7 @@ prepare_test_suites_for_execution() {
     if [[ -n $PARAM_TEST_SUITES ]]; then
         write_test_suites_to_csv "$PARAM_TEST_SUITES"
     else
-        query_test_suites_from_target_org
+        query_test_suites_from_target_org | jq -r '.result.records[] | .TestSuiteName' > /tmp/test-suites.csv
     fi
     echo "Executing the following test suites:"
     cat /tmp/test-suites.csv
@@ -24,10 +24,12 @@ write_test_suites_to_csv() {
 }
 
 query_test_suites_from_target_org() {
-    sfdx force:data:soql:query -q "SELECT TestSuiteName FROM ApexTestSuite" -r csv -u "$PARAM_TARGET_ORG" | sed "1 d" > /tmp/test-suites.csv
+    sfdx force:data:soql:query --json \
+        --query "SELECT TestSuiteName FROM ApexTestSuite" \
+        --targetusername "$PARAM_TARGET_ORG" 2> /dev/null
 }
 
-execute_sfdx_apex_test_run() {
+sfdx_apex_test_run() {
     echo "sfdx force:apex:test:run $*"
     sfdx force:apex:test:run "$@"
 }
@@ -41,7 +43,7 @@ run_test_suite() {
     params+=( --wait 10)
     params+=( --resultformat junit)
     params+=( --outputdir "$PARAM_OUTPUT_DIRECTORY")
-    execute_sfdx_apex_test_run "${params[@]}"
+    sfdx_apex_test_run "${params[@]}"
     exitCode=$?
     rm -f "$PARAM_OUTPUT_DIRECTORY"/test-result.xml
     rm -f "$PARAM_OUTPUT_DIRECTORY"/*.json

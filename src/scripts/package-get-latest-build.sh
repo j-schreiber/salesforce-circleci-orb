@@ -8,26 +8,21 @@ verify_params() {
 }
 
 sfdx_force_data_soql_query() {
-    sfdx force:data:soql:query "$@"
+    sfdx force:data:soql:query --usetoolingapi --json --query "$1" --targetusername "$2" 2> /dev/null
 }
 
 get_latest_package_build() {
     queryParamValSkipped=
     if [ "${PARAM_RELEASE_CANDIDATE}" -eq 1 ]; then
+        echo "Retrieving latest release candidate ..."
         queryParamValSkipped="AND ValidationSkipped = false"
     fi
     queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
-    queryParams=()
-    queryParams+=(-t)
-    queryParams+=( -q "$queryString")
-    queryParams+=( -u "${PARAM_DEVHUB_USERNAME}")
-    queryParams+=( -r csv)
-    echo "sfdx force:data:soql:query ${queryParams[*]}"
-    installedPackageVersionId=$( sfdx_force_data_soql_query "${queryParams[@]}" | sed "1 d" )
+    subscriberPackageVersionId=$( sfdx_force_data_soql_query "$queryString" "${PARAM_DEVHUB_USERNAME}" | jq -r .result.records[0].SubscriberPackageVersionId )
 }
 
 export_package_version_id() {
-    if [ -z "$1" ]; then
+    if [ "$1" = "null" ]; then
         echo "No build found for package. Aborting ..."
         exit 20
     else
@@ -38,9 +33,9 @@ export_package_version_id() {
 
 main() {
     verify_params
-    installedPackageVersionId=
+    subscriberPackageVersionId=
     get_latest_package_build
-    export_package_version_id "$installedPackageVersionId"
+    export_package_version_id "$subscriberPackageVersionId"
 }
 
 ORB_TEST_ENV="bats-core"

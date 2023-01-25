@@ -8,7 +8,7 @@ usage:
   jobs:
     auth_example_job:
       docker:
-        - image: cimg/base:stable
+        - image: cimg/openjdk:17.0-node
       steps:
         - checkout
         - jsc-sfdx/install

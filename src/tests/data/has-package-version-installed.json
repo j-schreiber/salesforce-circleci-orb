@@ -1,0 +1,16 @@
+{
+  "status": 0,
+  "result": {
+    "done": true,
+    "totalSize": 1,
+    "records": [
+      {
+        "attributes": {
+          "type": "InstalledSubscriberPackage",
+          "url": "/services/data/v56.0/tooling/sobjects/InstalledSubscriberPackage/0A30X0000000000AAA"
+        },
+        "SubscriberPackageVersionId": "04t9Y0000000000AAA"
+      }
+    ]
+  }
+}

@@ -7,21 +7,33 @@ verify_params() {
     fi
 }
 
+query_subscriber_package_id() {
+    sfdx force:data:soql:query --usetoolingapi --json \
+        --query "SELECT SubscriberPackageId FROM Package2 WHERE Id = '${!PARAM_PACKAGE_ID}' LIMIT 1" \
+        --targetusername "$PARAM_DEVHUB_USERNAME" \
+        2> /dev/null
+}
+
+query_installed_package_version_id() {
+    sfdx force:data:soql:query --usetoolingapi --json \
+        --query "SELECT SubscriberPackageVersionId FROM InstalledSubscriberPackage WHERE SubscriberPackageId = '$1' LIMIT 1" \
+        --targetusername "$PARAM_TARGET_ORG" \
+        2> /dev/null
+}
+
 get_subscriber_package_id() {
-    queryString="SELECT SubscriberPackageId FROM Package2 WHERE Id = '${!PARAM_PACKAGE_ID}' LIMIT 1"
-    subscriberPackageId=$( sfdx force:data:soql:query -t -q "$queryString" -u "$PARAM_DEVHUB_USERNAME" -r csv | sed "1 d" )
+    subscriberPackageId=$( query_subscriber_package_id | jq -r .result.records[0].SubscriberPackageId )
     echo "$subscriberPackageId"
 }
 
 get_installed_package_version_id() {
-    queryString="SELECT SubscriberPackageVersionId FROM InstalledSubscriberPackage WHERE SubscriberPackageId = '$1' LIMIT 1"
-    installedPackageVersionId=$( sfdx force:data:soql:query -t -q "$queryString" -u "$PARAM_TARGET_ORG" -r csv | sed "1 d" )
+    installedPackageVersionId=$( query_installed_package_version_id "$1" | jq -r .result.records[0].SubscriberPackageVersionId )
     echo "$installedPackageVersionId"
 }
 
 export_package_version_id() {
-    if [ -z "$1" ]; then
-        echo "No installed package version found on org. Nothing exported."
+    if [ "$1" = "null" ]; then
+        echo "No installed package version found on $PARAM_TARGET_ORG. Nothing exported."
     else
         echo "Exporting installed package version $1 to $PARAM_PACKAGE_VERSION_EXPORT"
         echo "export $PARAM_PACKAGE_VERSION_EXPORT=$1" >> "$BASH_ENV"
@@ -31,9 +43,13 @@ export_package_version_id() {
 main() {
     verify_params
     subscriberPackageId=$( get_subscriber_package_id )
-    echo "Found subscriber package id for ${!PARAM_PACKAGE_ID}: $subscriberPackageId"
-    installedPackageVersionId=$( get_installed_package_version_id "$subscriberPackageId" )
-    export_package_version_id "$installedPackageVersionId"
+    if [ "$subscriberPackageId" != "null" ]; then
+        echo "Subscriber Package Id for ${!PARAM_PACKAGE_ID}: $subscriberPackageId"
+        installedPackageVersionId=$( get_installed_package_version_id "$subscriberPackageId" )
+        export_package_version_id "$installedPackageVersionId"
+    else
+        echo "No Subscriber Package Id found. Nothing exported."
+    fi
 }
 
 ORB_TEST_ENV="bats-core"

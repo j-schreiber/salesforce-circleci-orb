@@ -7,22 +7,13 @@ setup() {
     export PARAM_OUTPUT_DIRECTORY="test-results/apex"
     export PARAM_TEST_SUITES=
 
-    function execute_sfdx_apex_test_run() {
+    function sfdx_apex_test_run() {
         echo "sfdx force:apex:test:run $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-result.txt"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-run-id.txt"
     }
-    export -f execute_sfdx_apex_test_run
-
-    # default mock output
-    function query_test_suites_from_target_org() {
-        echo "TestSuite1" >> /tmp/test-suites.csv
-        echo "TestSuite2" >> /tmp/test-suites.csv
-        echo "TestSuite3" >> /tmp/test-suites.csv
-    }
-    export -f query_test_suites_from_target_org
 }
 
 teardown() {
@@ -31,6 +22,11 @@ teardown() {
 }
 
 @test "No test suites set > Query test suites from org > All suites executed" {
+    # Arrange
+    function query_test_suites_from_target_org() {
+        cat src/tests/data/test-suites.json
+    }
+
     # ACT
     run main
 
@@ -41,15 +37,16 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 0 ]
-    [[ $output == *"--suitenames TestSuite1"* ]]
-    [[ $output == *"--suitenames TestSuite2"* ]]
-    [[ $output == *"--suitenames TestSuite3"* ]]
-    [[ $numberOfFiles -eq 3 ]]
+    [[ $output == *"--suitenames Test_Suite_1"* ]]
+    [[ $output == *"--suitenames Test_Suite_2"* ]]
+    [[ $output == *"--suitenames Test_Suite_3"* ]]
+    [[ $output == *"--suitenames Test_Suite_4"* ]]
+    [[ $numberOfFiles -eq 4 ]]
 }
 
 @test "Test suites set as parameter > Input test suites executed" {
     # ARRANGE
-    PARAM_TEST_SUITES="TestSuite3 TestSuite4 TestSuite5"
+    PARAM_TEST_SUITES="Test_Suite_3 Test_Suite_4 Test_Suite_5"
 
     # ACT
     run main
@@ -61,15 +58,15 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 0 ]
-    [[ $output == *"--suitenames TestSuite3"* ]]
-    [[ $output == *"--suitenames TestSuite4"* ]]
-    [[ $output == *"--suitenames TestSuite5"* ]]
+    [[ $output == *"--suitenames Test_Suite_3"* ]]
+    [[ $output == *"--suitenames Test_Suite_4"* ]]
+    [[ $output == *"--suitenames Test_Suite_5"* ]]
     [[ $numberOfFiles -eq 3 ]]
 }
 
 @test "Lists of test suites set as parameter > Input test suites executed" {
     # ARRANGE
-    PARAM_TEST_SUITES="TestSuite3,TestSuite4 TestSuite5,TestSuite1"
+    PARAM_TEST_SUITES="Test_Suite_3,Test_Suite_4 Test_Suite_5,Test_Suite_1"
 
     # ACT
     run main
@@ -81,29 +78,29 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 0 ]
-    [[ $output == *"--suitenames TestSuite3,TestSuite4"* ]]
-    [[ $output == *"--suitenames TestSuite5,TestSuite1"* ]]
+    [[ $output == *"--suitenames Test_Suite_3,Test_Suite_4"* ]]
+    [[ $output == *"--suitenames Test_Suite_5,Test_Suite_1"* ]]
     [[ $numberOfFiles -eq 2 ]]
 }
 
 @test "One test suite fails > Failing exit code is final exit code" {
     # ARRANGE
-    PARAM_TEST_SUITES="TestSuite3 TestSuite4 TestSuite5"
+    PARAM_TEST_SUITES="Test_Suite_3 Test_Suite_4 Test_Suite_5"
 
     # ACT
-    function execute_sfdx_apex_test_run() {
+    function sfdx_apex_test_run() {
         echo "sfdx force:apex:test:run $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-result.txt"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-run-id.txt"
-        # $1 = --suitenames; $2 = <TestSuiteName>
-        if [[ $2 == "TestSuite4" ]]; then
+        # $1 = --suitenames; $2 = <Test_Suite_Name>
+        if [[ $2 == "Test_Suite_4" ]]; then
             return 100
         fi
         return 0
     }
-    export -f execute_sfdx_apex_test_run
+    export -f sfdx_apex_test_run
     run main
 
     # ASSERT
@@ -113,18 +110,18 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 100 ]
-    [[ $output == *"--suitenames TestSuite3"* ]]
-    [[ $output == *"--suitenames TestSuite4"* ]]
-    [[ $output == *"--suitenames TestSuite5"* ]]
+    [[ $output == *"--suitenames Test_Suite_3"* ]]
+    [[ $output == *"--suitenames Test_Suite_4"* ]]
+    [[ $output == *"--suitenames Test_Suite_5"* ]]
     [[ $numberOfFiles -eq 3 ]]
 }
 
 @test "All test suits fail > Failing exit code is final exit code" {
     # ARRANGE
-    PARAM_TEST_SUITES="TestSuite3 TestSuite4 TestSuite5"
+    PARAM_TEST_SUITES="Test_Suite_3 Test_Suite_4 Test_Suite_5"
 
     # ACT
-    function execute_sfdx_apex_test_run() {
+    function sfdx_apex_test_run() {
         echo "sfdx force:apex:test:run $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
@@ -132,7 +129,7 @@ teardown() {
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-run-id.txt"
         return 100
     }
-    export -f execute_sfdx_apex_test_run
+    export -f sfdx_apex_test_run
     run main
 
     # ASSERT
@@ -142,8 +139,8 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 100 ]
-    [[ $output == *"--suitenames TestSuite3"* ]]
-    [[ $output == *"--suitenames TestSuite4"* ]]
-    [[ $output == *"--suitenames TestSuite5"* ]]
+    [[ $output == *"--suitenames Test_Suite_3"* ]]
+    [[ $output == *"--suitenames Test_Suite_4"* ]]
+    [[ $output == *"--suitenames Test_Suite_5"* ]]
     [[ $numberOfFiles -eq 3 ]]
 }
