@@ -14,10 +14,6 @@ setup() {
     function install_package_with_params() {
         echo "sfdx force:package:install $@"
     }
-    # mock force:data:soql:query
-    function query_latest_package_build() {
-        echo "04t08000000gZOGAA2"
-    }
 }
 
 @test "Default command initialisation > Queries and installs latest package" {
@@ -25,6 +21,10 @@ setup() {
     export PARAM_TARGET_ORG='info@lietzau-consulting.de'
     export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
     export PACKAGE_ID='0Ho08000000CaRqCAK'
+
+    function sfdx_force_data_soql_query() {
+        cat src/tests/data/latest-package-build.json
+    }
 
     # ACT
     run main
@@ -35,8 +35,8 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"--installationkey"* ]]
-    [[ $output == *"Installing 04t08000000gZOGAA2 on info@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:package:install --package 04t08000000gZOGAA2 --targetusername info@lietzau-consulting.de --noprompt --wait 10 --publishwait 10 --installationkey abc" ]]
+    [[ $output == *"Installing 04t9Y0000000000AAA on info@lietzau-consulting.de"* ]]
+    [[ $output == *"sfdx force:package:install --package 04t9Y0000000000AAA --targetusername info@lietzau-consulting.de --noprompt --wait 10 --publishwait 10 --installationkey abc" ]]
     [[ $output != *"sfdx force:source:deploy"* ]]
 }
 
@@ -82,6 +82,10 @@ setup() {
     export PARAM_PACKAGE_ID=MY_TEST_PACKAGE_ID
     export MY_TEST_PACKAGE_ID='0Ho08000000CaRqXXX'
 
+    function sfdx_force_data_soql_query() {
+        cat src/tests/data/latest-package-build.json
+    }
+
     # ACT
     run main
 
@@ -91,7 +95,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Finding latest package version for 0Ho08000000CaRqXXX"* ]]
-    [[ $output == *"Installing 04t08000000gZOGAA2 on business@lietzau-consulting.de"* ]]
+    [[ $output == *"Installing 04t9Y0000000000AAA on business@lietzau-consulting.de"* ]]
 }
 
 @test "Set to install set release candidate > Query and install latest release candidate" {
@@ -100,6 +104,10 @@ setup() {
     export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
     export PACKAGE_ID='0Ho08000000CaRqXXX'
     export PARAM_INSTALL_RELEASE_CANDIDATE=1
+
+    function sfdx_force_data_soql_query() {
+        cat src/tests/data/latest-package-build.json
+    }
 
     # ACT
     run main
@@ -110,7 +118,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Finding latest release candidate for 0Ho08000000CaRqXXX"* ]]
-    [[ $output == *"Installing 04t08000000gZOGAA2 on business@lietzau-consulting.de"* ]]
+    [[ $output == *"Installing 04t9Y0000000000AAA on business@lietzau-consulting.de"* ]]
 }
 
 @test "Install with empty installation key > install request without installation key" {
@@ -166,10 +174,11 @@ setup() {
     export PACKAGE_ID='0Ho08000000CaRqXXX'
     export PARAM_INSTALL_RELEASE_CANDIDATE=1
 
-    # ACT
-    function query_latest_package_build() {
-        echo ""
+    function sfdx_force_data_soql_query() {
+        cat src/tests/data/empty-query-result.json
     }
+
+    # ACT
     run main
 
     # ASSERT

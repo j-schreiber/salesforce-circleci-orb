@@ -26,14 +26,20 @@ verify_params() {
     fi
 }
 
-query_latest_package_build() {
+sfdx_force_data_soql_query() {
+    sfdx force:data:soql:query --usetoolingapi --json --query "$1" --targetusername "$2" 2> /dev/null
+}
+
+get_latest_package_build() {
     queryParamValSkipped=
     if [ "$1" == "true" ]; then
         queryParamValSkipped="AND ValidationSkipped = false"
     fi
     queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
-    # query the latest package version or the latest release candidate and output as csv
-    sfdx force:data:soql:query --use-tooling-api --query "$queryString" --target-org "${PARAM_DEVHUB_USERNAME}" --result-format csv | sed "1 d"
+    packageVersionId=$( sfdx_force_data_soql_query "$queryString" "${PARAM_DEVHUB_USERNAME}" | jq -r .result.records[0].SubscriberPackageVersionId )
+    if [ "$packageVersionId" = "null" ]; then
+        packageVersionId=
+    fi
 }
 
 get_package_version_id() {
@@ -43,10 +49,10 @@ get_package_version_id() {
     else
         if [ "$PARAM_INSTALL_RELEASE_CANDIDATE" -eq 1 ]; then
             echo "No package version set. Finding latest release candidate for ${!PARAM_PACKAGE_ID} ..."
-            packageVersionId=$( query_latest_package_build "true" )
+            get_latest_package_build "true"
         else
             echo "No package version set. Finding latest package version for ${!PARAM_PACKAGE_ID} ..."
-            packageVersionId=$( query_latest_package_build "false" )
+            get_latest_package_build "false"
         fi
     fi
 }
