@@ -26,50 +26,6 @@ teardown() {
     rm -f salesforce/demo-package/package_version_create_result.json
 }
 
-function build_success_message() {
-    echo "sfdx-project.json has been updated."
-    echo "Successfully created the package version [08c08000000CajLAAS]. Subscriber Package Version Id: 04t08000000gZPYAA2"
-    echo "Package Installation URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t08000000gZPYAA2"
-    echo "As an alternative, you can use the \"sfdx force:package:install\" command."
-}
-
-function build_package_success_mock() {
-    echo "sfdx force:package:version:create $@"
-    echo "Request in progress. Sleeping 5 seconds. Will wait a total of 3600 more seconds before timing out. Current Status='Queued'"
-    build_success_message
-}
-
-function build_package_with_dependencies_mock() {
-    echo "sfdx force:package:version:create $@"
-    echo "Dependency on package XXX was resolved to version number 1.2.3.4, branch null, 04t670000001111AAQ."
-    echo "Dependency on package YYY was resolved to version number 1.3.4.5, branch null, 04t670000002222AAQ."
-    echo "Request in progress. Sleeping 5 seconds. Will wait a total of 3600 more seconds before timing out. Current Status='Queued'"
-    build_success_message
-}
-
-function build_package_error() {
-    echo "sfdx force:package:version:create $@"
-    echo "Dependency on package XXX was resolved to version number 1.2.3.4, branch null, 04t67000000bg2OAAQ."
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 3600 more seconds before timing out. Current Status='Initializing'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 3570 more seconds before timing out. Current Status='Initializing'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 3540 more seconds before timing out. Current Status='Verifying features and settings'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 3510 more seconds before timing out. Current Status='Verifying dependencies'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 3480 more seconds before timing out. Current Status='Verifying dependencies'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 3450 more seconds before timing out. Current Status='Verifying dependencies'"
-    echo "ERROR running force:package:version:create:  Multiple errors occurred:"
-    echo "(1) PimsProductFactory: Dependent class is invalid and needs recompilation:"
-    echo "Class ProductDomainExtension : Variable does not exist: DateUtils"
-    echo "(2) ProductDomain: Dependent class is invalid and needs recompilation:"
-}
-
-function build_package_timeout() {
-    echo "sfdx force:package:version:create $@"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 90 more seconds before timing out. Current Status='Initializing'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 60 more seconds before timing out. Current Status='Verifying metadata'"
-    echo "Request in progress. Sleeping 30 seconds. Will wait a total of 30 more seconds before timing out. Current Status='Finalizing package version'"
-    echo "Package build status is 'Finalizing package version'. Run sfdx force:package:version:create:report -i 08c08000000CakYAAS to query for status."
-}
-
 @test "Default command initialisation > Builds beta package and exports to BASH_ENV" {
     # Arrange
     function sfdx_force_package_version_create() {
