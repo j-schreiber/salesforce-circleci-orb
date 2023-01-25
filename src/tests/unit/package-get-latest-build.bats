@@ -14,12 +14,6 @@ setup() {
     mkdir -p ~/circleci_bash_env
     export BASH_ENV=~/circleci_bash_env/mocked_bash_env.txt
     >"$BASH_ENV"
-
-    # mock force:data:soql:query
-    function sfdx_force_data_soql_query() {
-        echo "SubscriberPackageVersionId"
-        echo "04t080000000000AAA"
-    }
 }
 
 teardown() {
@@ -27,6 +21,11 @@ teardown() {
 }
 
 @test "Default command config > has latest build > exports build" {
+    # Arrange
+    function sfdx_force_data_soql_query() {
+        cat src/tests/data/latest-package-build.json
+    }
+
     # ACT
     run main
 
@@ -39,14 +38,17 @@ teardown() {
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
     # found mocked subscriber package version id
-    [[ "$output" == *"Exporting latest build 04t080000000000AAA to LATEST_PACKAGE_VERSION_ID"* ]]
-    [[ $exportedBashEnv == 'export LATEST_PACKAGE_VERSION_ID=04t080000000000AAA' ]]
+    [[ "$output" == *"Exporting latest build 04t9Y0000000000AAA to LATEST_PACKAGE_VERSION_ID"* ]]
+    [[ $exportedBashEnv == 'export LATEST_PACKAGE_VERSION_ID=04t9Y0000000000AAA' ]]
     # force:data:soql:query called for any build
     [[ "$output" != *"AND ValidationSkipped = false"* ]]
 }
 
 @test "Query release candidate only > has latest build > exports build" {
-    # ARRANGE
+    # Arrange
+    function sfdx_force_data_soql_query() {
+        cat src/tests/data/latest-package-build.json
+    }
     export PARAM_RELEASE_CANDIDATE=1
 
     # ACT
@@ -60,24 +62,20 @@ teardown() {
     echo "BASH_ENV: $exportedBashEnv"
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
-    # found mocked subscriber package version id
-    [[ "$output" == *"Exporting latest build 04t080000000000AAA to LATEST_PACKAGE_VERSION_ID"* ]]
-    [[ $exportedBashEnv == 'export LATEST_PACKAGE_VERSION_ID=04t080000000000AAA' ]]
-    # force:data:soql:query called for any build
-    [[ "$output" == *"AND ValidationSkipped = false"* ]]
+    [[ "$output" == *"Retrieving latest release candidate ..."* ]]
+    [[ $exportedBashEnv == 'export LATEST_PACKAGE_VERSION_ID=04t9Y0000000000AAA' ]]
 }
 
 @test "Default command configuration > has no latest build > exits with error" {
-    # ARRANGE
-    # mock force:data:soql:query
+    # Arrange
     function sfdx_force_data_soql_query() {
-        echo ""
+        cat src/tests/data/empty-query-result.json
     }
 
-    # ACT
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     exportedBashEnv=$(< $BASH_ENV)
     echo "Actual output"
     echo "$output"
