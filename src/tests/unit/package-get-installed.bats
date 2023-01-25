@@ -19,13 +19,18 @@ teardown() {
     rm -f $BASH_ENV
 }
 
-@test "Mocked package version id > Package exists on target org > Version Id exported" {
-    # ACT
-    # mock force:data:soql:query result
-    function get_installed_package_version_id() {
-        echo "04t08000000gZPYAA2"
+@test "Has package version installed > Installed version Id exported" {
+    # Arrange
+    function query_subscriber_package_id() {
+        cat src/tests/data/existing-subscriber-package-id.json
     }
-    export -f get_installed_package_version_id
+    export -f query_subscriber_package_id
+    function query_installed_package_version_id() {
+        cat src/tests/data/has-package-version-installed.json
+    }
+    export -f query_installed_package_version_id
+
+    # Act
     run main
 
     # ASSERT
@@ -37,19 +42,24 @@ teardown() {
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
     # found subscriber package id
-    [[ "$output" == *"03308000000g3fVAAQ"* ]]
+    [[ "$output" == *"0330X0000000000AAA"* ]]
     # found mocked subscriber package version id
-    [[ "$output" == *"Exporting installed package version 04t08000000gZPYAA2 to INSTALLED_PACKAGE_VERSION_ID"* ]]
-    [[ $exportedBashEnv == 'export INSTALLED_PACKAGE_VERSION_ID=04t08000000gZPYAA2' ]]
+    [[ "$output" == *"Exporting installed package version 04t9Y0000000000AAA to INSTALLED_PACKAGE_VERSION_ID"* ]]
+    [[ $exportedBashEnv == 'export INSTALLED_PACKAGE_VERSION_ID=04t9Y0000000000AAA' ]]
 }
 
-@test "Mocked invalid subscriber package id > Package not installed on target org > Nothing exported" {
-    # ACT
-    # mock force:data:soql:query result
-    function get_subscriber_package_id() {
-        echo "03308000000xxxxAAA"
+@test "Unknown package with no subscriber package > Nothing exported" {
+    # Arrange
+    function query_subscriber_package_id() {
+        cat src/tests/data/empty-query-result.json
     }
-    export -f get_subscriber_package_id
+    export -f query_subscriber_package_id
+    function query_installed_package_version_id() {
+        cat src/tests/data/empty-query-result.json
+    }
+    export -f query_installed_package_version_id
+
+    # Act
     run main
 
     # ASSERT
@@ -59,20 +69,23 @@ teardown() {
     echo "Actual status: $status"
     echo "BASH_ENV: $exportedBashEnv"
     [ "$status" -eq 0 ]
-    # found subscriber package id
-    [[ "$output" == *"03308000000xxxxAAA"* ]]
-    [[ "$output" == *"No installed package version found on org. Nothing exported."* ]]
+    [[ "$output" == *"No Subscriber Package Id found. Nothing exported."* ]]
     [ -f $BASH_ENV ]
     [[ -z $exportedBashEnv ]]
 }
 
-@test "Mocked valid subscriber package id > Package installed on target org > Package version id exported" {
-    # ACT
-    # mock force:data:soql:query result
-    function get_subscriber_package_id() {
-        echo "03308000000g3fVAAQ"
+@test "Known package but no version installed on org > Nothing exported" {
+    # Arrange
+    function query_subscriber_package_id() {
+        cat src/tests/data/existing-subscriber-package-id.json
     }
-    export -f get_subscriber_package_id
+    export -f query_subscriber_package_id
+    function query_installed_package_version_id() {
+        cat src/tests/data/empty-query-result.json
+    }
+    export -f query_installed_package_version_id
+
+    # Act
     run main
 
     # ASSERT
@@ -82,28 +95,28 @@ teardown() {
     echo "Actual status: $status"
     echo "BASH_ENV: $exportedBashEnv"
     [ "$status" -eq 0 ]
-    # found subscriber package id
-    [[ "$output" == *"Found subscriber package id for 0Ho08000000CaRqCAK: 03308000000g3fVAAQ"* ]]
-    [[ $exportedBashEnv == 'export INSTALLED_PACKAGE_VERSION_ID=04t'* ]]
+    [[ "$output" == *"Subscriber Package Id for 0Ho08000000CaRqCAK: 0330X0000000000AAA"* ]]
+    [[ "$output" == *"No installed package version found on info@lietzau-consulting.de. Nothing exported."* ]]
+    [ -f $BASH_ENV ]
+    [[ -z $exportedBashEnv ]]
 }
 
-@test "Mocked subscriber id and version id > Custom environment variable > Package version id exported" {
-    # ARRANGE
-    export PARAM_PACKAGE_VERSION_EXPORT="MY_INSTALLED_ID_FOR_ROLLBACK"
+@test "Custom variable name for package version export > Exported to custom variable" {
+    # Arrange
+    function query_subscriber_package_id() {
+        cat src/tests/data/existing-subscriber-package-id.json
+    }
+    export -f query_subscriber_package_id
+    function query_installed_package_version_id() {
+        cat src/tests/data/has-package-version-installed.json
+    }
+    export -f query_installed_package_version_id
+    export PARAM_PACKAGE_VERSION_EXPORT=MY_INSTALLED_ID_FOR_ROLLBACK
 
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function get_subscriber_package_id() {
-        echo "03308000000g3fVAAQ"
-    }
-    export -f get_subscriber_package_id
-    function get_installed_package_version_id() {
-        echo "04t08000000gZPYAA2"
-    }
-    export -f get_installed_package_version_id
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     exportedBashEnv=$(< $BASH_ENV)
     echo "Actual output"
     echo "$output"
@@ -111,7 +124,6 @@ teardown() {
     echo "BASH_ENV: $exportedBashEnv"
     [ "$status" -eq 0 ]
     # found subscriber package id
-    [[ "$output" == *"03308000000g3fVAAQ"* ]]
-    [[ "$output" == *"Exporting installed package version 04t08000000gZPYAA2 to MY_INSTALLED_ID_FOR_ROLLBACK"* ]]
-    [[ $exportedBashEnv == 'export MY_INSTALLED_ID_FOR_ROLLBACK=04t08000000gZPYAA2' ]]
+    [[ "$output" == *"Exporting installed package version 04t9Y0000000000AAA to MY_INSTALLED_ID_FOR_ROLLBACK"* ]]
+    [[ $exportedBashEnv == 'export MY_INSTALLED_ID_FOR_ROLLBACK=04t9Y0000000000AAA' ]]
 }

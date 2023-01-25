@@ -56,7 +56,7 @@ setup() {
     export PARAM_TARGET_ORG='info@lietzau-consulting.de'
     export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
     export INSTALLATION_KEY='abc'
-    expectedPackageId=$( sfdx force:data:soql:query --use-tooling-api --query "SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '0Ho08000000CaRqCAK' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1" --target-org "${PARAM_DEVHUB_USERNAME}" --result-format csv | sed "1 d" )
+    expectedPackageId=$( sfdx force:data:soql:query --usetoolingapi --query "SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '0Ho08000000CaRqCAK' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1" --targetusername "${PARAM_DEVHUB_USERNAME}" --resultformat csv | sed "1 d" )
 
     # ACT
     run main
