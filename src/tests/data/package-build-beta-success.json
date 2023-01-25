@@ -1,0 +1,19 @@
+{
+  "status": 0,
+  "result": {
+    "Id": "08c6800000000M7AAI",
+    "Status": "Success",
+    "Package2Id": "0Ho680000000069CAA",
+    "Package2VersionId": "05i680000004CPpAAM",
+    "SubscriberPackageVersionId": "04t68000000l0muAAA",
+    "Tag": null,
+    "Branch": null,
+    "Error": [],
+    "CreatedDate": "2023-01-25 14:42",
+    "HasMetadataRemoved": false,
+    "CreatedBy": "00568000004eOmYAAU"
+  },
+  "warnings": [
+    "Skipping validation suppresses errors that usually surface during package version creation. Instead, these errors surface at a later stage, such as installation or post-installation. If you encounter errors that are difficult to debug, retry package version creation without the skipvalidation parameter."
+  ]
+}

@@ -8,7 +8,7 @@ setup() {
     export PARAM_INSTALLATION_KEY=INSTALLATION_KEY
     export INSTALLATION_KEY="abc"
     export PARAM_DEV_HUB=
-    export PARAM_PATH=salesforce
+    export PARAM_PATH=salesforce/demo-package
     export PARAM_PACKAGE_VERSION_EXPORT=SUBSCRIBER_PACKAGE_VERSION_ID
     # false
     export PARAM_IS_RELEASE_CANDIDATE=0
@@ -23,6 +23,7 @@ setup() {
 
 teardown() {
     rm -f $BASH_ENV
+    rm -f salesforce/demo-package/package_version_create_result.json
 }
 
 function build_success_message() {
@@ -66,22 +67,19 @@ function build_package_timeout() {
     echo "Request in progress. Sleeping 30 seconds. Will wait a total of 90 more seconds before timing out. Current Status='Initializing'"
     echo "Request in progress. Sleeping 30 seconds. Will wait a total of 60 more seconds before timing out. Current Status='Verifying metadata'"
     echo "Request in progress. Sleeping 30 seconds. Will wait a total of 30 more seconds before timing out. Current Status='Finalizing package version'"
-    echo "Package version creation request status is 'Finalizing package version'. Run sfdx force:package:version:create:report -i 08c08000000CakYAAS to query for status."
+    echo "Package build status is 'Finalizing package version'. Run sfdx force:package:version:create:report -i 08c08000000CakYAAS to query for status."
 }
 
 @test "Default command initialisation > Builds beta package and exports to BASH_ENV" {
-    # ARRANGE
-    export PARAM_PACKAGE_VERSION_EXPORT=MY_SUBSCRIBER_PACKAGE_VERSION_ID
-
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function build_package_with_parameters() {
-        build_package_success_mock $@
+    # Arrange
+    function sfdx_force_package_version_create() {
+        cat ../../src/tests/data/package-build-rc-success.json
     }
-    export -f build_package_with_parameters
+
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     echo "Actual output"
     echo "$output"
     echo "Actual status: $status"
@@ -89,98 +87,91 @@ function build_package_timeout() {
     [ -f $BASH_ENV ]
     # prints sfdx command output
     [[ "$output" == *"--installationkey $INSTALLATION_KEY"* ]]
-    [[ "$output" == *"Successfully created the package version [08c08000000CajLAAS]"* ]]
+    [[ "$output" == *"Successfully created new package version: 04t68000000l0mpAAA"* ]]
+    [[ "$output" == *"Exporting new package version 04t68000000l0mpAAA to SUBSCRIBER_PACKAGE_VERSION_ID"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
-    [[ $exportedBashEnv == 'export MY_SUBSCRIBER_PACKAGE_VERSION_ID=04t08000000gZPYAA2' ]]
+    [[ $exportedBashEnv == 'export SUBSCRIBER_PACKAGE_VERSION_ID=04t68000000l0mpAAA' ]]
 }
 
-@test "No package version export specify > Builds beta package" {
-    # ARRANGE
+@test "No package version export specified > Builds beta package without exporting" {
+    # Arrange
     export PARAM_PACKAGE_VERSION_EXPORT=
-
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function build_package_with_parameters() {
-        build_package_success_mock $@
+    function sfdx_force_package_version_create() {
+        cat ../../src/tests/data/package-build-rc-success.json
     }
-    export -f build_package_with_parameters
+
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     echo "Actual output"
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    # prints sfdx command output
-    [[ "$output" == *"Successfully created the package version [08c08000000CajLAAS]"* ]]
+    [[ "$output" == *"Successfully created new package version: 04t68000000l0mpAAA"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ -z $exportedBashEnv ]]
 }
 
 @test "Package version create timed out with export specified > Abort with exit code" {
-    # ARRANGE
-    export PARAM_PACKAGE_VERSION_EXPORT=MY_PGK_VAR
-
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function build_package_with_parameters() {
-        build_package_timeout $@
+    # Arrange
+    function sfdx_force_package_version_create() {
+        cat ../../src/tests/data/package-build-rc-timeout.json
     }
-    export -f build_package_with_parameters
+
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     echo "Actual output"
     echo "$output"
     echo "Actual status: $status"
-    [ "$status" -eq 100 ]
+    [ "$status" -eq 101 ]
     # prints sfdx command output
-    [[ "$output" == *"Package version creation request status is 'Finalizing package version'."* ]]
+    [[ "$output" == *"Package build timed out with status: Initializing"* ]]
+    [[ "$output" == *"Export specified but no package version created. Exit with 101"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ -z $exportedBashEnv ]]
 }
 
 @test "Package version create timed out without export specified > Succeed" {
-    # ARRANGE
+    # Arrange
     export PARAM_PACKAGE_VERSION_EXPORT=
-
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function build_package_with_parameters() {
-        build_package_timeout $@
+    function sfdx_force_package_version_create() {
+        cat ../../src/tests/data/package-build-rc-timeout.json
     }
-    export -f build_package_with_parameters
+
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     echo "Actual output"
     echo "$output"
     echo "Actual status: $status"
-    [ "$status" -eq 100 ]
+    [ "$status" -eq 0 ]
     # prints sfdx command output
-    [[ "$output" == *"Package version creation request status is 'Finalizing package version'."* ]]
+    [[ "$output" == *"Package build timed out with status: Initializing"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ -z $exportedBashEnv ]]
 }
 
 @test "Create package version with installation key bypass > Does not use installation key" {
-    # ARRANGE
+    # Arrange
     export PARAM_PACKAGE_VERSION_EXPORT=MY_SUBSCRIBER_PACKAGE_VERSION_ID
     export PARAM_REQUIRE_KEY=0
 
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function build_package_with_parameters() {
-        build_package_success_mock $@
+    function sfdx_force_package_version_create() {
+        cat ../../src/tests/data/package-build-rc-success.json
     }
-    export -f build_package_with_parameters
+
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     echo "Actual output"
     echo "$output"
     echo "Actual status: $status"
@@ -189,48 +180,28 @@ function build_package_timeout() {
     # prints sfdx command output
     [[ "$output" != *"--installationkey $INSTALLATION_KEY"* ]]
     [[ "$output" = *"--installationkeybypass"* ]]
-    [[ "$output" == *"Successfully created the package version [08c08000000CajLAAS]"* ]]
+    [[ "$output" == *"Exporting new package version 04t68000000l0mpAAA to MY_SUBSCRIBER_PACKAGE_VERSION_ID"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
-    [[ $exportedBashEnv == 'export MY_SUBSCRIBER_PACKAGE_VERSION_ID=04t08000000gZPYAA2' ]]
-}
-
-@test "Package version create with dependency > Export created version" {
-    # ACT
-    # mock force:package:version:create with a successful package create request
-    function build_package_with_parameters() {
-        build_package_with_dependencies_mock $@
-    }
-    run main
-
-    # ASSERT
-    echo "Actual output"
-    echo "$output"
-    echo "Actual status: $status"
-    [ "$status" -eq 0 ]
-    [ -f $BASH_ENV ]
-    # prints sfdx command output
-    [[ "$output" == *"Successfully created the package version [08c08000000CajLAAS]"* ]]
-    exportedBashEnv=$(< $BASH_ENV)
-    echo "BASH_ENV: $exportedBashEnv"
-    [[ $exportedBashEnv == 'export SUBSCRIBER_PACKAGE_VERSION_ID=04t08000000gZPYAA2' ]]
+    [[ $exportedBashEnv == 'export MY_SUBSCRIBER_PACKAGE_VERSION_ID=04t68000000l0mpAAA' ]]
 }
 
 @test "Package version fails with error > Command exits with error code" {
-    # ACT
-    # mock force:package:version:create with a failing package create request
-    function build_package_with_parameters() {
-        build_package_error $@
-        exit 1
+    # Arrange
+    function sfdx_force_package_version_create() {
+        cat ../../src/tests/data/package-build-rc-error.json
     }
+    
+    # Act
     run main
 
-    # ASSERT
+    # Assert
     echo "Actual output"
     echo "$output"
     echo "Actual status: $status"
     # error from analysing command output
     [ "$status" -eq 100 ]
+    [[ "$output" == *"Package build failed with message: Mock Error Message"* ]]
     [ -f $BASH_ENV ]
     # prints sfdx command output
     exportedBashEnv=$(< $BASH_ENV)

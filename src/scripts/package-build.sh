@@ -1,7 +1,5 @@
 #! /bin/bash
 
-PACKAGE_BUILD_LOG=/tmp/package-build-log.txt
-
 verify_params() {
     if [ -z "${PARAM_PACKAGE}" ]; then
         echo "No environment variable for package set. Set the name of the environment variable when calling the command." >&2
@@ -25,20 +23,22 @@ verify_params() {
     fi
 }
 
-build_package_with_parameters() {
-    echo "sfdx force:package:version:create $*"
+sfdx_force_package_version_create() {
     sfdx force:package:version:create "$@"
 }
 
 export_package_version_id() {
-    echo "Exporting new package version $1 to $PARAM_PACKAGE_VERSION_EXPORT"
-    echo "export $PARAM_PACKAGE_VERSION_EXPORT=$1" >> "$BASH_ENV"
+    if [ -n "$PARAM_PACKAGE_VERSION_EXPORT" ]; then
+        echo "Exporting new package version $1 to $PARAM_PACKAGE_VERSION_EXPORT"
+        echo "export $PARAM_PACKAGE_VERSION_EXPORT=$1" >> "$BASH_ENV"
+    fi
 }
 
 build_package() {
     params=()
     params+=(--package "${!PARAM_PACKAGE}")
     params+=( --wait 60)
+    params+=( --json)
     if [ "$PARAM_REQUIRE_KEY" = true ] || [ "$PARAM_REQUIRE_KEY" -eq 1 ]; then
         params+=( --installationkey "${!PARAM_INSTALLATION_KEY}")
     else
@@ -52,7 +52,31 @@ build_package() {
     if [ -n "$PARAM_DEV_HUB" ]; then
         params+=( --targetdevhubusername "$PARAM_DEV_HUB")
     fi
-    build_package_with_parameters "${params[@]}"
+    echo "sfdx force:package:version:create ${params[*]}"
+    sfdx_force_package_version_create "${params[@]}" > package_version_create_result.json
+}
+
+process_build_result() {
+    commandStatus=$( jq -r .status package_version_create_result.json )
+    if [ "$commandStatus" -eq 0 ]; then
+        packageVersionId=$( jq -r .result.SubscriberPackageVersionId package_version_create_result.json )
+        if [ "$packageVersionId" != "null" ]; then
+            echo "Successfully created new package version: $packageVersionId"
+            export_package_version_id "$packageVersionId"
+            exit 0
+        else
+            buildStatus=$( jq -r .result.Status package_version_create_result.json )
+            echo "Package build timed out with status: $buildStatus"
+            if [ -n "$PARAM_PACKAGE_VERSION_EXPORT" ]; then
+                echo "Export specified but no package version created. Exit with 101"
+                exit 101
+            fi
+        fi
+    else
+        buildError=$( jq -r .message package_version_create_result.json )
+        echo "Package build failed with message: $buildError"
+        exit 100
+    fi
 }
 
 main() {
@@ -60,17 +84,8 @@ main() {
         cd "$PARAM_PATH" || exit 1
     fi
     verify_params
-    build_package | tee $PACKAGE_BUILD_LOG
-    packageVersionLine=$( grep -w "Subscriber Package Version Id:" $PACKAGE_BUILD_LOG )
-    [[ $packageVersionLine =~ (04t[a-zA-Z0-9]{15}) ]] && createdPackageVersion="${BASH_REMATCH[1]}"
-    rm -f $PACKAGE_BUILD_LOG
-    if [ -z "$createdPackageVersion" ]; then
-        echo "sfdx force:package:version:create did not create a package version. Aborting ..." >&2
-        exit 100
-    fi
-    if [ -n "$PARAM_PACKAGE_VERSION_EXPORT" ]; then
-        export_package_version_id "$createdPackageVersion"
-    fi
+    build_package
+    process_build_result
 }
 
 ORB_TEST_ENV="bats-core"
