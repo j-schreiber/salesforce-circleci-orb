@@ -35,6 +35,10 @@ parameters:
     description: The environment variable name where the newly created subscriber package version id will be exported to.
     default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: string
+  noOutputTimeout:
+    description: Elapsed time the command can run without output.
+    default: "10m"
+    type: string
 
 steps:
   - run:
@@ -47,4 +51,5 @@ steps:
         PARAM_PATH: << parameters.projectPath >>
         PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
       name: "Create new <<# parameters.isReleaseCandidate >>--> release candidate <--<</ parameters.isReleaseCandidate >> package version"
+      no_output_timeout: << parameters.noOutputTimeout >>
       command: << include(scripts/package-build.sh) >>
