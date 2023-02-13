@@ -47,4 +47,5 @@ steps:
         PARAM_PATH: << parameters.projectPath >>
         PARAM_PACKAGE_VERSION_EXPORT: << parameters.packageVersionExport >>
       name: "Create new <<# parameters.isReleaseCandidate >>--> release candidate <--<</ parameters.isReleaseCandidate >> package version"
+      no_output_timeout: "60m"
       command: << include(scripts/package-build.sh) >>
