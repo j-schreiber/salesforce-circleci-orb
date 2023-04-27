@@ -12,8 +12,12 @@ teardown() {
     sudo rm -rf ~/Library/Caches/sfdx
     sudo rm -rf /usr/local/sf
     sudo rm -rf /usr/local/bin/sf
+    sudo rm -rf ~/.local/share/sf ~/.config/sf ~/.cache/sf
+    sudo rm -rf ~/Library/Caches/sf
     sudo rm -f /bin/sfdx
+    sudo rm -f /bin/sf
     sudo rm -f /usr/bin/sfdx
+    sudo rm -f /usr/bin/sf
 }
 
 @test "No requested version set > installs latest version" {
@@ -26,11 +30,13 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"No explicit version requested. Installing latest version."* ]]
+    [[ $output == *"Create symlink for SFDX CLI"* ]]
+    [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
 @test "Version in default parameter > installs explicit version" {
     # Arrange
-    export SFDX_CLI_VERSION="7.176.1-458b658"
+    export SFDX_CLI_VERSION="7.199.3-7348ac4"
 
     # Act
     run install
@@ -40,14 +46,16 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"Extracted CLI version from SFDX_CLI_VERSION: 7.176.1 on 458b658"* ]]
-    [[ $output == *"Explicit version requested. Installing: 7.176.1"* ]]
+    [[ $output == *"Extracted CLI version from SFDX_CLI_VERSION: 7.199.3 on 7348ac4"* ]]
+    [[ $output == *"Explicit version requested. Installing: 7.199.3"* ]]
+    [[ $output == *"Create symlink for SFDX CLI"* ]]
+    [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
 @test "Version in custom parameter > installs explicit version" {
     # Arrange
     export PARAM_REQUESTED_CLI_VERSION=MY_CLI_VERSION
-    export MY_CLI_VERSION="7.176.1-458b658"
+    export MY_CLI_VERSION="7.199.3-7348ac4"
 
     # Act
     run install
@@ -57,8 +65,10 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"Extracted CLI version from MY_CLI_VERSION: 7.176.1 on 458b658"* ]]
-    [[ $output == *"Explicit version requested. Installing: 7.176.1"* ]]
+    [[ $output == *"Extracted CLI version from MY_CLI_VERSION: 7.199.3 on 7348ac4"* ]]
+    [[ $output == *"Explicit version requested. Installing: 7.199.3"* ]]
+    [[ $output == *"Create symlink for SFDX CLI"* ]]
+    [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
 @test "Incomplete version in parameter without SHA > descriptive error message" {

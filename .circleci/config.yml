@@ -110,6 +110,9 @@ jobs:
           targetOrg: << pipeline.parameters.devhubUsername >>
           outputDir: test-results/apex-3
           testSuites: TestSuite1,TestSuite2 TestSuite3
+      - jsc-sfdx/run-all-test-suites:
+          targetOrg: << pipeline.parameters.devhubUsername >>
+          outputDir: test-results/apex-4
       - store_test_results:
           path: test-results/apex
 

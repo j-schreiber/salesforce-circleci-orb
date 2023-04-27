@@ -1,5 +1,5 @@
 description: >
-  Downloads and installs the latest SFDX CLI version from the official Salesforce channels.
+  Downloads and installs the latest SFDX and SF CLI version from the official Salesforce channels.
 
 parameters:
   sfdxCliVersion:
@@ -19,3 +19,10 @@ steps:
       name: Verify CLI Installation
       command: |
         sfdx version
+        sf version
+  - run:
+      name: Install TMH SF CLI Plugin
+      command: |
+        mkdir -p $HOME/.config/sf 
+        echo '["@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin"]' > $HOME/.config/sf/unsignedPluginAllowList.json
+        sf plugins install @tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin
