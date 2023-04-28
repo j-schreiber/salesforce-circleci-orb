@@ -4,14 +4,12 @@ description: >
 
 parameters:
   packageVersion:
-    description:
-      The environment variable name that holds the package version to be installed.
+    description: The environment variable name that holds the package version to be installed.
       Required, if installLatestBuild is false.
     default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: env_var_name
   packageId:
-    description:
-      The environment variable name that holds the package id that is used to
+    description: The environment variable name that holds the package id that is used to
       query for the latest package build. Required, if installLatestBuild is true.
     default: PACKAGE_ID
     type: env_var_name
@@ -39,8 +37,7 @@ parameters:
     default: ""
     type: string
   projectPath:
-    description:
-      The relative project path for the sfdx project. Only necessary if postInstallDeploy is specified
+    description: The relative project path for the sfdx project. Only necessary if postInstallDeploy is specified
       and the pipeline is not executed in an sfdx project.
     default: ""
     type: string
@@ -61,6 +58,7 @@ steps:
         PARAM_QUERY_LATEST_BUILD: << parameters.installLatestBuild >>
         PARAM_POST_INSTALL_SOURCE_PATH: << parameters.postInstallDeploy >>
         PARAM_PROJECT_PATH: << parameters.projectPath >>
-      name: "Install <<# parameters.installLatestBuild >>--> latest <-- <</ parameters.installLatestBuild >>package version <<# parameters.installReleaseCandidate >> [Release Candidate] <</ parameters.installReleaseCandidate >> on << parameters.targetOrg >>"
+      name: Install <<# parameters.installLatestBuild >>--> latest <-- <</ parameters.installLatestBuild >>package version <<# parameters.installReleaseCandidate >>
+        [Release Candidate] <</ parameters.installReleaseCandidate >> on << parameters.targetOrg >>
       command: <<include(scripts/package-install.sh) >>
       when: << parameters.when >>

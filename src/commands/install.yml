@@ -3,8 +3,7 @@ description: >
 
 parameters:
   sfdxCliVersion:
-    description:
-      Environment variable that holds the package version that should be installed.
+    description: Environment variable that holds the package version that should be installed.
       If empty or the variable does not exist, installs the latest version.
     default: SFDX_CLI_VERSION
     type: env_var_name
@@ -23,6 +22,6 @@ steps:
   - run:
       name: Install TMH SF CLI Plugin
       command: |
-        mkdir -p $HOME/.config/sf 
+        mkdir -p $HOME/.config/sf
         echo '["@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin"]' > $HOME/.config/sf/unsignedPluginAllowList.json
         sf plugins install @tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin
