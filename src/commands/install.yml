@@ -25,3 +25,15 @@ steps:
         mkdir -p $HOME/.config/sf
         echo '["@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin"]' > $HOME/.config/sf/unsignedPluginAllowList.json
         sf plugins install @tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin
+  - run:
+      name: Verify TMH SF CLI Plugin Installation
+      command: |
+        IS_SUPPORTED=$(sf doctor --json | jq '.result.pluginSpecificData."@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin"[0].isSupportedCliVersion')
+        if [ ! $IS_SUPPORTED ]; then
+            echo 'Salesforce CLI version does not fulfill plugin requirements.'
+            exit 1
+        elif [ $IS_SUPPORTED = "null" ]; then
+            echo 'TMH Salesforce CLI plugin not installed.'
+            exit 1
+        fi
+        echo 'TMH Salesforce CLI plugin installed and ready to use.'
