@@ -1,6 +1,7 @@
 setup() {
     # source script under test
     source ./src/scripts/install-cli.sh
+    source ./src/scripts/install-tmh-cli-plugin.sh
 }
 
 teardown() {
@@ -18,6 +19,8 @@ teardown() {
     sudo rm -f /bin/sf
     sudo rm -f /usr/bin/sfdx
     sudo rm -f /usr/bin/sf
+    # diagnosis results from sf doctor --json
+    rm -f *-diagnosis.json
 }
 
 @test "No requested version set > installs latest version" {
@@ -85,4 +88,34 @@ teardown() {
     [ "$status" -eq 11 ]
     [[ $output == *"Could not extract a valid commit SHA from SFDX_CLI_VERSION. Input was: 7.185.0"* ]]
     [[ $output == *"Reference the manifest to find the correct SHA for the requested version: https://developer.salesforce.com/media/salesforce-cli/sfdx/versions/sfdx-linux-x64-tar-xz.json"* ]]
+}
+
+@test "Installed CLI version is incompatible with TMH plugin > exits with error message" {
+    # Arrange
+    export SFDX_CLI_VERSION="7.176.1-458b658"
+
+    # Act
+    run install
+    run install_and_verify_tmh_plugin
+
+    # Assert
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 13 ]
+}
+
+@test "Installed CLI version is compatible with TMH plugin > finishes plugin install" {
+    # Arrange
+    export SFDX_CLI_VERSION="7.199.3-7348ac4"
+
+    # Act
+    run install
+    run install_and_verify_tmh_plugin
+
+    # Assert
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
 }

@@ -1,0 +1,113 @@
+{
+  "status": 0,
+  "result": {
+    "versionDetail": {
+      "cliVersion": "@salesforce/cli/1.53.0",
+      "architecture": "linux-x64",
+      "nodeVersion": "node-v18.12.0",
+      "pluginVersions": [
+        "@oclif/plugin-autocomplete 1.3.2 (core)",
+        "@oclif/plugin-commands 2.2.0 (core)",
+        "@oclif/plugin-help 5.1.16 (core)",
+        "@oclif/plugin-not-found 2.3.5 (core)",
+        "@oclif/plugin-plugins 2.1.6 (core)",
+        "@oclif/plugin-search 0.0.2 (core)",
+        "@oclif/plugin-update 3.0.3 (core)",
+        "@oclif/plugin-version 1.1.3 (core)",
+        "deploy-retrieve 1.6.9 (core)",
+        "env 1.5.8 (core)",
+        "functions 1.14.2 (core)",
+        "generate 1.0.30 (core)",
+        "info 2.2.4 (core)",
+        "login 1.1.7 (core)",
+        "settings 1.1.4 (core)",
+        "sobject 0.0.26 (core)",
+        "telemetry 2.0.2 (core)",
+        "trust 2.1.0 (core)",
+        "@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin 0.2.1 (user)"
+      ],
+      "osVersion": "Linux 5.15.49-linuxkit",
+      "shell": "unknown",
+      "rootPath": "/root/sfdx/sf"
+    },
+    "sfdxEnvVars": [["SFDX_CLI_VERSION", "7.176.1-458b658"]],
+    "sfEnvVars": [
+      ["SF_BINPATH", "/root/sfdx/bin/sf"],
+      ["SF_AUTOUPDATE_DISABLE", "true"],
+      ["SF_DISABLE_AUTOUPDATE", "true"],
+      [
+        "SF_UPDATE_INSTRUCTIONS",
+        "Use \"npm update --global @salesforce/cli\" to update npm-based installations."
+      ]
+    ],
+    "cliConfig": {
+      "_base": "@oclif/core@1.20.2",
+      "debug": 0,
+      "topicSeparator": " ",
+      "warned": false,
+      "commandPermutations": {
+        "validPermutations": {}
+      },
+      "topicPermutations": {
+        "validPermutations": {}
+      },
+      "_commands": {},
+      "_topics": {},
+      "root": "/root/sfdx/sf",
+      "name": "@salesforce/cli",
+      "version": "1.53.0",
+      "channel": "stable",
+      "valid": true,
+      "arch": "x64",
+      "platform": "linux",
+      "windows": false,
+      "bin": "sf",
+      "dirname": "sf",
+      "flexibleTaxonomy": true,
+      "userAgent": "@salesforce/cli/1.53.0 linux-x64 node-v18.12.0",
+      "shell": "unknown",
+      "home": "/root",
+      "cacheDir": "/root/.cache/sf",
+      "configDir": "/root/.config/sf",
+      "dataDir": "/root/.local/share/sf",
+      "errlog": "/root/.cache/sf/error.log",
+      "binPath": "/root/sfdx/bin/sf",
+      "nodeEngine": ">=14.0.0"
+    },
+    "pluginSpecificData": {
+      "@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin": [
+        {
+          "minimumRequiredCliVersion": "1.68.2",
+          "currentCliVersion": "1.53.0",
+          "isSupportedCliVersion": false,
+          "errorMessage": "Mocked plugin error message"
+        }
+      ]
+    },
+    "diagnosticResults": [
+      {
+        "testName": "salesforcedx plugin not installed",
+        "status": "pass"
+      },
+      {
+        "testName": "no linked plugins",
+        "status": "pass"
+      },
+      {
+        "testName": "[@tmh-bis-salesforce/tmh-bis-salesforce-cli-plugin] Current CLI version matches plugin requirements.",
+        "status": "fail"
+      },
+      {
+        "testName": "using latest or latest-rc CLI version",
+        "status": "fail"
+      }
+    ],
+    "suggestions": [
+      "Check https://github.com/forcedotcom/cli/issues for CLI issues posted by the community.",
+      "Check http://status.salesforce.com for general Salesforce availability and performance.",
+      "The current CLI version does not meet the minimum required CLI version. Update to at least CLI version 1.68.2.",
+      "Update your CLI version from: 1.53.0 to the latest version: 1.76.2."
+    ],
+    "logFilePaths": ["/home/circleci/project/1683282643445-diagnosis.json"]
+  }
+}
