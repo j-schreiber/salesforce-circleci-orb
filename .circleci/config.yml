@@ -116,33 +116,6 @@ jobs:
       - store_test_results:
           path: test-results/apex
 
-  create_release_candidate:
-    docker:
-      - image: cimg/openjdk:17.0-node
-    steps:
-      - checkout
-      - run:
-          name: Checkout salesforce/demo-package
-          command: |
-            git submodule update --init --recursive
-            git submodule foreach --recursive git checkout master
-      - jsc-sfdx/install
-      - jsc-sfdx/auth:
-          username: << pipeline.parameters.devhubUsername >>
-          instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: DEVHUB_JWT_KEY
-          consumerKey: DEVHUB_CONSUMER_KEY
-          setDefault: true
-      - jsc-sfdx/package-build:
-          projectPath: salesforce/demo-package
-          package: PACKAGE_ID
-          isReleaseCandidate: true
-          packageVersionExport: MY_RC_PACKAGE_VERSION
-      - run:
-          name: Echo package version
-          command: |
-            echo "New package version is: $MY_RC_PACKAGE_VERSION"
-
 workflows:
   test-pack:
     unless: << pipeline.parameters.run-integration-tests >>
