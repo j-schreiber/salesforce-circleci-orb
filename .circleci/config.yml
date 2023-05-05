@@ -25,7 +25,7 @@ parameters:
   devhubInstanceUrl:
     description: Production instance URL
     type: string
-    default: https://curious-impala-bhgtyu-dev-ed.my.salesforce.com
+    default: https://wise-narwhal-asvtzx-dev-ed.trailblaze.my.salesforce.com
   uatSandboxUsername:
     description: Username for the Orb Dev sandbox
     type: string
