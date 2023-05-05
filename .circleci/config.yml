@@ -46,8 +46,8 @@ jobs:
       - jsc-sfdx/auth:
           username: << pipeline.parameters.devhubUsername >>
           instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: DEVHUB_JWT_KEY
+          consumerKey: DEVHUB_CONSUMER_KEY
           setDefault: true
       - jsc-sfdx/auth:
           instanceUrl: https://test.salesforce.com
@@ -98,8 +98,8 @@ jobs:
       - jsc-sfdx/auth:
           username: << pipeline.parameters.devhubUsername >>
           instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: DEVHUB_JWT_KEY
+          consumerKey: DEVHUB_CONSUMER_KEY
           setDefault: true
       - jsc-sfdx/run-tests:
           targetOrg: << pipeline.parameters.devhubUsername >>
@@ -130,8 +130,8 @@ jobs:
       - jsc-sfdx/auth:
           username: << pipeline.parameters.devhubUsername >>
           instanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: DEVHUB_JWT_KEY
+          consumerKey: DEVHUB_CONSUMER_KEY
           setDefault: true
       - jsc-sfdx/package-build:
           projectPath: salesforce/demo-package
@@ -173,7 +173,7 @@ workflows:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           jwtKey: DEVHUB_JWT_KEY
-          consumerKey: DEVHUB_ORG_CONSUMER_KEY
+          consumerKey: DEVHUB_CONSUMER_KEY
           setupScript: scripts/shell/setup.sh
           projectPath: salesforce/demo-package
           additionalSteps:
@@ -191,8 +191,8 @@ workflows:
           name: scratch_org_test_with_lwc
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: DEVHUB_JWT_KEY
+          consumerKey: DEVHUB_CONSUMER_KEY
           setupScript: scripts/shell/setup.sh
           projectPath: salesforce/demo-package
           runPrettier: true
@@ -209,9 +209,9 @@ workflows:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          devhubJwtKey: TEST_JWT_KEY
+          devhubJwtKey: DEVHUB_JWT_KEY
           targetOrgJwtKey: TEST_JWT_KEY
-          devhubConsumerKey: TEST_CONSUMER_KEY
+          devhubConsumerKey: DEVHUB_CONSUMER_KEY
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
           projectPath: salesforce/demo-package
@@ -227,9 +227,9 @@ workflows:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           targetOrgUsername: << pipeline.parameters.uatSandboxUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          devhubJwtKey: TEST_JWT_KEY
+          devhubJwtKey: DEVHUB_JWT_KEY
           targetOrgJwtKey: TEST_JWT_KEY
-          devhubConsumerKey: TEST_CONSUMER_KEY
+          devhubConsumerKey: DEVHUB_CONSUMER_KEY
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
           buildNewPackage: false
@@ -238,8 +238,8 @@ workflows:
       - jsc-sfdx/build_release_candidate_version:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          jwtKey: TEST_JWT_KEY
-          consumerKey: TEST_CONSUMER_KEY
+          jwtKey: DEVHUB_JWT_KEY
+          consumerKey: DEVHUB_CONSUMER_KEY
           projectPath: salesforce/demo-package
           requireInstallationKey: false
           package: PACKAGE_ID
