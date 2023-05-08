@@ -1,0 +1,19 @@
+description: >
+  Executes a queriy all test suites on the target org and executes them in sequence.
+  The command executes each test suite as a single run and stores all results in JUnit format.
+
+parameters:
+  targetOrg:
+    description: Username or alias of the target org where tests are executed.
+    type: string
+  outputDir:
+    description: Directory to store test results.
+    default: test-results/apex
+    type: string
+
+steps:
+  - run:
+      name: "Execute test suites on: << parameters.targetOrg >>"
+      no_output_timeout: "60m"
+      command: |
+        sf tmh apex run testsuites -o << parameters.targetOrg >> -d "<< parameters.outputDir >>" -r junit

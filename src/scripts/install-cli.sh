@@ -54,7 +54,15 @@ download_latest_version() {
 }
 
 symlink_version() {
-    sudo ln -sf ~/sfdx/bin/sfdx /bin/sfdx
+    if [[ -x ~/sfdx/bin/sfdx && -x ~/sfdx/bin/sf ]]; then
+        echo "Create symlink for SFDX CLI"
+        sudo ln -sf ~/sfdx/bin/sfdx /bin/sfdx
+        echo "Create symlink for SF CLI"
+        sudo ln -sf ~/sfdx/bin/sf /bin/sf
+    else 
+        echo "Cannot create symlinks, CLI files not exist."
+        exit 12
+    fi
 }
 
 ORB_TEST_ENV="bats-core"

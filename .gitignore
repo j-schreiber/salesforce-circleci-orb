@@ -34,9 +34,12 @@ $RECYCLE.BIN/
 # other untracked
 untracked/
 test-results/
+tmp/
 
 # sensitive data
 **/keys.env
 .config/*.txt
 untracked/*
 *.key
+*.crt
+*.csr
