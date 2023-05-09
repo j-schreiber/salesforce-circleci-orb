@@ -95,7 +95,7 @@ steps:
             targetOrg: << parameters.targetOrgUsername >>
             projectPath: << parameters.projectPath >>
             directories: << parameters.deployDirectories >>
-  - run-test-suites:
+  - run-all-test-suites:
       targetOrg: << parameters.targetOrgUsername >>
       outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
   - package-rollback:
