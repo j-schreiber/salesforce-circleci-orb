@@ -26,6 +26,10 @@ The easiest way to install the CLI is using the bash script from the orb command
 # export SFDX_CLI_VERSION=7.176.1-458b658
 # export SFDX_CLI_VERSION=7.181.1-05b8719
 bash src/scripts/install-cli.sh
+
+# install packaging plugin, if it is not installed, the jq command gets an error, because the plugin will be automatically installed
+# and the json output won't be a compatible json format
+sf plugins install @salesforce/plugin-packaging
 ```
 
 This orb uses BATS to test bash scripts. For now, the pipeline does not run bats tests, only full integration tests. Run the tests from the root directory of the orb repository, not the demo project.

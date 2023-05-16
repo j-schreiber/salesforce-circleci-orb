@@ -20,5 +20,8 @@ steps:
         sfdx version
         sf version
   - run:
+      name: Install Packaging Plugin
+      command: sf plugins install @salesforce/plugin-packaging
+  - run:
       name: Install TMH Plugin
       command: <<include(scripts/install-tmh-cli-plugin.sh)>>
