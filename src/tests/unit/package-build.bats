@@ -41,8 +41,8 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
-    # prints sfdx command output
-    [[ "$output" == *"--installationkey $INSTALLATION_KEY"* ]]
+    # prints sf command output
+    [[ "$output" == *"--installation-key $INSTALLATION_KEY"* ]]
     [[ "$output" == *"Successfully created new package version: 04t68000000l0mpAAA"* ]]
     [[ "$output" == *"Exporting new package version 04t68000000l0mpAAA to SUBSCRIBER_PACKAGE_VERSION_ID"* ]]
     exportedBashEnv=$(< $BASH_ENV)
@@ -85,7 +85,7 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 101 ]
-    # prints sfdx command output
+    # prints sf command output
     [[ "$output" == *"Package build timed out with status: Initializing"* ]]
     [[ "$output" == *"Export specified but no package version created. Exit with 101"* ]]
     exportedBashEnv=$(< $BASH_ENV)
@@ -108,7 +108,7 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    # prints sfdx command output
+    # prints sf command output
     [[ "$output" == *"Package build timed out with status: Initializing"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
@@ -133,9 +133,9 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
-    # prints sfdx command output
-    [[ "$output" != *"--installationkey $INSTALLATION_KEY"* ]]
-    [[ "$output" = *"--installationkeybypass"* ]]
+    # prints sf command output
+    [[ "$output" != *"--installation-key $INSTALLATION_KEY"* ]]
+    [[ "$output" = *"--installation-key-bypass"* ]]
     [[ "$output" == *"Exporting new package version 04t68000000l0mpAAA to MY_SUBSCRIBER_PACKAGE_VERSION_ID"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
@@ -159,7 +159,7 @@ teardown() {
     [ "$status" -eq 100 ]
     [[ "$output" == *"Package build failed with message: Mock Error Message"* ]]
     [ -f $BASH_ENV ]
-    # prints sfdx command output
+    # prints sf command output
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ -z $exportedBashEnv ]]

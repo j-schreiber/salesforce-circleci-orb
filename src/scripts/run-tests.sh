@@ -5,16 +5,16 @@ setup_output_directory() {
 }
 
 execute_sfdx_apex_test_run() {
-    echo "sfdx force:apex:test:run $*"
-    sfdx force:apex:test:run "$@"
+    echo "sf apex run test $*"
+    sf apex run test "$@"
 }
 
 run_tests() {
     params=()
-    params+=( --targetusername "$PARAM_TARGET_ORG")
+    params+=( --target-org "$PARAM_TARGET_ORG")
     params+=( --wait 10)
-    params+=( --resultformat junit)
-    params+=( --outputdir "$PARAM_OUTPUT_DIRECTORY")
+    params+=( --result-format junit)
+    params+=( --output-dir "$PARAM_OUTPUT_DIRECTORY")
     execute_sfdx_apex_test_run "${params[@]}"
     exitCode=$?
     rm -f "$PARAM_OUTPUT_DIRECTORY"/test-result.xml

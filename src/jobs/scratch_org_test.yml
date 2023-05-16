@@ -121,6 +121,6 @@ steps:
         - run:
             name: Clean Scratch Org
             command: |
-              sfdx force:org:delete -u << parameters.scratchOrgAlias >> --noprompt
+              sf org delete scratch --target-org << parameters.scratchOrgAlias >> --no-prompt
   - store_test_results:
       path: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results

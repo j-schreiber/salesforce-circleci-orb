@@ -21,6 +21,11 @@ teardown() {
     sudo rm -f /usr/bin/sf
     # diagnosis results from sf doctor --json
     rm -f *-diagnosis.json
+
+    if [[ "${#BATS_TEST_NAMES[@]}" -eq "$BATS_TEST_NUMBER" ]]; then
+        # install cli for following tests
+        run install
+    fi
 }
 
 @test "No requested version set > installs latest version" {

@@ -24,7 +24,7 @@ verify_params() {
 }
 
 sfdx_force_package_version_create() {
-    sfdx force:package:version:create "$@"
+    sf package version create "$@"
 }
 
 export_package_version_id() {
@@ -40,19 +40,19 @@ build_package() {
     params+=( --wait 60)
     params+=( --json)
     if [ "$PARAM_REQUIRE_KEY" = true ] || [ "$PARAM_REQUIRE_KEY" -eq 1 ]; then
-        params+=( --installationkey "${!PARAM_INSTALLATION_KEY}")
+        params+=( --installation-key "${!PARAM_INSTALLATION_KEY}")
     else
-        params+=( --installationkeybypass)
+        params+=( --installation-key-bypass)
     fi
     if [ "$PARAM_IS_RELEASE_CANDIDATE" = true ] || [ "$PARAM_IS_RELEASE_CANDIDATE" -eq 1 ]; then
-        params+=( --codecoverage)
+        params+=( --code-coverage)
     else
-        params+=( --skipvalidation)
+        params+=( --skip-validation)
     fi
     if [ -n "$PARAM_DEV_HUB" ]; then
-        params+=( --targetdevhubusername "$PARAM_DEV_HUB")
+        params+=( --target-dev-hub "$PARAM_DEV_HUB")
     fi
-    echo "sfdx force:package:version:create ${params[*]}"
+    echo "sf package version create ${params[*]}"
     sfdx_force_package_version_create "${params[@]}" > package_version_create_result.json
 }
 

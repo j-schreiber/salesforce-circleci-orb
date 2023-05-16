@@ -27,7 +27,7 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA2 on info@lietzau-consulting.de"* ]]
     [[ $output == *"Successfully installed package [04t08000000gZOGAA2]"* ]]
-    [[ $output != *"sfdx force:source:deploy"* ]]
+    [[ $output != *"sf project deploy start"* ]]
 }
 
 @test "Install Package > Valid package version without installation key > installs package" {
@@ -51,12 +51,13 @@ setup() {
 
 @test "Install Package > Query latest release candidate > Installs RC package version" {
     # ARRANGE
+    export PARAM_INSTALL_RELEASE_CANDIDATE=1
     export PACKAGE_ID='0Ho08000000CaRqCAK'
     export PARAM_QUERY_LATEST_BUILD=1
     export PARAM_TARGET_ORG='info@lietzau-consulting.de'
     export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
     export INSTALLATION_KEY='abc'
-    expectedPackageId=$( sfdx force:data:soql:query --usetoolingapi --query "SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '0Ho08000000CaRqCAK' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1" --targetusername "${PARAM_DEVHUB_USERNAME}" --resultformat csv | sed "1 d" )
+    expectedPackageId=$( sf data query --use-tooling-api --query "SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '0Ho08000000CaRqCAK' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1" --target-org "${PARAM_DEVHUB_USERNAME}" --result-format csv | sed "1 d" )
 
     # ACT
     run main
@@ -85,5 +86,5 @@ setup() {
     echo "Output: $output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sfdx force:source:deploy"* ]]
+    [[ $output == *"sf project deploy start"* ]]
 }

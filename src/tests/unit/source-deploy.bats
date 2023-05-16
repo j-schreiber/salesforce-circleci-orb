@@ -8,12 +8,12 @@ setup() {
     export PARAM_OVERRIDES=
     export PARAM_PROJECT_PATH=
 
-    # mock sfdx deploy
+    # mock sf deploy
     function sfdx_force_source_deploy() {
-        echo "sfdx force:source:deploy $*"
+        echo "sf project deploy start $*"
     }
 
-    # mock sfdx query
+    # mock sf query
     function is_sandbox_org() {
         echo "true"
     }
@@ -31,7 +31,7 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy --targetusername info@lietzau-consulting.de --testlevel RunLocalTests"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org info@lietzau-consulting.de --test-level RunLocalTests"* ]]
 }
 
 @test "Deploy multiple directories > No overrides > all source deployed" {
@@ -46,14 +46,14 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy --targetusername info@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy-two --targetusername info@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy-three --targetusername info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy-two --target-org info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy-three --target-org info@lietzau-consulting.de"* ]]
 }
 
 @test "Deploy with overrides > override config executed" {
     # ARRANGE
-    export PARAM_OVERRIDES='-u info@lietzau-consulting.de -p src/deploy-one -w 10 -l RunLocalTests'
+    export PARAM_OVERRIDES='-o info@lietzau-consulting.de -d src/deploy-one -w 10 -l RunLocalTests'
 
     # ACT
     run main
@@ -63,5 +63,5 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sfdx force:source:deploy -u info@lietzau-consulting.de -p src/deploy-one -w 10 -l RunLocalTests"* ]]
+    [[ $output == *"sf project deploy start -o info@lietzau-consulting.de -d src/deploy-one -w 10 -l RunLocalTests"* ]]
 }

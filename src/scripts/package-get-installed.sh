@@ -8,16 +8,16 @@ verify_params() {
 }
 
 query_subscriber_package_id() {
-    sfdx force:data:soql:query --usetoolingapi --json \
+    sf data query --use-tooling-api --json \
         --query "SELECT SubscriberPackageId FROM Package2 WHERE Id = '${!PARAM_PACKAGE_ID}' LIMIT 1" \
-        --targetusername "$PARAM_DEVHUB_USERNAME" \
+        --target-org "$PARAM_DEVHUB_USERNAME" \
         2> /dev/null
 }
 
 query_installed_package_version_id() {
-    sfdx force:data:soql:query --usetoolingapi --json \
+    sf data query --use-tooling-api --json \
         --query "SELECT SubscriberPackageVersionId FROM InstalledSubscriberPackage WHERE SubscriberPackageId = '$1' LIMIT 1" \
-        --targetusername "$PARAM_TARGET_ORG" \
+        --target-org "$PARAM_TARGET_ORG" \
         2> /dev/null
 }
 

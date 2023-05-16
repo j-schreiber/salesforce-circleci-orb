@@ -9,7 +9,7 @@ setup() {
     export PACKAGE_ID=
     export PARAM_PROMOTE_LATEST_BUILD=1
     export PARAM_DEVHUB_USERNAME="info@lietzau-consulting.de"
-    # we cannot execute from within an sfdx project
+    # we cannot execute from within an sf project
     export PARAM_PATH="salesforce/demo-package"
 }
 
@@ -20,7 +20,7 @@ setup() {
         cat src/tests/data/latest-package-build.json
     }
     function sfdx_package_version_promote() {
-        echo "sfdx force:package:version:promote $@"
+        echo "sf package version promote $@"
     }
 
     # ACT
@@ -33,7 +33,7 @@ setup() {
     [ "$status" -eq 0 ]
     [[ "$output" == *"Promoting latest build 04t9Y0000000000AAA"* ]]
     [[ "$output" != *"Promoting specific build 04t9Y0000000000AAA from SUBSCRIBER_PACKAGE_VERSION"* ]]
-    [[ "$output" == *"sfdx force:package:version:promote --package 04t9Y0000000000AAA --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
+    [[ "$output" == *"sf package version promote --package 04t9Y0000000000AAA --target-dev-hub $PARAM_DEVHUB_USERNAME"* ]]
 }
 
 @test "Promote latest build > No build found > Exit with error" {
@@ -43,7 +43,7 @@ setup() {
         cat src/tests/data/empty-query-result.json
     }
     function sfdx_package_version_promote() {
-        echo "sfdx force:package:version:promote $@"
+        echo "sf package version promote $@"
     }
 
     # ACT
@@ -55,7 +55,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 20 ]
     [[ "$output" == *"No valid package version retrieved. Exiting ..."* ]]
-    [[ "$output" != *"sfdx force:package:version:promote"* ]]
+    [[ "$output" != *"sf package version promote"* ]]
 }
 
 @test "Promote specific package version > Package version from input promoted" {
@@ -65,7 +65,7 @@ setup() {
 
     # ACT
     function sfdx_package_version_promote() {
-        echo "sfdx force:package:version:promote $@"
+        echo "sf package version promote $@"
     }
     run main
 
@@ -77,7 +77,7 @@ setup() {
     [[ "$output" != *"Promoting latest build 04t080000000000AAA"* ]]
     [[ "$output" == *"Promoting specific build 04t080000000000AAA"* ]]
     # promotes package version
-    [[ "$output" == *"sfdx force:package:version:promote --package 04t080000000000AAA --targetdevhubusername $PARAM_DEVHUB_USERNAME"* ]]
+    [[ "$output" == *"sf package version promote --package 04t080000000000AAA --target-dev-hub $PARAM_DEVHUB_USERNAME"* ]]
 }
 
 @test "Promote latest is false and no package version set > Exit with error" {

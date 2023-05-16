@@ -12,14 +12,14 @@ verify_params() {
 }
 
 query_latest_package_build() {
-    sfdx force:data:soql:query --usetoolingapi --json \
+    sf data query --use-tooling-api --json \
         --query "SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!ENV_VAR_PACKAGE_ID}' AND ValidationSkipped = false ORDER BY CreatedDate DESC LIMIT 1" \
-        --targetusername "${PARAM_DEVHUB_USERNAME}" 2> /dev/null
+        --target-org "${PARAM_DEVHUB_USERNAME}" 2> /dev/null
 }
 
 sfdx_package_version_promote() {
-    echo "sfdx force:package:version:promote $*"
-    sfdx force:package:version:promote "$@"
+    echo "sf package version promote $*"
+    sf package version promote "$@"
 }
 
 get_package_version_id() {
@@ -40,8 +40,8 @@ promote_build() {
     fi
     params=()
     params+=(--package "$packageVersionId")
-    params+=( --targetdevhubusername "$PARAM_DEVHUB_USERNAME")
-    params+=( --noprompt)
+    params+=( --target-dev-hub "$PARAM_DEVHUB_USERNAME")
+    params+=( --no-prompt)
     sfdx_package_version_promote "${params[@]}"
 }
 

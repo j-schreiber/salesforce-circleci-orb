@@ -29,7 +29,7 @@ decrypt_key() {
 }
 
 sfdx_auth_jwt_grant() {
-    sfdx auth:jwt:grant "$@"
+    sf org login jwt "$@"
 }
 
 authenticate_org() {
@@ -38,13 +38,13 @@ authenticate_org() {
     fi
     echo "Authorizing $PARAM_USERNAME at $PARAM_INSTANCE_URL ..."
     params=()
-    params+=(--clientid "${!PARAM_CLIENT_ID}")
-    params+=( --jwtkeyfile server.key)
+    params+=(--client-id "${!PARAM_CLIENT_ID}")
+    params+=( --jwt-key-file server.key)
     params+=( --username "$PARAM_USERNAME")
-    params+=( --instanceurl "$PARAM_INSTANCE_URL")
+    params+=( --instance-url "$PARAM_INSTANCE_URL")
     if [ "$PARAM_SET_DEFAULT" = true ] || [ "$PARAM_SET_DEFAULT" -eq 1 ]; then
         echo "Setting org as default devhub ..."
-        params+=( --setdefaultdevhubusername)
+        params+=( --set-default-dev-hub)
     fi
     sfdx_auth_jwt_grant "${params[@]}"
 }

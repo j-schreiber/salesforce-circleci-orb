@@ -1,15 +1,15 @@
 #! /bin/bash
 
 sfdx_force_source_deploy() {
-    echo "sfdx force:source:deploy $*"
-    sfdx force:source:deploy "$@"
+    echo "sf project deploy start $*"
+    sf project deploy start "$@"
 }
 
 deploy() {
     params=()
-    params+=( --sourcepath "$1")
-    params+=( --targetusername "$PARAM_TARGET_ORG")
-    params+=( --testlevel RunLocalTests)
+    params+=( --source-dir "$1")
+    params+=( --target-org "$PARAM_TARGET_ORG")
+    params+=( --test-level RunLocalTests)
     sfdx_force_source_deploy "${params[@]}"
 }
 

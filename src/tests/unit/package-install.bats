@@ -12,7 +12,7 @@ setup() {
 
     # mock force:package:beta:install
     function install_package_with_params() {
-        echo "sfdx force:package:install $@"
+        echo "sf package install $@"
     }
 }
 
@@ -34,10 +34,10 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"--installationkey"* ]]
+    [[ $output == *"--installation-key"* ]]
     [[ $output == *"Installing 04t9Y0000000000AAA on info@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:package:install --package 04t9Y0000000000AAA --targetusername info@lietzau-consulting.de --noprompt --wait 10 --publishwait 10 --installationkey abc" ]]
-    [[ $output != *"sfdx force:source:deploy"* ]]
+    [[ $output == *"sf package install --package 04t9Y0000000000AAA --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc" ]]
+    [[ $output != *"sf project start deploy"* ]]
 }
 
 @test "Set package version explicitly > Installs input package version" {
@@ -138,8 +138,8 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:package:install --package 04t08000000gZOGAA3 --targetusername business@lietzau-consulting.de --noprompt --wait 10 --publishwait 10" ]]
-    [[ $output != *"--installationkey"* ]]
+    [[ $output == *"sf package install --package 04t08000000gZOGAA3 --target-org business@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10" ]]
+    [[ $output != *"--installation-key"* ]]
 }
 
 @test "Specify post install source > source deployed after package install" {
@@ -152,7 +152,7 @@ setup() {
     export PARAM_POST_INSTALL_SOURCE_PATH=src/deploy
     
     function sfdx_force_source_deploy() {
-        echo "sfdx force:source:deploy $@"
+        echo "sf project deploy start $@"
     }
 
     # ACT
@@ -164,7 +164,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
-    [[ $output == *"sfdx force:source:deploy --sourcepath src/deploy --targetusername business@lietzau-consulting.de --wait 10 --testlevel RunLocalTests" ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests" ]]
 }
 
 @test "Query latest build does not find package > exits with error" {
@@ -188,7 +188,7 @@ setup() {
     [ "$status" -eq 20 ]
     [[ $output == *"No valid package version retrieved. Exiting ..."* ]]
     [[ $output != *"Installing"* ]]
-    [[ $output != *"sfdx force:package:install"* ]]
+    [[ $output != *"sf package install"* ]]
 }
 
 @test "Empty package version with rollback > exits without error" {
@@ -207,7 +207,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Running in rollback mode but found no package version. Skipping ..."* ]]
-    [[ $output != *"sfdx force:package:install"* ]]
+    [[ $output != *"sf package install"* ]]
 }
 
 @test "Verify Params > No devhub org set for latest package > exits with error" {
