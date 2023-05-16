@@ -24,25 +24,25 @@ write_test_suites_to_csv() {
 }
 
 query_test_suites_from_target_org() {
-    sfdx force:data:soql:query --json \
+    sf data query --json \
         --query "SELECT TestSuiteName FROM ApexTestSuite" \
-        --targetusername "$PARAM_TARGET_ORG" 2> /dev/null
+        --target-org "$PARAM_TARGET_ORG" 2> /dev/null
 }
 
 sfdx_apex_test_run() {
-    echo "sfdx force:apex:test:run $*"
-    sfdx force:apex:test:run "$@"
+    echo "sf apex run test $*"
+    sf apex run test "$@"
 }
 
 run_test_suite() {
     echo ""
     echo "====== $1 ======"
     params=()
-    params+=(--suitenames "$1")
-    params+=( --targetusername "$PARAM_TARGET_ORG")
+    params+=(--suite-names "$1")
+    params+=( --target-org "$PARAM_TARGET_ORG")
     params+=( --wait 10)
-    params+=( --resultformat junit)
-    params+=( --outputdir "$PARAM_OUTPUT_DIRECTORY")
+    params+=( --result-format junit)
+    params+=( --output-dir "$PARAM_OUTPUT_DIRECTORY")
     sfdx_apex_test_run "${params[@]}"
     exitCode=$?
     rm -f "$PARAM_OUTPUT_DIRECTORY"/test-result.xml

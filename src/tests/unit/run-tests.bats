@@ -15,7 +15,7 @@ teardown() {
 @test "Test execution fails > produces single output file and returns with exit code" {
     # ACT
     function execute_sfdx_apex_test_run() {
-        echo "sfdx force:apex:test:run $*"
+        echo "sf apex run test $*"
         echo "mock output" >> "$PARAM_OUTPUT_DIRECTORY/test-run-mock-junit.xml"
         echo "mock output" >> "$PARAM_OUTPUT_DIRECTORY/test-run-mock.json"
         echo "mock output" >> "$PARAM_OUTPUT_DIRECTORY/test-result.txt"

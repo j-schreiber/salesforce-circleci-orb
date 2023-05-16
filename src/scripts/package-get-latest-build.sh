@@ -8,7 +8,7 @@ verify_params() {
 }
 
 sfdx_force_data_soql_query() {
-    sfdx force:data:soql:query --usetoolingapi --json --query "$1" --targetusername "$2" 2> /dev/null
+    sf data query --use-tooling-api --json --query "$1" --target-org "$2" 2> /dev/null
 }
 
 get_latest_package_build() {
@@ -18,6 +18,7 @@ get_latest_package_build() {
         queryParamValSkipped="AND ValidationSkipped = false"
     fi
     queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
+    echo "Query: $queryString"
     subscriberPackageVersionId=$( sfdx_force_data_soql_query "$queryString" "${PARAM_DEVHUB_USERNAME}" | jq -r .result.records[0].SubscriberPackageVersionId )
 }
 

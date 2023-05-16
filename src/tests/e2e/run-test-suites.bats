@@ -31,9 +31,9 @@ teardown() {
     [ "$status" -eq 0 ]
     while read -r testSuite
     do
-        [[ $output == *"--suitenames $testSuite"* ]]
+        [[ $output == *"--suite-names $testSuite"* ]]
     done < src/tests/data/test-suites.csv
-    [[ $numberOfFiles -eq 4 ]]
+    [[ $numberOfFiles -eq 3 ]]
 }
 
 @test "Test suites set as parameter > Input test suites executed" {
@@ -54,7 +54,7 @@ teardown() {
     [ "$status" -eq 0 ]
     while read -r testSuite
     do
-        [[ $output == *"--suitenames $testSuite"* ]]
+        [[ $output == *"--suite-names $testSuite"* ]]
     done < expected-test-suites.csv
     [[ $numberOfFiles -eq 2 ]]
 }

@@ -8,7 +8,7 @@ setup() {
     export PARAM_TEST_SUITES=
 
     function sfdx_apex_test_run() {
-        echo "sfdx force:apex:test:run $*"
+        echo "sf apex run test $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-result.txt"
@@ -37,11 +37,10 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 0 ]
-    [[ $output == *"--suitenames Test_Suite_1"* ]]
-    [[ $output == *"--suitenames Test_Suite_2"* ]]
-    [[ $output == *"--suitenames Test_Suite_3"* ]]
-    [[ $output == *"--suitenames Test_Suite_4"* ]]
-    [[ $numberOfFiles -eq 4 ]]
+    [[ $output == *"--suite-names TestSuite1"* ]]
+    [[ $output == *"--suite-names TestSuite2"* ]]
+    [[ $output == *"--suite-names TestSuite3"* ]]
+    [[ $numberOfFiles -eq 3 ]]
 }
 
 @test "Test suites set as parameter > Input test suites executed" {
@@ -58,9 +57,9 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 0 ]
-    [[ $output == *"--suitenames Test_Suite_3"* ]]
-    [[ $output == *"--suitenames Test_Suite_4"* ]]
-    [[ $output == *"--suitenames Test_Suite_5"* ]]
+    [[ $output == *"--suite-names Test_Suite_3"* ]]
+    [[ $output == *"--suite-names Test_Suite_4"* ]]
+    [[ $output == *"--suite-names Test_Suite_5"* ]]
     [[ $numberOfFiles -eq 3 ]]
 }
 
@@ -78,8 +77,8 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 0 ]
-    [[ $output == *"--suitenames Test_Suite_3,Test_Suite_4"* ]]
-    [[ $output == *"--suitenames Test_Suite_5,Test_Suite_1"* ]]
+    [[ $output == *"--suite-names Test_Suite_3,Test_Suite_4"* ]]
+    [[ $output == *"--suite-names Test_Suite_5,Test_Suite_1"* ]]
     [[ $numberOfFiles -eq 2 ]]
 }
 
@@ -89,12 +88,12 @@ teardown() {
 
     # ACT
     function sfdx_apex_test_run() {
-        echo "sfdx force:apex:test:run $*"
+        echo "sf apex run test $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-result.txt"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-run-id.txt"
-        # $1 = --suitenames; $2 = <Test_Suite_Name>
+        # $1 = --suite-names; $2 = <Test_Suite_Name>
         if [[ $2 == "Test_Suite_4" ]]; then
             return 100
         fi
@@ -110,9 +109,9 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 100 ]
-    [[ $output == *"--suitenames Test_Suite_3"* ]]
-    [[ $output == *"--suitenames Test_Suite_4"* ]]
-    [[ $output == *"--suitenames Test_Suite_5"* ]]
+    [[ $output == *"--suite-names Test_Suite_3"* ]]
+    [[ $output == *"--suite-names Test_Suite_4"* ]]
+    [[ $output == *"--suite-names Test_Suite_5"* ]]
     [[ $numberOfFiles -eq 3 ]]
 }
 
@@ -122,7 +121,7 @@ teardown() {
 
     # ACT
     function sfdx_apex_test_run() {
-        echo "sfdx force:apex:test:run $*"
+        echo "sf apex run test $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-result.txt"
@@ -139,8 +138,8 @@ teardown() {
     numberOfFiles=$( ls -1q $(pwd)/$PARAM_OUTPUT_DIRECTORY | wc -l )
     echo "Files found in $(pwd)/$PARAM_OUTPUT_DIRECTORY: $numberOfFiles"
     [ "$status" -eq 100 ]
-    [[ $output == *"--suitenames Test_Suite_3"* ]]
-    [[ $output == *"--suitenames Test_Suite_4"* ]]
-    [[ $output == *"--suitenames Test_Suite_5"* ]]
+    [[ $output == *"--suite-names Test_Suite_3"* ]]
+    [[ $output == *"--suite-names Test_Suite_4"* ]]
+    [[ $output == *"--suite-names Test_Suite_5"* ]]
     [[ $numberOfFiles -eq 3 ]]
 }

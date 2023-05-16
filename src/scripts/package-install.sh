@@ -27,7 +27,7 @@ verify_params() {
 }
 
 sfdx_force_data_soql_query() {
-    sfdx force:data:soql:query --usetoolingapi --json --query "$1" --targetusername "$2" 2> /dev/null
+    sf data query --use-tooling-api --json --query "$1" --target-org "$2" 2> /dev/null
 }
 
 get_latest_package_build() {
@@ -58,8 +58,8 @@ get_package_version_id() {
 }
 
 install_package_with_params() {
-    echo "sfdx force:package:install $*"
-    sfdx force:package:install "$@"
+    echo "sf package install $*"
+    sf package install "$@"
 }
 
 install_package() {
@@ -76,12 +76,12 @@ install_package() {
     echo "Installing $packageVersionId on $PARAM_TARGET_ORG ..."
     params=()
     params+=(--package "$packageVersionId")
-    params+=( --targetusername "$PARAM_TARGET_ORG")
-    params+=( --noprompt)
+    params+=( --target-org "$PARAM_TARGET_ORG")
+    params+=( --no-prompt)
     params+=( --wait 10)
-    params+=( --publishwait 10)
+    params+=( --publish-wait 10)
     if [ -n "${!PARAM_INSTALLATION_KEY}" ]; then
-        params+=( --installationkey "${!PARAM_INSTALLATION_KEY}")
+        params+=( --installation-key "${!PARAM_INSTALLATION_KEY}")
     fi
     install_package_with_params "${params[@]}"
 }
@@ -92,17 +92,17 @@ deploy_post_install_metadata() {
     fi
     if [ -n "$PARAM_POST_INSTALL_SOURCE_PATH" ]; then
         deploy_params=()
-        deploy_params+=(--sourcepath "$PARAM_POST_INSTALL_SOURCE_PATH")
-        deploy_params+=( --targetusername "$PARAM_TARGET_ORG")
+        deploy_params+=(--source-dir "$PARAM_POST_INSTALL_SOURCE_PATH")
+        deploy_params+=( --target-org "$PARAM_TARGET_ORG")
         deploy_params+=( --wait 10)
-        deploy_params+=( --testlevel RunLocalTests)
+        deploy_params+=( --test-level RunLocalTests)
         sfdx_force_source_deploy "${deploy_params[@]}"
     fi
 }
 
 sfdx_force_source_deploy() {
-    echo "sfdx force:source:deploy $*"
-    sfdx force:source:deploy "$@"
+    echo "sf project deploy start $*"
+    sf project deploy start "$@"
 }
 
 main() {

@@ -24,8 +24,10 @@ setup() {
 
 teardown() {
     rm -f $BASH_ENV
-    # sfdx updates sfdx-project.json after success
+    # sf updates sfdx-project.json after success
+    cd salesforce/demo-package
     git checkout master -- sfdx-project.json
+    cd ../..
 }
 
 @test "Default command initialisation > Builds beta package and exports to BASH_ENV" {
@@ -38,10 +40,10 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
-    # prints sfdx command output
-    [[ "$output" == *"--installationkey $INSTALLATION_KEY"* ]]
-    [[ "$output" == *"WARNING: Skipping validation"* ]]
-    [[ "$output" == *"Successfully created the package version [08c"* ]]
+    # prints sf command output
+    [[ "$output" == *"--installation-key $INSTALLATION_KEY"* ]]
+    # [[ "$output" == *"WARNING: Skipping validation"* ]]
+    [[ "$output" == *"Successfully created new package version: 04t"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ $exportedBashEnv == 'export SUBSCRIBER_PACKAGE_VERSION_ID=04t'* ]]
@@ -61,10 +63,10 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [ -f $BASH_ENV ]
-    # prints sfdx command output
-    [[ "$output" == *"--installationkey $INSTALLATION_KEY"* ]]
-    [[ "$output" != *"WARNING: Skipping validation"* ]]
-    [[ "$output" == *"Successfully created the package version [08c"* ]]
+    # prints sf command output
+    [[ "$output" == *"--installation-key $INSTALLATION_KEY"* ]]
+    # [[ "$output" != *"WARNING: Skipping validation"* ]]
+    [[ "$output" == *"Successfully created new package version: 04t"* ]]
     exportedBashEnv=$(< $BASH_ENV)
     echo "BASH_ENV: $exportedBashEnv"
     [[ $exportedBashEnv == 'export SUBSCRIBER_PACKAGE_VERSION_ID=04t'* ]]

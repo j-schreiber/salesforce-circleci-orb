@@ -11,10 +11,6 @@ setup() {
     export SFDX_CONSUMER_KEY=$(cat .config/MY_CONSUMER_KEY.txt)
 }
 
-teardown() {
-    rm -f server.key
-}
-
 @test "Has valid input for default org > successfully authorizes org" {
     # ACT
     run main

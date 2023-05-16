@@ -13,9 +13,5 @@
     "totalSize": 1,
     "done": true
   },
-  "warnings": [
-    "The \"force data soql query\" command has been deprecated. Use \"data query\" instead.",
-    "The \"--usetoolingapi\" flag has been deprecated. Use \"--use-tooling-api\" instead.",
-    "The \"--targetusername\" flag has been deprecated. Use \"--target-org\" instead."
-  ]
+  "warnings": []
 }
