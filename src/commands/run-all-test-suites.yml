@@ -1,6 +1,7 @@
 description: >
-  Executes a queriy all test suites on the target org and executes them in sequence.
-  The command executes each test suite as a single run and stores all results in JUnit format.
+  Executes a query to get all test suites on the target org and executes them in sequence.
+  The command executes each test suite as a single run, the outputs are in human format (clean and simple)
+  and all results are stored in JUnit format.
 
 parameters:
   targetOrg:

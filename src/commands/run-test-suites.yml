@@ -1,14 +1,13 @@
 description: >
   Executes a list of test suites or queries all test suites on the target org and executes them in sequence.
-  The command executes each test suite as a single run and stores all results in JUnit format.
+  The command executes each test suite as a single run, the outputs are in JUnit format as well as the stored results.
 
 parameters:
   targetOrg:
     description: Username or alias of the target org where tests are executed.
     type: string
   testSuites:
-    description:
-      A space-separated list of test suites to execute. If no test suite is provided,
+    description: A space-separated list of test suites to execute. If no test suite is provided,
       the command queries all test suites on the target org and executes them in alphabetical order.
     default: ""
     type: string

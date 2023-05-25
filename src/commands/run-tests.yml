@@ -1,5 +1,5 @@
 description: >
-  Executes all apex tests on a target org and stores the results as JUnit.
+  Executes all apex tests on a target org and shows as well as stores the results as JUnit.
 
 parameters:
   targetOrg:

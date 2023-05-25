@@ -167,6 +167,31 @@ setup() {
     [[ $output == *"sf project deploy start --source-dir src/deploy --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests" ]]
 }
 
+@test "Specify multiple post install source > source deployed after package install" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='business@lietzau-consulting.de'
+    export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
+    export PACKAGE_VERSION=04t08000000gZOGAA3
+    export INSTALLATION_KEY=
+    export PARAM_QUERY_LATEST_BUILD=0
+    export PARAM_POST_INSTALL_SOURCE_PATH='src/deploy src/deploy/main'
+    
+    function sfdx_force_source_deploy() {
+        echo "sf project deploy start $@"
+    }
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy src/deploy/main --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests" ]]
+}
+
 @test "Query latest build does not find package > exits with error" {
     # ARRANGE
     export PARAM_TARGET_ORG='business@lietzau-consulting.de'

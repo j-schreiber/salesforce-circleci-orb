@@ -88,3 +88,22 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"sf project deploy start"* ]]
 }
+
+@test "Set post install source path > deploys source after install" {
+    # Arrange
+    export PARAM_QUERY_LATEST_BUILD=0
+    export PARAM_TARGET_ORG='info@lietzau-consulting.de'
+    export PARAM_POST_INSTALL_SOURCE_PATH='src/deploy/main src/deploy/special'
+    export PARAM_PROJECT_PATH=salesforce/demo-package
+    # this package version was created with the default installation key ("abc")
+    export PACKAGE_VERSION='04t08000000gZOGAA2'
+
+    # Act
+    run main
+
+    # Assert
+    echo "Output: $output"
+    echo "Actual status: $status"
+    [ "$status" -eq 0 ]
+    [[ $output == *"sf project deploy start --source-dir src/deploy/main src/deploy/special"* ]]
+}

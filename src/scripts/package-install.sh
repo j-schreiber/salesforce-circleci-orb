@@ -92,7 +92,12 @@ deploy_post_install_metadata() {
     fi
     if [ -n "$PARAM_POST_INSTALL_SOURCE_PATH" ]; then
         deploy_params=()
-        deploy_params+=(--source-dir "$PARAM_POST_INSTALL_SOURCE_PATH")
+        deploy_params+=(--source-dir)
+        IFS=" " read -r -a paths <<< "$PARAM_POST_INSTALL_SOURCE_PATH"
+        for path in "${paths[@]}"
+        do
+            deploy_params+=( "$path")
+        done
         deploy_params+=( --target-org "$PARAM_TARGET_ORG")
         deploy_params+=( --wait 10)
         deploy_params+=( --test-level RunLocalTests)
