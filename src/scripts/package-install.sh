@@ -91,8 +91,9 @@ deploy_post_install_metadata() {
         cd "$PARAM_PROJECT_PATH" || exit 1
     fi
     if [ -n "$PARAM_POST_INSTALL_SOURCE_PATH" ]; then
+        IFS=" " read -r -a paths <<< "$PARAM_POST_INSTALL_SOURCE_PATH"
         deploy_params=()
-        deploy_params+=(--source-dir $PARAM_POST_INSTALL_SOURCE_PATH)
+        deploy_params+=(--source-dir ${paths[@]})
         deploy_params+=( --target-org "$PARAM_TARGET_ORG")
         deploy_params+=( --wait 10)
         deploy_params+=( --test-level RunLocalTests)
