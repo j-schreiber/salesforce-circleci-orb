@@ -11,10 +11,14 @@ parameters:
     description: Directory to store test results.
     default: test-results/apex
     type: string
+  numberOfRetries:
+    description: Number of retries for unexpected test suite failures.
+    default: 2
+    type: integer
 
 steps:
   - run:
       name: "Execute test suites on: << parameters.targetOrg >>"
-      no_output_timeout: "60m"
+      no_output_timeout: "20m"
       command: |
-        sf tmh apex run testsuites -o << parameters.targetOrg >> -d "<< parameters.outputDir >>" -r junit
+        sf tmh apex run testsuites -o << parameters.targetOrg >> -d "<< parameters.outputDir >>" -r junit -n << parameters.numberOfRetries >>
