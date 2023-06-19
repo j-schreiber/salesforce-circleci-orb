@@ -14,7 +14,7 @@ parameters:
   numberOfRetries:
     description: Number of retries for unexpected test suite failures.
     default: 2
-    type: string
+    type: integer
 
 steps:
   - run:
