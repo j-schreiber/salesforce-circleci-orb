@@ -21,4 +21,4 @@ steps:
       name: "Execute test suites on: << parameters.targetOrg >>"
       no_output_timeout: "20m"
       command: |
-        sf tmh apex run testsuites -o << parameters.targetOrg >> -d "<< parameters.outputDir >>" -r junit -n << parameters.numberOfRetries >>
+        sf tmh apex run testsuites -o << parameters.targetOrg >> -d "<< parameters.outputDir >>" -n << parameters.numberOfRetries >>
