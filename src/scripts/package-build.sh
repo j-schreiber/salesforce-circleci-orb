@@ -23,7 +23,7 @@ verify_params() {
     fi
 }
 
-sfdx_force_package_version_create() {
+sf_package_version_create() {
     sf package version create "$@"
 }
 
@@ -53,7 +53,7 @@ build_package() {
         params+=( --target-dev-hub "$PARAM_DEV_HUB")
     fi
     echo "sf package version create ${params[*]}"
-    sfdx_force_package_version_create "${params[@]}" > package_version_create_result.json
+    sf_package_version_create "${params[@]}" > package_version_create_result.json
 }
 
 process_build_result() {

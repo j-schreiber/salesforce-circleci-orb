@@ -4,7 +4,7 @@ setup_output_directory() {
     mkdir -p "$PARAM_OUTPUT_DIRECTORY"
 }
 
-execute_sfdx_apex_test_run() {
+execute_sf_apex_test_run() {
     echo "sf apex run test $*"
     sf apex run test "$@"
 }
@@ -15,7 +15,7 @@ run_tests() {
     params+=( --wait 10)
     params+=( --result-format junit)
     params+=( --output-dir "$PARAM_OUTPUT_DIRECTORY")
-    execute_sfdx_apex_test_run "${params[@]}"
+    execute_sf_apex_test_run "${params[@]}"
     exitCode=$?
     rm -f "$PARAM_OUTPUT_DIRECTORY"/test-result.xml
     rm -f "$PARAM_OUTPUT_DIRECTORY"/*.json

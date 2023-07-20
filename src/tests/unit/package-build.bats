@@ -28,7 +28,7 @@ teardown() {
 
 @test "Default command initialisation > Builds beta package and exports to BASH_ENV" {
     # Arrange
-    function sfdx_force_package_version_create() {
+    function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-success.json
     }
 
@@ -53,7 +53,7 @@ teardown() {
 @test "No package version export specified > Builds beta package without exporting" {
     # Arrange
     export PARAM_PACKAGE_VERSION_EXPORT=
-    function sfdx_force_package_version_create() {
+    function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-success.json
     }
 
@@ -73,7 +73,7 @@ teardown() {
 
 @test "Package version create timed out with export specified > Abort with exit code" {
     # Arrange
-    function sfdx_force_package_version_create() {
+    function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-timeout.json
     }
 
@@ -96,7 +96,7 @@ teardown() {
 @test "Package version create timed out without export specified > Succeed" {
     # Arrange
     export PARAM_PACKAGE_VERSION_EXPORT=
-    function sfdx_force_package_version_create() {
+    function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-timeout.json
     }
 
@@ -120,7 +120,7 @@ teardown() {
     export PARAM_PACKAGE_VERSION_EXPORT=MY_SUBSCRIBER_PACKAGE_VERSION_ID
     export PARAM_REQUIRE_KEY=0
 
-    function sfdx_force_package_version_create() {
+    function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-success.json
     }
 
@@ -144,7 +144,7 @@ teardown() {
 
 @test "Package version fails with error > Command exits with error code" {
     # Arrange
-    function sfdx_force_package_version_create() {
+    function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-error.json
     }
     

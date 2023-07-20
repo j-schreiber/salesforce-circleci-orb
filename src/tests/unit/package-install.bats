@@ -22,7 +22,7 @@ setup() {
     export PARAM_DEVHUB_USERNAME='info@lietzau-consulting.de'
     export PACKAGE_ID='0Ho08000000CaRqCAK'
 
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/latest-package-build.json
     }
 
@@ -82,7 +82,7 @@ setup() {
     export PARAM_PACKAGE_ID=MY_TEST_PACKAGE_ID
     export MY_TEST_PACKAGE_ID='0Ho08000000CaRqXXX'
 
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/latest-package-build.json
     }
 
@@ -105,7 +105,7 @@ setup() {
     export PACKAGE_ID='0Ho08000000CaRqXXX'
     export PARAM_INSTALL_RELEASE_CANDIDATE=1
 
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/latest-package-build.json
     }
 
@@ -151,7 +151,7 @@ setup() {
     export PARAM_QUERY_LATEST_BUILD=0
     export PARAM_POST_INSTALL_SOURCE_PATH=src/deploy
     
-    function sfdx_force_source_deploy() {
+    function sf_project_deploy_start() {
         echo "sf project deploy start $@"
     }
 
@@ -176,7 +176,7 @@ setup() {
     export PARAM_QUERY_LATEST_BUILD=0
     export PARAM_POST_INSTALL_SOURCE_PATH='src/deploy src/deploy/main'
     
-    function sfdx_force_source_deploy() {
+    function sf_project_deploy_start() {
         echo "sf project deploy start $@"
     }
 
@@ -199,7 +199,7 @@ setup() {
     export PACKAGE_ID='0Ho08000000CaRqXXX'
     export PARAM_INSTALL_RELEASE_CANDIDATE=1
 
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/empty-query-result.json
     }
 

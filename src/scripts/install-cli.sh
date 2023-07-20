@@ -3,7 +3,7 @@ set -e
 
 verify_params() {
     if [ -z "$PARAM_REQUESTED_CLI_VERSION" ]; then
-        export PARAM_REQUESTED_CLI_VERSION=SFDX_CLI_VERSION
+        export PARAM_REQUESTED_CLI_VERSION=SALESFORCE_CLI_VERSION
     fi
     if [ -n "${!PARAM_REQUESTED_CLI_VERSION}" ]; then
         IFS='-' read -ra CLI_VERSION_PARTS <<< "${!PARAM_REQUESTED_CLI_VERSION}"
@@ -55,10 +55,10 @@ download_latest_version() {
 
 symlink_version() {
     if [[ -x ~/sf/bin/sf ]]; then
-        echo "Create symlink for SFDX CLI"
-        sudo ln -sf ~/sf/bin/sfdx /bin/sfdx
         echo "Create symlink for SF CLI"
         sudo ln -sf ~/sf/bin/sf /bin/sf
+        echo "Create symlink for SFDX alias"
+        sudo ln -sf ~/sf/bin/sfdx /bin/sfdx
     else 
         echo "Cannot create symlinks, CLI files not exist."
         exit 12

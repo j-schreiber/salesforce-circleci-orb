@@ -38,13 +38,13 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"No explicit version requested. Installing latest version."* ]]
-    [[ $output == *"Create symlink for SFDX CLI"* ]]
+    [[ $output == *"Create symlink for SFDX alias"* ]]
     [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
 @test "Version in default parameter > installs explicit version" {
     # Arrange
-    export SFDX_CLI_VERSION="2.0.2-3bd4327"
+    export SALESFORCE_CLI_VERSION="2.0.2-3bd4327"
 
     # Act
     run install
@@ -54,9 +54,9 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"Extracted CLI version from SFDX_CLI_VERSION: 2.0.2 on 3bd4327"* ]]
+    [[ $output == *"Extracted CLI version from SALESFORCE_CLI_VERSION: 2.0.2 on 3bd4327"* ]]
     [[ $output == *"Explicit version requested. Installing: 2.0.2"* ]]
-    [[ $output == *"Create symlink for SFDX CLI"* ]]
+    [[ $output == *"Create symlink for SFDX alias"* ]]
     [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
@@ -75,13 +75,13 @@ teardown() {
     [ "$status" -eq 0 ]
     [[ $output == *"Extracted CLI version from MY_CLI_VERSION: 2.0.2 on 3bd4327"* ]]
     [[ $output == *"Explicit version requested. Installing: 2.0.2"* ]]
-    [[ $output == *"Create symlink for SFDX CLI"* ]]
+    [[ $output == *"Create symlink for SFDX alias"* ]]
     [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
 @test "Incomplete version in parameter without SHA > descriptive error message" {
     # Arrange
-    export SFDX_CLI_VERSION=2.0.2
+    export SALESFORCE_CLI_VERSION=2.0.2
 
     # Act
     run install
@@ -91,14 +91,14 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 11 ]
-    [[ $output == *"Could not extract a valid commit SHA from SFDX_CLI_VERSION. Input was: 2.0.2"* ]]
+    [[ $output == *"Could not extract a valid commit SHA from SALESFORCE_CLI_VERSION. Input was: 2.0.2"* ]]
     [[ $output == *"Reference the manifest to find the correct SHA for the requested version: https://developer.salesforce.com/media/salesforce-cli/sf/versions/sf-linux-x64-tar-xz.json"* ]]
 }
 
 # Not able to get an old version, which would fail -> not testable anymore
 # @test "Installed CLI version is incompatible with TMH plugin > exits with error message" {
 #     # Arrange
-#     export SFDX_CLI_VERSION="7.176.1-458b658"
+#     export SALESFORCE_CLI_VERSION="7.176.1-458b658"
 
 #     # Act
 #     run install
@@ -113,7 +113,7 @@ teardown() {
 
 @test "Installed CLI version is compatible with TMH plugin > finishes plugin install" {
     # Arrange
-    export SFDX_CLI_VERSION="2.0.2-3bd4327"
+    export SALESFORCE_CLI_VERSION="2.0.2-3bd4327"
 
     # Act
     run install

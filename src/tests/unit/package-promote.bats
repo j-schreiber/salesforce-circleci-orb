@@ -19,7 +19,7 @@ setup() {
     function query_latest_package_build() {
         cat src/tests/data/latest-package-build.json
     }
-    function sfdx_package_version_promote() {
+    function sf_package_version_promote() {
         echo "sf package version promote $@"
     }
 
@@ -42,7 +42,7 @@ setup() {
     function query_latest_package_build() {
         cat src/tests/data/empty-query-result.json
     }
-    function sfdx_package_version_promote() {
+    function sf_package_version_promote() {
         echo "sf package version promote $@"
     }
 
@@ -64,7 +64,7 @@ setup() {
     export PARAM_PROMOTE_LATEST_BUILD=0
 
     # ACT
-    function sfdx_package_version_promote() {
+    function sf_package_version_promote() {
         echo "sf package version promote $@"
     }
     run main

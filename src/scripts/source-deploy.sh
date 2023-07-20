@@ -1,6 +1,6 @@
 #! /bin/bash
 
-sfdx_force_source_deploy() {
+sf_project_deploy_start() {
     echo "sf project deploy start $*"
     sf project deploy start "$@"
 }
@@ -10,7 +10,7 @@ deploy() {
     params+=( --source-dir "$1")
     params+=( --target-org "$PARAM_TARGET_ORG")
     params+=( --test-level RunLocalTests)
-    sfdx_force_source_deploy "${params[@]}"
+    sf_project_deploy_start "${params[@]}"
 }
 
 main() {
@@ -18,7 +18,7 @@ main() {
         cd "$PARAM_PROJECT_PATH" || exit 1
     fi
     if [ -n "$PARAM_OVERRIDES" ]; then
-        sfdx_force_source_deploy "$PARAM_OVERRIDES"
+        sf_project_deploy_start "$PARAM_OVERRIDES"
         exit
     fi
     IFS=" " read -r -a dirs <<< "$PARAM_DIRECTORIES"
