@@ -1,5 +1,5 @@
 description: >
-  Downloads and installs the latest SFDX and SF CLI version from the official Salesforce channels.
+  Downloads and installs the latest SF CLI version (with SFDX Alias) from the official Salesforce channels.
 
 parameters:
   sfdxCliVersion:
@@ -12,7 +12,7 @@ steps:
   - run:
       environment:
         PARAM_REQUESTED_CLI_VERSION: << parameters.sfdxCliVersion >>
-      name: Install SF and SFDX CLI
+      name: Install SF CLI (with SFDX Alias)
       command: <<include(scripts/install-cli.sh)>>
   - run:
       name: Verify CLI Installation

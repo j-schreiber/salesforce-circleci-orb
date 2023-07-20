@@ -24,8 +24,8 @@ verify_params() {
 }
 
 echo_error_instructions() {
-    echo "Reference the manifest to find the correct SHA for the requested version: https://developer.salesforce.com/media/salesforce-cli/sfdx/versions/sfdx-linux-x64-tar-xz.json"
-    echo "Provide the CLI version together with the correct SHA in the format: x.y.z-SHA (e.g. 7.176.1-458b658)"
+    echo "Reference the manifest to find the correct SHA for the requested version: https://developer.salesforce.com/media/salesforce-cli/sf/versions/sf-linux-x64-tar-xz.json"
+    echo "Provide the CLI version together with the correct SHA in the format: x.y.z-SHA (e.g. 2.0.2-3bd4327)"
 }
 
 install() {
@@ -41,24 +41,24 @@ install() {
 
 download_explicit_version() {
     echo "Explicit version requested. Installing: $CLI_VERSION"
-    wget "https://developer.salesforce.com/media/salesforce-cli/sfdx/versions/$CLI_VERSION/$COMMIT_SHA/sfdx-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz"
-    mkdir -p ~/sfdx
-    tar xJf "sfdx-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz" -C ~/sfdx --strip-components 1
+    wget "https://developer.salesforce.com/media/salesforce-cli/sf/versions/$CLI_VERSION/$COMMIT_SHA/sf-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz"
+    mkdir -p ~/sf
+    tar xJf "sf-v$CLI_VERSION-$COMMIT_SHA-linux-x64.tar.xz" -C ~/sf --strip-components 1
 }
 
 download_latest_version() {
     echo "No explicit version requested. Installing latest version."
-    wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-    mkdir -p ~/sfdx
-    tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+    wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+    mkdir -p ~/sf
+    tar xJf sf-linux-x64.tar.xz -C ~/sf --strip-components 1
 }
 
 symlink_version() {
-    if [[ -x ~/sfdx/bin/sfdx && -x ~/sfdx/bin/sf ]]; then
+    if [[ -x ~/sf/bin/sf ]]; then
         echo "Create symlink for SFDX CLI"
-        sudo ln -sf ~/sfdx/bin/sfdx /bin/sfdx
+        sudo ln -sf ~/sf/bin/sfdx /bin/sfdx
         echo "Create symlink for SF CLI"
-        sudo ln -sf ~/sfdx/bin/sf /bin/sf
+        sudo ln -sf ~/sf/bin/sf /bin/sf
     else 
         echo "Cannot create symlinks, CLI files not exist."
         exit 12

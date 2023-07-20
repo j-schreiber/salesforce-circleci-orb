@@ -44,7 +44,7 @@ teardown() {
 
 @test "Version in default parameter > installs explicit version" {
     # Arrange
-    export SFDX_CLI_VERSION="7.199.3-7348ac4"
+    export SFDX_CLI_VERSION="2.0.2-3bd4327"
 
     # Act
     run install
@@ -54,8 +54,8 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"Extracted CLI version from SFDX_CLI_VERSION: 7.199.3 on 7348ac4"* ]]
-    [[ $output == *"Explicit version requested. Installing: 7.199.3"* ]]
+    [[ $output == *"Extracted CLI version from SFDX_CLI_VERSION: 2.0.2 on 3bd4327"* ]]
+    [[ $output == *"Explicit version requested. Installing: 2.0.2"* ]]
     [[ $output == *"Create symlink for SFDX CLI"* ]]
     [[ $output == *"Create symlink for SF CLI"* ]]
 }
@@ -63,7 +63,7 @@ teardown() {
 @test "Version in custom parameter > installs explicit version" {
     # Arrange
     export PARAM_REQUESTED_CLI_VERSION=MY_CLI_VERSION
-    export MY_CLI_VERSION="7.199.3-7348ac4"
+    export MY_CLI_VERSION="2.0.2-3bd4327"
 
     # Act
     run install
@@ -73,15 +73,15 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"Extracted CLI version from MY_CLI_VERSION: 7.199.3 on 7348ac4"* ]]
-    [[ $output == *"Explicit version requested. Installing: 7.199.3"* ]]
+    [[ $output == *"Extracted CLI version from MY_CLI_VERSION: 2.0.2 on 3bd4327"* ]]
+    [[ $output == *"Explicit version requested. Installing: 2.0.2"* ]]
     [[ $output == *"Create symlink for SFDX CLI"* ]]
     [[ $output == *"Create symlink for SF CLI"* ]]
 }
 
 @test "Incomplete version in parameter without SHA > descriptive error message" {
     # Arrange
-    export SFDX_CLI_VERSION=7.185.0
+    export SFDX_CLI_VERSION=2.0.2
 
     # Act
     run install
@@ -91,28 +91,29 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 11 ]
-    [[ $output == *"Could not extract a valid commit SHA from SFDX_CLI_VERSION. Input was: 7.185.0"* ]]
-    [[ $output == *"Reference the manifest to find the correct SHA for the requested version: https://developer.salesforce.com/media/salesforce-cli/sfdx/versions/sfdx-linux-x64-tar-xz.json"* ]]
+    [[ $output == *"Could not extract a valid commit SHA from SFDX_CLI_VERSION. Input was: 2.0.2"* ]]
+    [[ $output == *"Reference the manifest to find the correct SHA for the requested version: https://developer.salesforce.com/media/salesforce-cli/sf/versions/sf-linux-x64-tar-xz.json"* ]]
 }
 
-@test "Installed CLI version is incompatible with TMH plugin > exits with error message" {
-    # Arrange
-    export SFDX_CLI_VERSION="7.176.1-458b658"
+# Not able to get an old version, which would fail -> not testable anymore
+# @test "Installed CLI version is incompatible with TMH plugin > exits with error message" {
+#     # Arrange
+#     export SFDX_CLI_VERSION="7.176.1-458b658"
 
-    # Act
-    run install
-    run install_and_verify_tmh_plugin
+#     # Act
+#     run install
+#     run install_and_verify_tmh_plugin
 
-    # Assert
-    echo "Actual output"
-    echo "$output"
-    echo "Actual status: $status"
-    [ "$status" -eq 13 ]
-}
+#     # Assert
+#     echo "Actual output"
+#     echo "$output"
+#     echo "Actual status: $status"
+#     [ "$status" -eq 13 ]
+# }
 
 @test "Installed CLI version is compatible with TMH plugin > finishes plugin install" {
     # Arrange
-    export SFDX_CLI_VERSION="7.199.3-7348ac4"
+    export SFDX_CLI_VERSION="2.0.2-3bd4327"
 
     # Act
     run install
