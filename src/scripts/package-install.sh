@@ -26,7 +26,7 @@ verify_params() {
     fi
 }
 
-sfdx_force_data_soql_query() {
+sf_data_query() {
     sf data query --use-tooling-api --json --query "$1" --target-org "$2" 2> /dev/null
 }
 
@@ -36,7 +36,7 @@ get_latest_package_build() {
         queryParamValSkipped="AND ValidationSkipped = false"
     fi
     queryString="SELECT SubscriberPackageVersionId FROM Package2Version WHERE Package2Id = '${!PARAM_PACKAGE_ID}' $queryParamValSkipped ORDER BY CreatedDate DESC LIMIT 1"
-    packageVersionId=$( sfdx_force_data_soql_query "$queryString" "${PARAM_DEVHUB_USERNAME}" | jq -r .result.records[0].SubscriberPackageVersionId )
+    packageVersionId=$( sf_data_query "$queryString" "${PARAM_DEVHUB_USERNAME}" | jq -r .result.records[0].SubscriberPackageVersionId )
     if [ "$packageVersionId" = "null" ]; then
         packageVersionId=
     fi
@@ -101,11 +101,11 @@ deploy_post_install_metadata() {
         deploy_params+=( --target-org "$PARAM_TARGET_ORG")
         deploy_params+=( --wait 10)
         deploy_params+=( --test-level RunLocalTests)
-        sfdx_force_source_deploy "${deploy_params[@]}"
+        sf_project_deploy_start "${deploy_params[@]}"
     fi
 }
 
-sfdx_force_source_deploy() {
+sf_project_deploy_start() {
     echo "sf project deploy start $*"
     sf project deploy start "$@"
 }

@@ -26,7 +26,9 @@ teardown() {
     rm -f $BASH_ENV
     # sf updates sfdx-project.json after success
     cd salesforce/demo-package
-    git checkout master -- sfdx-project.json
+    package_alias=$(jq '.packageAliases | keys[1]' sfdx-project.json)
+    jq "del(.packageAliases.$package_alias)" sfdx-project.json > sfdx-project-copy.json
+    mv sfdx-project-copy.json sfdx-project.json
     cd ../..
 }
 

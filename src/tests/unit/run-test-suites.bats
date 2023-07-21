@@ -7,7 +7,7 @@ setup() {
     export PARAM_OUTPUT_DIRECTORY="test-results/apex"
     export PARAM_TEST_SUITES=
 
-    function sfdx_apex_test_run() {
+    function sf_apex_test_run() {
         echo "sf apex run test $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
@@ -87,7 +87,7 @@ teardown() {
     PARAM_TEST_SUITES="Test_Suite_3 Test_Suite_4 Test_Suite_5"
 
     # ACT
-    function sfdx_apex_test_run() {
+    function sf_apex_test_run() {
         echo "sf apex run test $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
@@ -99,7 +99,7 @@ teardown() {
         fi
         return 0
     }
-    export -f sfdx_apex_test_run
+    export -f sf_apex_test_run
     run main
 
     # ASSERT
@@ -120,7 +120,7 @@ teardown() {
     PARAM_TEST_SUITES="Test_Suite_3 Test_Suite_4 Test_Suite_5"
 
     # ACT
-    function sfdx_apex_test_run() {
+    function sf_apex_test_run() {
         echo "sf apex run test $*"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock-junit.xml"
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/$2-test-run-mock.json"
@@ -128,7 +128,7 @@ teardown() {
         echo "$2" >> "$PARAM_OUTPUT_DIRECTORY/test-run-id.txt"
         return 100
     }
-    export -f sfdx_apex_test_run
+    export -f sf_apex_test_run
     run main
 
     # ASSERT

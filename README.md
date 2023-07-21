@@ -23,8 +23,8 @@ in section Testing to finalize setup of your local dev environment.
 The easiest way to install the CLI is using the bash script from the orb command. It automatically installs the latest version.
 
 ```bash
-# export SFDX_CLI_VERSION=7.176.1-458b658
-# export SFDX_CLI_VERSION=7.181.1-05b8719
+# export SALESFORCE_CLI_VERSION=2.0.2-3bd4327
+# export SALESFORCE_CLI_VERSION=2.1.1-1718d40
 bash src/scripts/install-cli.sh
 
 # install packaging plugin, if it is not installed, the jq command gets an error, because the plugin will be automatically installed

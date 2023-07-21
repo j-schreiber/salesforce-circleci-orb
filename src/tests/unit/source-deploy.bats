@@ -9,7 +9,7 @@ setup() {
     export PARAM_PROJECT_PATH=
 
     # mock sf deploy
-    function sfdx_force_source_deploy() {
+    function sf_project_deploy_start() {
         echo "sf project deploy start $*"
     }
 

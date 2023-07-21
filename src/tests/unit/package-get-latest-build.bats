@@ -22,7 +22,7 @@ teardown() {
 
 @test "Default command config > has latest build > exports build" {
     # Arrange
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/latest-package-build.json
     }
 
@@ -46,7 +46,7 @@ teardown() {
 
 @test "Query release candidate only > has latest build > exports build" {
     # Arrange
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/latest-package-build.json
     }
     export PARAM_RELEASE_CANDIDATE=1
@@ -68,7 +68,7 @@ teardown() {
 
 @test "Default command configuration > has no latest build > exits with error" {
     # Arrange
-    function sfdx_force_data_soql_query() {
+    function sf_data_query() {
         cat src/tests/data/empty-query-result.json
     }
 

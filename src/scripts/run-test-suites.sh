@@ -29,7 +29,7 @@ query_test_suites_from_target_org() {
         --target-org "$PARAM_TARGET_ORG" 2> /dev/null
 }
 
-sfdx_apex_test_run() {
+sf_apex_test_run() {
     echo "sf apex run test $*"
     sf apex run test "$@"
 }
@@ -43,7 +43,7 @@ run_test_suite() {
     params+=( --wait 10)
     params+=( --result-format junit)
     params+=( --output-dir "$PARAM_OUTPUT_DIRECTORY")
-    sfdx_apex_test_run "${params[@]}"
+    sf_apex_test_run "${params[@]}"
     exitCode=$?
     rm -f "$PARAM_OUTPUT_DIRECTORY"/test-result.xml
     rm -f "$PARAM_OUTPUT_DIRECTORY"/*.json

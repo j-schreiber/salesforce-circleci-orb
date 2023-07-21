@@ -28,7 +28,7 @@ decrypt_key() {
     echo "${!PARAM_JWT_KEY_FILE}" | base64 --decode --ignore-garbage > ./server.key
 }
 
-sfdx_auth_jwt_grant() {
+sf_org_login_jwt() {
     sf org login jwt "$@"
 }
 
@@ -46,7 +46,7 @@ authenticate_org() {
         echo "Setting org as default devhub ..."
         params+=( --set-default-dev-hub)
     fi
-    sfdx_auth_jwt_grant "${params[@]}"
+    sf_org_login_jwt "${params[@]}"
 }
 
 main() {

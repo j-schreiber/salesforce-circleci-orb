@@ -17,7 +17,7 @@ query_latest_package_build() {
         --target-org "${PARAM_DEVHUB_USERNAME}" 2> /dev/null
 }
 
-sfdx_package_version_promote() {
+sf_package_version_promote() {
     echo "sf package version promote $*"
     sf package version promote "$@"
 }
@@ -42,7 +42,7 @@ promote_build() {
     params+=(--package "$packageVersionId")
     params+=( --target-dev-hub "$PARAM_DEVHUB_USERNAME")
     params+=( --no-prompt)
-    sfdx_package_version_promote "${params[@]}"
+    sf_package_version_promote "${params[@]}"
 }
 
 main() {
