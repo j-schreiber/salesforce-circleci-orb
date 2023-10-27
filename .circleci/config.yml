@@ -206,6 +206,7 @@ workflows:
           targetOrgConsumerKey: TEST_CONSUMER_KEY_UAT
           package: PACKAGE_ID
           buildNewPackage: false
+          runTestSuitesOneByOne: false
           requires:
             - sandbox_deploy_new_build
       - jsc-sfdx/build_release_candidate_version:

@@ -55,6 +55,10 @@ parameters:
     description: Provide a space-separated list of directories (relative to the project root) to deploy after the package was installed.
     default: ""
     type: string
+  runTestSuitesOneByOne:
+    description: By default all test suites are ran one by one. Disbale this flag to run all tests together.
+    default: true
+    type: boolean
 
 docker:
   - image: cimg/openjdk:17.0-node
@@ -95,9 +99,19 @@ steps:
             targetOrg: << parameters.targetOrgUsername >>
             projectPath: << parameters.projectPath >>
             directories: << parameters.deployDirectories >>
-  - run-all-test-suites:
-      targetOrg: << parameters.targetOrgUsername >>
-      outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
+  - when:
+      condition: << parameters.runTestSuitesOneByOne >>
+      steps:
+        - run-all-test-suites:
+            targetOrg: << parameters.targetOrgUsername >>
+            outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
+  - when:
+      condition:
+        not: << parameters.runTestSuitesOneByOne >>
+      steps:
+        - run-tests:
+            targetOrg: << parameters.targetOrgUsername >>
+            outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
   - package-rollback:
       packageVersion: INSTALLED_PACKAGE_VERSION_ID
       targetOrg: << parameters.targetOrgUsername >>
