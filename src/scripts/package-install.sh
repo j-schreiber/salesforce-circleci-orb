@@ -101,6 +101,7 @@ deploy_post_install_metadata() {
         deploy_params+=( --target-org "$PARAM_TARGET_ORG")
         deploy_params+=( --wait 10)
         deploy_params+=( --test-level RunLocalTests)
+        deploy_params+=( --verbose)
         sf_project_deploy_start "${deploy_params[@]}"
     fi
 }

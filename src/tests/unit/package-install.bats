@@ -164,7 +164,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
-    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests" ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests --verbose" ]]
 }
 
 @test "Specify multiple post install source > source deployed after package install" {
@@ -189,7 +189,7 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
-    [[ $output == *"sf project deploy start --source-dir src/deploy src/deploy/main --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests" ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy src/deploy/main --target-org business@lietzau-consulting.de --wait 10 --test-level RunLocalTests --verbose" ]]
 }
 
 @test "Query latest build does not find package > exits with error" {
