@@ -56,7 +56,7 @@ parameters:
     default: ""
     type: string
   runTestSuitesOneByOne:
-    description: By default all test suites are ran one by one. Disbale this flag to run all tests at once.
+    description: By default all test suites are ran one by one. Disbale this flag to run all tests together.
     default: true
     type: boolean
 
