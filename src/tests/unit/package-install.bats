@@ -16,6 +16,10 @@ setup() {
     }
 }
 
+teardown() {
+    rm -f package_version_install_result.json
+}
+
 @test "Default command initialisation > Queries and installs latest package" {
     # ARRANGE
     export PARAM_TARGET_ORG='info@lietzau-consulting.de'
@@ -26,6 +30,10 @@ setup() {
         cat src/tests/data/latest-package-build.json
     }
 
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
+    }
+
     # ACT
     run main
 
@@ -34,10 +42,10 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"--installation-key"* ]]
     [[ $output == *"Installing 04t9Y0000000000AAA on info@lietzau-consulting.de"* ]]
-    [[ $output == *"sf package install --package 04t9Y0000000000AAA --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc" ]]
+    [[ $output == *"sf package install --json --package 04t9Y0000000000AAA --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
     [[ $output != *"sf project start deploy"* ]]
+    [[ $output == *"Successfully installed package [04t9Y0000000000AAA]"* ]]
 }
 
 @test "Set package version explicitly > Installs input package version" {
@@ -45,6 +53,10 @@ setup() {
     export PARAM_TARGET_ORG='info@lietzau-consulting.de'
     export PACKAGE_VERSION='04t08000000gZOGAA3'
     export PARAM_QUERY_LATEST_BUILD=0
+
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
+    }
 
     # ACT
     run main
@@ -55,6 +67,55 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf package install --json --package 04t08000000gZOGAA3 --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
+    [[ $output == *"Successfully installed package [04t08000000gZOGAA3]"* ]]
+}
+
+@test "Package version install timed out > Abort with exit code" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='info@lietzau-consulting.de'
+    export PACKAGE_VERSION='04t08000000gZOGAA3'
+    export PARAM_QUERY_LATEST_BUILD=0
+
+    function install_package_with_params() {
+        cat src/tests/data/package-install-timeout.json
+    }
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 101 ]
+    [[ $output == *"Installing 04t08000000gZOGAA3 on info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf package install --json --package 04t08000000gZOGAA3 --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
+    [[ $output == *"Package install timed out with status: IN_PROGRESS"* ]]
+}
+
+@test "Package version install has errors > Abort with exit code" {
+    # ARRANGE
+    export PARAM_TARGET_ORG='info@lietzau-consulting.de'
+    export PACKAGE_VERSION='04t08000000gZOGAA3'
+    export PARAM_QUERY_LATEST_BUILD=0
+
+    function install_package_with_params() {
+        cat src/tests/data/package-install-error.json
+        exit 1
+    }
+
+    # ACT
+    run main
+
+    # ASSERT
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 100 ]
+    [[ $output == *"Installing 04t08000000gZOGAA3 on info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf package install --json --package 04t08000000gZOGAA3 --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
+    [[ $output == *"Package install failed with message: Mock Error Message"* ]]
 }
 
 @test "Set package version in custom variable > Installs input package version" {
@@ -63,6 +124,10 @@ setup() {
     export PARAM_PACKAGE_VERSION=MY_TEST_PACKAGE_VERSION
     export MY_TEST_PACKAGE_VERSION='04t08000000gZOGAA4'
     export PARAM_QUERY_LATEST_BUILD=0
+
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
+    }
 
     # ACT
     run main
@@ -73,6 +138,8 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA4 on info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf package install --json --package 04t08000000gZOGAA4 --target-org info@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
+    [[ $output == *"Successfully installed package [04t08000000gZOGAA4]"* ]]
 }
 
 @test "Set package in custom variable > Query and install latest package version" {
@@ -86,6 +153,10 @@ setup() {
         cat src/tests/data/latest-package-build.json
     }
 
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
+    }
+
     # ACT
     run main
 
@@ -96,6 +167,8 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"Finding latest package version for 0Ho08000000CaRqXXX"* ]]
     [[ $output == *"Installing 04t9Y0000000000AAA on business@lietzau-consulting.de"* ]]
+    [[ $output == *"sf package install --json --package 04t9Y0000000000AAA --target-org business@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
+    [[ $output == *"Successfully installed package [04t9Y0000000000AAA]"* ]]
 }
 
 @test "Set to install set release candidate > Query and install latest release candidate" {
@@ -109,6 +182,10 @@ setup() {
         cat src/tests/data/latest-package-build.json
     }
 
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
+    }
+
     # ACT
     run main
 
@@ -119,6 +196,8 @@ setup() {
     [ "$status" -eq 0 ]
     [[ $output == *"Finding latest release candidate for 0Ho08000000CaRqXXX"* ]]
     [[ $output == *"Installing 04t9Y0000000000AAA on business@lietzau-consulting.de"* ]]
+    [[ $output == *"sf package install --json --package 04t9Y0000000000AAA --target-org business@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10 --installation-key abc"* ]]
+    [[ $output == *"Successfully installed package [04t9Y0000000000AAA]"* ]]
 }
 
 @test "Install with empty installation key > install request without installation key" {
@@ -129,6 +208,10 @@ setup() {
     export INSTALLATION_KEY=
     export PARAM_QUERY_LATEST_BUILD=0
 
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
+    }
+
     # ACT
     run main
 
@@ -138,8 +221,9 @@ setup() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ $output == *"Installing 04t08000000gZOGAA3 on business@lietzau-consulting.de"* ]]
-    [[ $output == *"sf package install --package 04t08000000gZOGAA3 --target-org business@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10" ]]
+    [[ $output == *"sf package install --json --package 04t08000000gZOGAA3 --target-org business@lietzau-consulting.de --no-prompt --wait 10 --publish-wait 10"* ]]
     [[ $output != *"--installation-key"* ]]
+    [[ $output == *"Successfully installed package [04t08000000gZOGAA3]"* ]]
 }
 
 @test "Specify post install source > source deployed after package install" {
@@ -153,6 +237,10 @@ setup() {
     
     function sf_project_deploy_start() {
         echo "sf project deploy start $@"
+    }
+
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
     }
 
     # ACT
@@ -178,6 +266,10 @@ setup() {
     
     function sf_project_deploy_start() {
         echo "sf project deploy start $@"
+    }
+
+    function install_package_with_params() {
+        cat src/tests/data/package-install-success.json
     }
 
     # ACT

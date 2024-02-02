@@ -1,0 +1,12 @@
+{
+  "code": 1,
+  "actions": ["The client has timed out."],
+  "context": "Install",
+  "commandName": "Install",
+  "message": "Mock Error Message",
+  "name": "SubscriberPackageVersionNotPublishedError",
+  "status": 1,
+  "stack": "SubscriberPackageVersionNotPublishedError: The subscriber package version is not fully available.\n    at Messages.createError (/root/.local/share/sf/node_modules/@salesforce/core/lib/messages.js:393:16)\n    at waitForPublish (/root/.local/share/sf/node_modules/@salesforce/packaging/lib/package/packageInstall.js:132:35)\n    at async SubscriberPackageVersion.waitForPublish (/root/.local/share/sf/node_modules/@salesforce/packaging/lib/package/subscriberPackageVersion.js:328:9)\n    at async Install.run (/root/.local/share/sf/node_modules/@salesforce/plugin-packaging/lib/commands/package/install.js:62:13)\n    at async Install._run (/root/.local/share/sf/node_modules/@oclif/core/lib/command.js:117:22)\n    at async Config.runCommand (/root/sf/node_modules/@oclif/core/lib/config/config.js:329:25)\n    at async run (/root/sf/node_modules/@oclif/core/lib/main.js:89:16)\nDUE TO:\nPollingClientTimeout: The client has timed out.\n    at PollingClient.subscribe (/root/.local/share/sf/node_modules/@salesforce/core/lib/status/pollingClient.js:91:19)\n    at async waitForPublish (/root/.local/share/sf/node_modules/@salesforce/packaging/lib/package/packageInstall.js:128:9)\n    at async SubscriberPackageVersion.waitForPublish (/root/.local/share/sf/node_modules/@salesforce/packaging/lib/package/subscriberPackageVersion.js:328:9)\n    at async Install.run (/root/.local/share/sf/node_modules/@salesforce/plugin-packaging/lib/commands/package/install.js:62:13)\n    at async Install._run (/root/.local/share/sf/node_modules/@oclif/core/lib/command.js:117:22)\n    at async Config.runCommand (/root/sf/node_modules/@oclif/core/lib/config/config.js:329:25)\n    at async run (/root/sf/node_modules/@oclif/core/lib/main.js:89:16)",
+  "exitCode": 1,
+  "warnings": []
+}

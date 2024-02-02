@@ -58,7 +58,6 @@ get_package_version_id() {
 }
 
 install_package_with_params() {
-    echo "sf package install $*"
     sf package install "$@"
 }
 
@@ -75,7 +74,8 @@ install_package() {
     fi
     echo "Installing $packageVersionId on $PARAM_TARGET_ORG ..."
     params=()
-    params+=(--package "$packageVersionId")
+    params+=(--json)
+    params+=( --package "$packageVersionId")
     params+=( --target-org "$PARAM_TARGET_ORG")
     params+=( --no-prompt)
     params+=( --wait 10)
@@ -83,7 +83,25 @@ install_package() {
     if [ -n "${!PARAM_INSTALLATION_KEY}" ]; then
         params+=( --installation-key "${!PARAM_INSTALLATION_KEY}")
     fi
-    install_package_with_params "${params[@]}"
+    echo "sf package install ${params[*]}"
+    install_package_with_params "${params[@]}" | tee package_version_install_result.json
+}
+
+process_install_result() {
+    commandStatus=$( jq -r .status package_version_install_result.json )
+    if [ "$commandStatus" -eq 0 ]; then
+        resultStatus=$( jq -r .result.Status package_version_install_result.json )
+        if [ "$resultStatus" == "SUCCESS" ]; then
+            echo "Successfully installed package [$packageVersionId]"
+        else
+            echo "Package install timed out with status: $resultStatus"
+            exit 101
+        fi
+    else
+        installError=$( jq -r .message package_version_install_result.json )
+        echo "Package install failed with message: $installError"
+        exit 100
+    fi
 }
 
 deploy_post_install_metadata() {
@@ -115,6 +133,7 @@ main() {
     verify_params
     get_package_version_id
     install_package
+    process_install_result
     deploy_post_install_metadata
 }
 
