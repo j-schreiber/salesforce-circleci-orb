@@ -146,6 +146,7 @@ teardown() {
     # Arrange
     function sf_package_version_create() {
         cat ../../src/tests/data/package-build-rc-error.json
+        exit 1
     }
     
     # Act

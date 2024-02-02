@@ -24,6 +24,7 @@ setup() {
 
 teardown() {
     rm -f $BASH_ENV
+    rm -f salesforce/demo-package/package_version_create_result.json
     # sf updates sfdx-project.json after success
     cd salesforce/demo-package
     package_alias=$(jq '.packageAliases | keys[1]' sfdx-project.json)

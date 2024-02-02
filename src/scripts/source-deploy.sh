@@ -10,6 +10,7 @@ deploy() {
     params+=( --source-dir "$1")
     params+=( --target-org "$PARAM_TARGET_ORG")
     params+=( --test-level RunLocalTests)
+    params+=( --verbose)
     sf_project_deploy_start "${params[@]}"
 }
 

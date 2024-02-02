@@ -31,7 +31,7 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org info@lietzau-consulting.de --test-level RunLocalTests"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org info@lietzau-consulting.de --test-level RunLocalTests --verbose" ]]
 }
 
 @test "Deploy multiple directories > No overrides > all source deployed" {
@@ -46,9 +46,9 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org info@lietzau-consulting.de"* ]]
-    [[ $output == *"sf project deploy start --source-dir src/deploy-two --target-org info@lietzau-consulting.de"* ]]
-    [[ $output == *"sf project deploy start --source-dir src/deploy-three --target-org info@lietzau-consulting.de"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy --target-org info@lietzau-consulting.de --test-level RunLocalTests --verbose"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy-two --target-org info@lietzau-consulting.de --test-level RunLocalTests --verbose"* ]]
+    [[ $output == *"sf project deploy start --source-dir src/deploy-three --target-org info@lietzau-consulting.de --test-level RunLocalTests --verbose"* ]]
 }
 
 @test "Deploy with overrides > override config executed" {
@@ -63,5 +63,5 @@ setup() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ $output == *"sf project deploy start -o info@lietzau-consulting.de -d src/deploy-one -w 10 -l RunLocalTests"* ]]
+    [[ $output == *"sf project deploy start -o info@lietzau-consulting.de -d src/deploy-one -w 10 -l RunLocalTests" ]]
 }

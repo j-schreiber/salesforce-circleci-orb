@@ -11,6 +11,10 @@ setup() {
     export PARAM_DEVHUB_USERNAME=
 }
 
+teardown() {
+    rm -f package_version_install_result.json
+}
+
 @test "Install Package > Valid package version with installation key > installs package" {
     # ARRANGE
     export PARAM_QUERY_LATEST_BUILD=0

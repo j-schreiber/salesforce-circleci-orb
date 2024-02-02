@@ -1,0 +1,29 @@
+{
+  "status": 0,
+  "result": {
+    "attributes": {
+      "type": "PackageInstallRequest",
+      "url": "/services/data/v59.0/tooling/sobjects/PackageInstallRequest/0Hf7Q000000jsHfSAI"
+    },
+    "Id": "0Hf7Q000000jsHfSAI",
+    "IsDeleted": false,
+    "CreatedDate": "2024-02-01T16:29:42.000+0000",
+    "CreatedById": "0057Q000000r07UQAQ",
+    "LastModifiedDate": "2024-02-01T16:29:42.000+0000",
+    "LastModifiedById": "0057Q000000r07UQAQ",
+    "SystemModstamp": "2024-02-01T16:29:42.000+0000",
+    "SubscriberPackageVersionKey": "04t9Y0000000000AAA",
+    "NameConflictResolution": "Block",
+    "SecurityType": "None",
+    "PackageInstallSource": "U",
+    "ProfileMappings": null,
+    "Password": null,
+    "EnableRss": false,
+    "UpgradeType": "mixed-mode",
+    "ApexCompileType": "all",
+    "SkipHandlers": null,
+    "Status": "SUCCESS",
+    "Errors": null
+  },
+  "warnings": []
+}
