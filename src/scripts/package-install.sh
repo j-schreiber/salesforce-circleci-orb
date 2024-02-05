@@ -84,7 +84,7 @@ install_package() {
         params+=( --installation-key "${!PARAM_INSTALLATION_KEY}")
     fi
     echo "sf package install ${params[*]}"
-    install_package_with_params "${params[@]}" | tee package_version_install_result.json
+    install_package_with_params "${params[@]}" | tee package_version_install_result.json || true
 }
 
 process_install_result() {
