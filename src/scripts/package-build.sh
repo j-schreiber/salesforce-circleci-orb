@@ -53,7 +53,7 @@ build_package() {
         params+=( --target-dev-hub "$PARAM_DEV_HUB")
     fi
     echo "sf package version create ${params[*]}"
-    sf_package_version_create "${params[@]}" | tee package_version_create_result.json
+    sf_package_version_create "${params[@]}" | tee package_version_create_result.json || true
 }
 
 process_build_result() {
