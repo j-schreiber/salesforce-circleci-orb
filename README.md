@@ -6,6 +6,7 @@ You need the following tools installed on your dev machine (host system) to get 
 
 - **Docker & Docker-Compose**: The docker container is your local dev environment. This is where you install and test various CLI installations and configurations. It uses the same image that is also used by CircleCI and has all important dependencies (like `jq` or `java`) installed: `cimg/openjdk:17.0-node`. The docker container for dev comes with `bats` installed. Follow instructions to install docker here: [business-apps-developer-setup](https://github.com/mobilityhouse/tmh-business-it-developer-setup/tree/main/macOS/salesforce).
 - **Local SF(DX) CLI**: You will not use this installation during orb authoring process, but it may be helpful to write and understand commands against your authenticated orgs like Staging, Production, etc.
+- **CircleCI CLI**: Generate access tokens, locally validate and pack orbs, validate configs and command ymls during orb authoring.
 
 # Setup Dev Environment
 
@@ -48,6 +49,32 @@ bash src/scripts/install-cli.sh
 # and the json output won't be a compatible json format
 sf plugins install @salesforce/plugin-packaging
 ```
+
+## Development
+
+We recommend to use your host machine (authenticated orgs and SF CLI installation) to experiment with new commands.
+
+### Directory Structure
+
+- [src](src) - Entire source code of the orb
+  - [commands](src/commands) - Command definitions
+  - [examples](src/examples) - Example usage of commands and jobs
+  - [jobs](src/jobs) - Multiple commands chained together, exposed as a "standalone" job
+  - [scripts](src/scripts) - Shell scripts that are used by commands
+  - [tests](src/tests) - Bats tests for shell scripts
+- [salesforce](salesforce) - Submodule with Salesforce example package
+
+### Pack & Publish Pipeline
+
+This repository uses the "Orb Development Kit" [CircleCI recommendations](https://circleci.com/docs/orb-author/#orb-development-kit) to automatically pack & publish new orb versions.
+
+1. Checkout new branch (e.g. JIRA ticket number, `feature/SAL-1234`)
+2. Commit changes according to our guidelines (`feat: did this and that`)
+3. When development is done, open PR and use `semver` tag in title
+   - `[semver:patch]`: Creates a new **patch** version
+   - `[semver:minor]`: Creates a new **minor** version
+   - `[semver:major]`: Creates a new **major** version
+4. Squash merge the PR (so the new commit uses the PR title 1:1)
 
 # Testing
 
