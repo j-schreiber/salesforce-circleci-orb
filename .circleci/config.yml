@@ -88,7 +88,31 @@ jobs:
           targetOrg: << pipeline.parameters.devhubUsername >>
           projectPath: salesforce/demo-package
           directories: src/deploy/main src/deploy/special
-
+      - jsc-sfdx/package_promote:
+          additionalSteps:
+            - slack_notify_deployment_started:
+                targetOrgName: "Production"
+          post-steps:
+            - slack/notify:
+                event: fail
+                template: basic_fail_1
+            - slack/notify:
+                event: pass
+                template: basic_success_1
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          devhubJwtKey: SFDX_JWT_KEY
+          devhubConsumerKey: SFDX_CONSUMER_KEY
+          package: PACKAGE_ID
+          requires:
+            - approve_production
+          context:
+            - salesforce
+          filters:
+            branches:
+              only:
+                - /^version/.*/    
+      
   testing_commands:
     docker:
       - image: cimg/openjdk:17.0-node
@@ -115,6 +139,7 @@ jobs:
           outputDir: test-results/apex-4
       - store_test_results:
           path: test-results/apex
+          
 
 workflows:
   test-pack:
