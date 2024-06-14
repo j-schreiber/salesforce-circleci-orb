@@ -89,30 +89,26 @@ jobs:
           projectPath: salesforce/demo-package
           directories: src/deploy/main src/deploy/special
       - jsc-sfdx/package_promote:
-          additionalSteps:
-            - slack_notify_deployment_started:
-                targetOrgName: "Production"
-          post-steps:
-            - slack/notify:
-                event: fail
-                template: basic_fail_1
-            - slack/notify:
-                event: pass
-                template: basic_success_1
+          #  additionalSteps:
+          #  - slack_notify_deployment_started:
+          #     targetOrgName: "Production"
+          #post-steps:
+          # - slack/notify:
+          #    event: fail
+          #   template: basic_fail_1
+          #- slack/notify:
+          #   event: pass
+          #  template: basic_success_1 */
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           devhubJwtKey: SFDX_JWT_KEY
           devhubConsumerKey: SFDX_CONSUMER_KEY
           package: PACKAGE_ID
-          requires:
-            - approve_production
-          context:
-            - salesforce
           filters:
             branches:
               only:
-                - /^version/.*/    
-      
+                - /^version/.*/
+
   testing_commands:
     docker:
       - image: cimg/openjdk:17.0-node
@@ -139,7 +135,6 @@ jobs:
           outputDir: test-results/apex-4
       - store_test_results:
           path: test-results/apex
-          
 
 workflows:
   test-pack:
@@ -250,23 +245,3 @@ workflows:
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
       - packaging_commands
-      - testing_commands:
-          requires:
-            - packaging_commands
-      - orb-tools/dev-promote-prod-from-commit-subject:
-          orb-name: jsc/salesforce
-          context: orb-publishing
-          add-pr-comment: false
-          fail-if-semver-not-indicated: true
-          publish-version-tag: false
-          requires:
-            - testing_commands
-            # - scratch_org_test
-            # - scratch_org_test_with_lwc
-            - jsc-sfdx/build_release_candidate_version
-            - sandbox_deploy_latest_build
-          filters:
-            branches:
-              only:
-                - master
-                - main

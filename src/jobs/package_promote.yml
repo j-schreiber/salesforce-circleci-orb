@@ -9,9 +9,6 @@ parameters:
   devhubUsername:
     description: Username or alias of the DevHub
     type: string
-  targetOrgUsername:
-    description: Username or alias of the target org in this case always production
-    type: string
   devhubInstanceUrl:
     description: Instance url of the DevHub, if you have a custom domain enabled.
     default: https://login.salesforce.com
@@ -21,14 +18,6 @@ parameters:
     default: DEVHUB_JWT_KEY
     type: env_var_name
   devhubConsumerKey:
-    description: Name of the environment variable containing the consumner key of the connected app on the DevHub. The CLI refers to this as "client id"
-    default: DEVHUB_CONSUMER_KEY
-    type: env_var_name
-  targetOrgJwtKey:
-    description: Name of the environment variable containing the base64 encoded private JWT key (server.key file) to authenticate to the DevHub.
-    default: DEVHUB_JWT_KEY
-    type: env_var_name
-  targetOrgConsumerKey:
     description: Name of the environment variable containing the consumner key of the connected app on the DevHub. The CLI refers to this as "client id"
     default: DEVHUB_CONSUMER_KEY
     type: env_var_name
@@ -42,14 +31,6 @@ parameters:
     description: Environment variable with the Id of the package to build. Cannot contain an alias.
     default: PACKAGE_ID
     type: env_var_name
-  installationKey:
-    description: Environment variable name that holds the installation key of the package to build. If it is empty, no key is used.
-    default: INSTALLATION_KEY
-    type: env_var_name
-  buildNewPackage:
-    description: Disable this flag to skip the package build process and install the latest build instead.
-    default: true
-    type: boolean
   deployDirectories:
     description: Provide a space-separated list of directories (relative to the project root) to deploy after the package was installed.
     default: ""
@@ -67,35 +48,5 @@ steps:
       instanceUrl: << parameters.devhubInstanceUrl >>
       jwtKey: << parameters.devhubJwtKey >>
       consumerKey: << parameters.devhubConsumerKey >>
-      setDefault: true
-  - package-get-installed:
-      targetOrg: << parameters.targetOrgUsername >>
-      devhubUsername: << parameters.devhubUsername >>
-  - when:
-      condition: << parameters.buildNewPackage >>
-      steps:
-        - package-build:
-            package: << parameters.package >>
-            projectPath: << parameters.projectPath >>
-  - package-install:
-      installLatestBuild: true
-      packageId: << parameters.package >>
-      targetOrg: << parameters.targetOrgUsername >>
-      devhubUsername: << parameters.devhubUsername >>
-  - when:
-      condition: << parameters.deployDirectories >>
-      steps:
-        - source-deploy:
-            targetOrg: << parameters.targetOrgUsername >>
-            projectPath: << parameters.projectPath >>
-            directories: << parameters.deployDirectories >>
-
-  - run-all-test-suites:
-      targetOrg: << parameters.targetOrgUsername >>
-      outputDir: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results/apex
-  - package-rollback:
-      packageVersion: INSTALLED_PACKAGE_VERSION_ID
-      targetOrg: << parameters.targetOrgUsername >>
-      when: on_fail
-  - store_test_results:
-      path: <<# parameters.projectPath >><< parameters.projectPath >>/<</ parameters.projectPath >>test-results
+      setDefault: true,
+  - package_promote
