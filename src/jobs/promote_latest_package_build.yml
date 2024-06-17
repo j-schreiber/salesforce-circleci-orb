@@ -1,5 +1,5 @@
 description: |
-  This job promotes the according package to production aswell as writes notifications via slack
+  This job promotes the the latest release candidate package version.
 
 parameters:
   additionalSteps:
@@ -21,21 +21,15 @@ parameters:
     description: Name of the environment variable containing the consumner key of the connected app on the DevHub. The CLI refers to this as "client id"
     default: DEVHUB_CONSUMER_KEY
     type: env_var_name
-  projectPath:
-    description: >
-      Provide the path to the root of your sfdx-project. Keep empty, if the repository root is the sfdx project root.
-      Use this if your repository has multiple sfdx projects.
-    type: string
-    default: ""
-  package:
-    description: Environment variable with the Id of the package to build. Cannot contain an alias.
-    default: PACKAGE_ID
+  packageVersionId:
+    description: Environment variable with the package version id to promote. Required if promoteLatestBuild is false. Has no effect, if it's true.
+    default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: env_var_name
-  deployDirectories:
-    description: Provide a space-separated list of directories (relative to the project root) to deploy after the package was installed.
-    default: ""
-    type: string
-
+  promoteLatestBuild:
+    description: Promotes the latest release candidate build of the package version. This queries the latest build from the DevHub.
+    default: true
+    type: boolean  
+    
 docker:
   - image: cimg/openjdk:17.0-node
 
@@ -50,3 +44,6 @@ steps:
       consumerKey: << parameters.devhubConsumerKey >>
       setDefault: true,
   - package_promote
+      ENV_VAR_PACKAGE_VERSION_ID: << parameters.packageVersionId >>
+      PARAM_PROMOTE_LATEST_BUILD: << parameters.promoteLatestBuild >>
+     

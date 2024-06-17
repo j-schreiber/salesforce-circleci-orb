@@ -88,7 +88,7 @@ jobs:
           targetOrg: << pipeline.parameters.devhubUsername >>
           projectPath: salesforce/demo-package
           directories: src/deploy/main src/deploy/special
-      - jsc-sfdx/package_promote:
+      - jsc-sfdx/promote-latest-package-build:
           #  additionalSteps:
           #  - slack_notify_deployment_started:
           #     targetOrgName: "Production"
@@ -103,11 +103,8 @@ jobs:
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
           devhubJwtKey: SFDX_JWT_KEY
           devhubConsumerKey: SFDX_CONSUMER_KEY
-          package: PACKAGE_ID
-          filters:
-            branches:
-              only:
-                - /^version/.*/
+          ENV_VAR_PACKAGE_VERSION_ID: << parameters.packageVersionId >>
+          PARAM_PROMOTE_LATEST_BUILD: << parameters.promoteLatestBuild >>
 
   testing_commands:
     docker:
