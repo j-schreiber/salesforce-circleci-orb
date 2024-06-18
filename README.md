@@ -89,7 +89,7 @@ failed to solve: cimg/openjdk:17.0-node: failed to resolve source metadata for d
 
 :white_check_mark: This issue happened, when we were signed into DockerHub with a newly created account. **Signing out** and using docker without a user solved the issue.
 
-# rosetta error: failed to open elf at /lib64/ld-linux-x86-64.so.2
+## rosetta error: failed to open elf at /lib64/ld-linux-x86-64.so.2
 
 After installing sf cli (latest version or explicit version), it cannot be launched. The error message looks like this
 
@@ -101,16 +101,39 @@ rosetta error: failed to open elf at /lib64/ld-linux-x86-64.so.2
 
 :white_check_mark: Issue appears to be related to Macbook M1 / ARM architecture. Adding the platform `linux/amd64` to [docker-compose.yml](docker-compose.yml) solved it.
 
-# The dev version of jsc/salesforce@dev:alpha has expired
+## The dev version of jsc/salesforce@dev:alpha has expired
 
-When pipeline wasn't run for more than 90 days, initial PR pipeline run will always fail
+When pipeline wasn't run for more than 90 days, initial pipeline run will fail. Error message should look like this:
 
 ```
 The dev version of jsc/salesforce@dev:alpha has expired. Dev versions of orbs are only valid for 90 days after publishing.
 ```
 
-:white_check_mark: Execute this command. You need an authenticated `circleci` CLI installed on your system. After that, re-run the pipeline again.
+:white_check_mark: Execute the following command to manually initialise a new alpha-version. You need an authenticated `circleci` CLI installed on your system. After that, re-run the pipeline again.
 
 ```bash
 rm -f orb.yml && circleci orb pack src > orb.yml && circleci orb publish orb.yml jsc/salesforce@dev:alpha
 ```
+
+## The certificate associated with the consumer key has expired.
+
+Usually happens on scratch org jobs. Issue is related to the `CircleCI` connected app that is used by the pipeline.
+Source is stored in [orb-org-config](salesforce/orb-org-config/) submodule.
+
+Requires access to the info@wise-narwhal-asvtzx.com DevHub to resolve (devhubUsername parameter)
+Optional access to build pipeline of repository required (see below)
+
+If you still have access to the original `server.key` and `server.csr`, you can quickly refresh the `server.crt`
+
+```bash
+openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt
+```
+
+If not, follow these steps to create new key files & certificates. This also requires updating `SFDX_JWT_KEY` env variable in the repository's build pipeline.
+
+```bash
+cd salesforce/orb-org-config
+bash scripts/shell/generate-jwt-and-cert.sh -p "YourPassword"
+```
+
+:white_check_mark: Now, upload the `server.crt` to the `CircleCI` connected app on info@wise-narwhal-asvtzx.com. Wait 10 minutes before rerunning the pipeline!
