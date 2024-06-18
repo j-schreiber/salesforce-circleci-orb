@@ -47,6 +47,6 @@ steps:
       setDefault: true
   - package-promote:
       promoteLatestBuild: true
-      devHubUsername: << parameters.devhubUsername >>
+      devhubUsername: << parameters.devhubUsername >>
       projectPath: << parameters.projectPath >>
       packageId: << parameters.packageId >>
