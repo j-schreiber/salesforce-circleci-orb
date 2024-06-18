@@ -25,11 +25,21 @@ parameters:
     description: Environment variable with the package version id to promote. Required if promoteLatestBuild is false. Has no effect, if it's true.
     default: SUBSCRIBER_PACKAGE_VERSION_ID
     type: env_var_name
+  projectPath:
+    description: >
+      Provide the path to the root of your sfdx-project. Keep empty, if the repository root is the sfdx project root.
+      Use this if your repository has multiple sfdx projects.
+    type: string
+    default: ""
   promoteLatestBuild:
     description: Promotes the latest release candidate build of the package version. This queries the latest build from the DevHub.
     default: true
-    type: boolean  
-    
+    type: boolean
+  packageId:
+    description: Environment variable with the package id (starts with 0Ho). Required, if promoteLatestBuild is true. Has no effect if it's false.
+    default: PACKAGE_ID
+    type: env_var_name
+
 docker:
   - image: cimg/openjdk:17.0-node
 
@@ -42,8 +52,10 @@ steps:
       instanceUrl: << parameters.devhubInstanceUrl >>
       jwtKey: << parameters.devhubJwtKey >>
       consumerKey: << parameters.devhubConsumerKey >>
-      setDefault: true,
-  - package_promote
-      ENV_VAR_PACKAGE_VERSION_ID: << parameters.packageVersionId >>
-      PARAM_PROMOTE_LATEST_BUILD: << parameters.promoteLatestBuild >>
-     
+      setDefault: true
+  - package-promote:
+      promoteLatestBuild: true
+      devHubUsername: << parameters.devhubUsername >>
+      projectPath: << parameters.projectPath >>
+      packageId: << parameters.packageId >>
+      packageVersionId: << parameters.packageVersionId >>
