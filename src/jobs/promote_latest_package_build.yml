@@ -1,0 +1,52 @@
+description: |
+  This job promotes the latest release candidate of package version.
+
+parameters:
+  additionalSteps:
+    default: []
+    description: Provide optional steps you would like to run prior to the package promote
+    type: steps
+  devhubUsername:
+    description: Username or alias of the DevHub
+    type: string
+  devhubInstanceUrl:
+    description: Instance url of the DevHub, if you have a custom domain enabled.
+    default: https://login.salesforce.com
+    type: string
+  devhubJwtKey:
+    description: Name of the environment variable containing the base64 encoded private JWT key (server.key file) to authenticate to the DevHub.
+    default: DEVHUB_JWT_KEY
+    type: env_var_name
+  devhubConsumerKey:
+    description: Name of the environment variable containing the consumner key of the connected app on the DevHub. The CLI refers to this as "client id"
+    default: DEVHUB_CONSUMER_KEY
+    type: env_var_name
+  projectPath:
+    description: >
+      Provide the path to the root of your sfdx-project. Keep empty, if the repository root is the sfdx project root.
+      Use this if your repository has multiple sfdx projects.
+    type: string
+    default: ""
+  packageId:
+    description: Environment variable with the package id (starts with 0Ho). Required, if promoteLatestBuild is true. Has no effect if it's false.
+    default: PACKAGE_ID
+    type: env_var_name
+
+docker:
+  - image: cimg/openjdk:17.0-node
+
+steps:
+  - checkout
+  - steps: << parameters.additionalSteps >>
+  - install
+  - auth:
+      username: << parameters.devhubUsername >>
+      instanceUrl: << parameters.devhubInstanceUrl >>
+      jwtKey: << parameters.devhubJwtKey >>
+      consumerKey: << parameters.devhubConsumerKey >>
+      setDefault: true
+  - package-promote:
+      promoteLatestBuild: true
+      devhubUsername: << parameters.devhubUsername >>
+      projectPath: << parameters.projectPath >>
+      packageId: << parameters.packageId >>
