@@ -100,3 +100,17 @@ rosetta error: failed to open elf at /lib64/ld-linux-x86-64.so.2
 ```
 
 :white_check_mark: Issue appears to be related to Macbook M1 / ARM architecture. Adding the platform `linux/amd64` to [docker-compose.yml](docker-compose.yml) solved it.
+
+# The dev version of jsc/salesforce@dev:alpha has expired
+
+When pipeline wasn't run for more than 90 days, initial PR pipeline run will always fail
+
+```
+The dev version of jsc/salesforce@dev:alpha has expired. Dev versions of orbs are only valid for 90 days after publishing.
+```
+
+:white_check_mark: Execute this command. You need an authenticated `circleci` CLI installed on your system. After that, re-run the pipeline again.
+
+```bash
+rm -f orb.yml && circleci orb pack src > orb.yml && circleci orb publish orb.yml jsc/salesforce@dev:alpha
+```
