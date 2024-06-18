@@ -227,8 +227,8 @@ workflows:
       - jsc-sfdx/promote_latest_package_build:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          devhubJwtKey: SFDX_JWT_KEY
-          devhubConsumerKey: SFDX_CONSUMER_KEY
+          devhubJwtKey: DEVHUB_JWT_KEY
+          devhubConsumerKey: DEVHUB_CONSUMER_KEY
           projectPath: salesforce/demo-package
           packageId: PACKAGE_ID
           requires:
@@ -251,9 +251,7 @@ workflows:
           publish-version-tag: false
           requires:
             - testing_commands
-            # - scratch_org_test
-            # - scratch_org_test_with_lwc
-            - jsc-sfdx/build_release_candidate_version
+            - jsc-sfdx/promote_latest_package_build
             - sandbox_deploy_latest_build
           filters:
             branches:
