@@ -88,26 +88,6 @@ jobs:
           targetOrg: << pipeline.parameters.devhubUsername >>
           projectPath: salesforce/demo-package
           directories: src/deploy/main src/deploy/special
-      - jsc-sfdx/promote-latest-package-build:
-          #  additionalSteps:
-          #  - slack_notify_deployment_started:
-          #     targetOrgName: "Production"
-          #post-steps:
-          # - slack/notify:
-          #    event: fail
-          #   template: basic_fail_1
-          #- slack/notify:
-          #   event: pass
-          #  template: basic_success_1 */
-          devhubUsername: << pipeline.parameters.devhubUsername >>
-          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
-          devhubJwtKey: SFDX_JWT_KEY
-          devhubConsumerKey: SFDX_CONSUMER_KEY
-          projectPath: salesforce/demo-package
-          packageId: PACKAGE_ID
-          packageVersionId: << pipeline.parameters.packageVersionId >>
-          promoteLatestBuild: << pipeline.parameters.promoteLatestBuild >>
-          projectPath: << pipeline.parameters.projectPath >>
 
   testing_commands:
     docker:
@@ -238,6 +218,21 @@ workflows:
           package: PACKAGE_ID
           requires:
             - sandbox_deploy_new_build
+          additionalSteps:
+            - run:
+                name: Checkout submodules
+                command: |
+                  git submodule update --init --recursive
+                  git submodule foreach --recursive git checkout master
+      - jsc-sfdx/promote_latest_package_build:
+          devhubUsername: << pipeline.parameters.devhubUsername >>
+          devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>
+          devhubJwtKey: SFDX_JWT_KEY
+          devhubConsumerKey: SFDX_CONSUMER_KEY
+          projectPath: salesforce/demo-package
+          packageId: PACKAGE_ID
+          requires:
+            - jsc-sfdx/build_release_candidate_version
           additionalSteps:
             - run:
                 name: Checkout submodules
