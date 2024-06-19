@@ -12,7 +12,7 @@ commit_sfdx_project() {
 }
 
 push_to_remote() {
-    git push
+    git push -q "https://${DEMO_PACKAGE_REPO_TOKEN}@github.com/j-schreiber/circleci-orb-demo-package.git"
 }
 
 main() {

@@ -4,6 +4,9 @@ setup() {
 
     # mock environment variables
     export PARAM_PATH="salesforce/demo-package"
+
+    # override with mocked sfdx-project.json
+    cat salesforce/helpers/data/mock-sfdx-project.json > salesforce/demo-package/sfdx-project.json
 }
 
 teardown() {
@@ -23,10 +26,10 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"Current version is: 0.1.1"* ]]
-    [[ "$output" == *"New version is: 0.1.2"* ]]
-    newVersionOutput=$(jq -r '.packageDirectories[] | select(.package == "Orb Developer Demo Package") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
-    [ "$newVersionOutput" == "0.1.2.NEXT" ]
+    [[ "$output" == *"Current version is: 1.2.3"* ]]
+    [[ "$output" == *"New version is: 1.2.4"* ]]
+    newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
+    [ "$newVersionOutput" == "1.2.4.NEXT" ]
 }
 
 @test "Bump package MINOR version > commits with MINOR bumped" {
@@ -41,10 +44,10 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"Current version is: 0.1.1"* ]]
-    [[ "$output" == *"New version is: 0.2.0"* ]]
-    newVersionOutput=$(jq -r '.packageDirectories[] | select(.package == "Orb Developer Demo Package") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
-    [ "$newVersionOutput" == "0.2.0.NEXT" ]
+    [[ "$output" == *"Current version is: 1.2.3"* ]]
+    [[ "$output" == *"New version is: 1.3.0"* ]]
+    newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
+    [ "$newVersionOutput" == "1.3.0.NEXT" ]
 }
 
 @test "Bump package MAJOR version > commits with MAJOR bumped" {
@@ -59,8 +62,25 @@ teardown() {
     echo "$output"
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"Current version is: 0.1.1"* ]]
-    [[ "$output" == *"New version is: 1.0.0"* ]]
-    newVersionOutput=$(jq -r '.packageDirectories[] | select(.package == "Orb Developer Demo Package") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
-    [ "$newVersionOutput" == "1.0.0.NEXT" ]
+    [[ "$output" == *"Current version is: 1.2.3"* ]]
+    [[ "$output" == *"New version is: 2.0.0"* ]]
+    newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
+    [ "$newVersionOutput" == "2.0.0.NEXT" ]
+}
+
+@test "Bump package with invalid semver tag > exits with error 100" {
+    # Arrange
+    export PARAM_SEMVER_BUMP="SOMETHING"
+
+    # Act
+    run main
+
+    # Assert
+    echo "Actual output"
+    echo "$output"
+    echo "Actual status: $status"
+    [ "$status" -eq 100 ]
+    [[ "$output" == *"Invalid SEMVER tag SOMETHING"* ]]
+    newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
+    [ "$newVersionOutput" == "1.2.3.NEXT" ]
 }
