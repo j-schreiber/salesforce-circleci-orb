@@ -27,6 +27,7 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ "$output" == *"Current version is: 1.2.3"* ]]
+    [[ "$output" == *"Applying PATCH increment"* ]]
     [[ "$output" == *"New version is: 1.2.4"* ]]
     newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
     [ "$newVersionOutput" == "1.2.4.NEXT" ]
@@ -45,6 +46,7 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ "$output" == *"Current version is: 1.2.3"* ]]
+    [[ "$output" == *"Applying MINOR increment"* ]]
     [[ "$output" == *"New version is: 1.3.0"* ]]
     newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
     [ "$newVersionOutput" == "1.3.0.NEXT" ]
@@ -63,6 +65,7 @@ teardown() {
     echo "Actual status: $status"
     [ "$status" -eq 0 ]
     [[ "$output" == *"Current version is: 1.2.3"* ]]
+    [[ "$output" == *"Applying MAJOR increment"* ]]
     [[ "$output" == *"New version is: 2.0.0"* ]]
     newVersionOutput=$(jq -r '.packageDirectories[] | select(.path == "src/packaged") | .versionNumber' "$PARAM_PATH"/sfdx-project.json)
     [ "$newVersionOutput" == "2.0.0.NEXT" ]
