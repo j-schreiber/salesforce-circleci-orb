@@ -224,6 +224,17 @@ workflows:
                 command: |
                   git submodule update --init --recursive
                   git submodule foreach --recursive git checkout master
+            - run:
+                name: Increment PATCH package version
+                command: |
+                  export PARAM_SEMVER_BUMP=PATCH
+                  export PARAM_PATH=salesforce/demo-package
+                  bash salesforce/helpers/shell/bump-package-version.sh
+            - run:
+                name: Commit and push package bump to remote
+                command: |
+                  export PARAM_PATH=salesforce/demo-package
+                  bash salesforce/helpers/shell/commit-semver-bump.sh
       - jsc-sfdx/promote_latest_package_build:
           devhubUsername: << pipeline.parameters.devhubUsername >>
           devhubInstanceUrl: << pipeline.parameters.devhubInstanceUrl >>

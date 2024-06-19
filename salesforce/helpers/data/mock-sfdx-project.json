@@ -1,0 +1,21 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    },
+    {
+      "path": "src/packaged",
+      "package": "Mock Package For Testing",
+      "definitionFile": "config/default-scratch-def.json",
+      "versionNumber": "1.2.3.NEXT",
+      "default": false
+    }
+  ],
+  "namespace": "",
+  "sfdcLoginUrl": "https://wise-narwhal-asvtzx-dev-ed.trailblaze.my.salesforce.com",
+  "sourceApiVersion": "56.0",
+  "packageAliases": {
+    "Orb Developer Demo Package": "0Ho09000000CayYCAS"
+  }
+}
