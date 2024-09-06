@@ -12,7 +12,7 @@ execute_sf_apex_test_run() {
 run_tests() {
     params=()
     params+=( --target-org "$PARAM_TARGET_ORG")
-    params+=( --wait 10)
+    params+=( --wait 20)
     params+=( --result-format junit)
     params+=( --output-dir "$PARAM_OUTPUT_DIRECTORY")
     execute_sf_apex_test_run "${params[@]}"
